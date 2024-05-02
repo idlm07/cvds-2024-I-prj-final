@@ -1,5 +1,5 @@
 package co.edu.eci.cvds.model;
-import co.edu.eci.cvds.exceptions.LincolnLinesException;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,13 +20,13 @@ public class Producto {
     @Column(name = "imagen", length = 100)
     @Getter @Setter private String imagen;
     @Column(name = "valor", nullable = false)
-    @Getter private float valor;
+    @Getter @Setter private float valor;
     @Column(name = "moneda", length = 10, nullable = false)
     @Getter @Setter private String moneda;
     @Column(name = "descuento",nullable = false)
-    @Getter private float descuento;
+    @Getter @Setter private float descuento;
     @Column(name = "impuesto",nullable = false)
-    @Getter private float impuesto;
+    @Getter @Setter private float impuesto;
     @ManyToOne
     @JoinColumn(name = "marcaVehiculo", referencedColumnName = "marca",nullable = false)
     @JoinColumn(name = "modeloVehiculo", referencedColumnName = "modelo",nullable = false)
@@ -36,31 +36,15 @@ public class Producto {
 
 
     public Producto() {}
-    public Producto(String nombre,String categoria, float valor, String moneda, Vehiculo vehiculo) throws LincolnLinesException {
+    public Producto(String nombre,String categoria, float valor, String moneda, Vehiculo vehiculo) {
         this.nombre = nombre;
         this.categoria = categoria;
-        this.setValor(valor);
+        this.valor = valor;
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
         this.vehiculo = vehiculo;
     }
-
-    public void setValor(float valor) throws LincolnLinesException {
-        if(valor < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
-        this.valor = valor;
-    }
-
-    public void setImpuesto(float impuesto) throws LincolnLinesException {
-        if(impuesto < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
-        this.impuesto = impuesto;
-    }
-
-    public void setDescuento(float descuento) throws LincolnLinesException {
-        if(descuento < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
-        this.descuento = descuento;
-    }
-    
     @Override
     public int hashCode() {
         final int prime = 31;
