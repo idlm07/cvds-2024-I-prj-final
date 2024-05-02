@@ -60,9 +60,7 @@ public class Producto {
         if(descuento < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
         this.descuento = descuento;
     }
-
-
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
