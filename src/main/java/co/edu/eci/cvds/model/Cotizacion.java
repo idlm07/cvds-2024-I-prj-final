@@ -1,4 +1,6 @@
 package co.edu.eci.cvds.model;
+
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -91,4 +93,3 @@ public class Cotizacion {
 
     }
 }
-

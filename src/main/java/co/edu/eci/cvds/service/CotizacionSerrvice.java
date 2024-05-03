@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 public class CotizacionSerrvice {
     private final CotizacionRepository cotizacionRepository;
+    private Cotizacion cotizacion;
 
     @Autowired
     public CotizacionSerrvice(CotizacionRepository cotizacionRepository) {
@@ -42,19 +43,30 @@ public class CotizacionSerrvice {
     }
 
     public Cotizacion agregarAlCarritoPrimeraVez(Producto producto){
-        //creacion cotizacion y carrito
-        return null;
+        Cotizacion cotizacion = new Cotizacion();
+        cotizacion.getProductosCotizacion().add(producto); 
+        cotizacionRepository.save(cotizacion); 
+        return cotizacion;
     }
 
     public void agregarAlCarritoNVez(Producto producto, Cotizacion cotizacion){
-
+        cotizacion.getProductosCotizacion().add(producto); 
+        cotizacionRepository.save(cotizacion);
     }
 
     public void quitarDelCarrito(Producto producto, Cotizacion cotizacion){
-        //Si se quitan todos los productos, su estado cambia a eliminado
+        cotizacion.getProductosCotizacion().remove(producto); 
+        if (cotizacion.getProductosCotizacion().isEmpty()) {
+        cotizacion.setEstado("ELIMINADO"); 
+    }
+    cotizacionRepository.save(cotizacion);
     }
 
     public float calcularTotalCarrito(){
-        return 0;
+        float total = 0;
+        for (Producto producto : cotizacion.getProductosCotizacion()) {
+        total += producto.getValor(); 
+        }
+    return total;
     }
 }
