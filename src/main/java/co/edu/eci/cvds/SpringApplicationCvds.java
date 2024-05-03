@@ -3,9 +3,7 @@ package co.edu.eci.cvds;
 import co.edu.eci.cvds.model.Configuration;
 import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.model.Vehiculo;
-import co.edu.eci.cvds.service.ConfigurationService;
-import co.edu.eci.cvds.service.ProductoService;
-import co.edu.eci.cvds.service.VehiculoService;
+import co.edu.eci.cvds.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,19 +17,25 @@ import java.util.Arrays;
 @SpringBootApplication
 @Slf4j
 public class SpringApplicationCvds {
-	private final ConfigurationService configurationService;
+	;
 	private final ProductoService productoService;
 	private final VehiculoService vehiculoService;
+	private final CotizacionSerrvice cotizacionSerrvice;
+	private final ClienteService clienteService;
 
 	@Autowired
 	public SpringApplicationCvds(
-			ConfigurationService configurationService,
 			ProductoService productoService,
-			VehiculoService vehiculoService
+			VehiculoService vehiculoService,
+			CotizacionSerrvice cotizacionService,
+			ClienteService clienteService
+
 	) {
-		this.configurationService = configurationService;
 		this.productoService = productoService;
 		this.vehiculoService = vehiculoService;
+		this.cotizacionSerrvice = cotizacionService;
+		this.clienteService = clienteService;
+
 	}
 
 	public static void main(String[] args) {
