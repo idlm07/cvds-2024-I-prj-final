@@ -41,11 +41,11 @@ public class SpringApplicationCvds {
 	@Bean
 	public CommandLineRunner run() {
 		return (args) -> {
-
+			/*
 			productoService.agregarProducto(new Producto("Motor1","Motor",(float)15.2,"US"));
 			vehiculoService.agregarVehiculo(new Vehiculo("Suzuki","i-40","2023"));
 			vehiculoService.agregarProducto("Suzuki","i-40","2023",new Producto("Motor1","Motor",(float)15.2,"US"));
-
+			*/
 		};
 	}
 

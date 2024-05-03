@@ -9,13 +9,12 @@
 		<relativePath/>
 		<!-- lookup parent from repository -->
 	</parent>
-	<groupId>co.edu.escuelaing.cvds</groupId>
-	<artifactId>lab7</artifactId>
+	<groupId>co.edu.eci.cvds</groupId>
+	<artifactId>cvds-final-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lab7</name>
-	<description>Manejo de Data - ORM</description>
+	<name>project-name</name>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -37,16 +36,10 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>RELEASE</version>
-			<scope>runtime</scope>
-		</dependency>
-		<!--<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
-		</dependency>-->
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
