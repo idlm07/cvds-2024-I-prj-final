@@ -1,60 +1,70 @@
 package co.edu.eci.cvds.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(
+        name = "Clientes",
+        uniqueConstraints = {@UniqueConstraint(name = "UK_Clientes", columnNames = {"nombre","primerApellido","segundoApellido"})}
+)
 public class Cliente {
-    private long id;
-    private String nombre;
-    private String direccion;
-    private String correoElectronico;
-    private String telefono;
+    @Id
+    @Column(name = "correo", length = 50, nullable = false)
+    @Getter @Setter private String correo;
+    @Column(name = "nombre", length = 50,nullable = false)
+    @Getter @Setter private String nombre;
+    @Column(name = "primerApellido", length = 50, nullable = false)
+    @Getter @Setter private String primerApellido;
+    @Column(name = "segundoApellido",length = 50)
+    @Getter @Setter private String segundoApellido;
+    @Column(name = "celular", length = 10, nullable = false)
+    @Getter @Setter private String celular;
+    @OneToMany(mappedBy = "cliente")
+    private List<Cotizacion> cotizaciones;
 
-    
+    public Cliente() {
+        cotizaciones = new ArrayList<>();
+    }
 
-    public Cliente(long id, String nombre, String direccion, String correoElectronico, String telefono) {
-        this.id = id;
+    public Cliente(String correo, String nombre, String primerApellido, String segundoApellido, String celular){
+        this.correo = correo;
         this.nombre = nombre;
-        this.direccion = direccion;
-        this.correoElectronico = correoElectronico;
-        this.telefono = telefono;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.celular = celular;
+        this.cotizaciones = new ArrayList<>();
     }
 
-    public long getId() {
-        return id;
+    @Override
+    public int hashCode(){
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((correo == null) ? 0 : correo.hashCode());
+        result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+        result = prime * result + ((primerApellido == null) ? 0 : primerApellido.hashCode());
+        result = prime * result + ((segundoApellido == null) ? 0 : segundoApellido.hashCode());
+        result = prime * result + ((celular == null) ? 0 : celular.hashCode());
+        return result;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    @Override
+    public boolean equals(Object obj){
+        try{
+            Cliente client = (Cliente) obj;
+            return correo.equals(client.getCorreo())
+                    && nombre.equals(client.getNombre())
+                    && primerApellido.equals(client.getPrimerApellido())
+                    && segundoApellido.equals(client.getSegundoApellido())
+                    && celular.equals(client.getCelular());
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getCorreoElectronico() {
-        return correoElectronico;
-    }
-
-    public void setCorreoElectronico(String correoElectronico) {
-        this.correoElectronico = correoElectronico;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+        }catch (Exception e){
+            return false;
+        }
     }
 
 }

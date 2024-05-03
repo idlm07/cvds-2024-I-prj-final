@@ -1,8 +1,12 @@
 package co.edu.eci.cvds.model;
-import co.edu.eci.cvds.exceptions.LincolnLinesException;
+
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -20,51 +24,39 @@ public class Producto {
     @Column(name = "imagen", length = 100)
     @Getter @Setter private String imagen;
     @Column(name = "valor", nullable = false)
-    @Getter private float valor;
+    @Getter @Setter private float valor;
     @Column(name = "moneda", length = 10, nullable = false)
     @Getter @Setter private String moneda;
     @Column(name = "descuento",nullable = false)
-    @Getter private float descuento;
+    @Getter @Setter private float descuento;
     @Column(name = "impuesto",nullable = false)
-    @Getter private float impuesto;
-    @ManyToOne
-    @JoinColumn(name = "marcaVehiculo", referencedColumnName = "marca",nullable = false)
-    @JoinColumn(name = "modeloVehiculo", referencedColumnName = "modelo",nullable = false)
-    @JoinColumn(name = "yearVehiculo", referencedColumnName = "year",nullable = false)
+    @Getter @Setter private float impuesto;
+    @ManyToMany(mappedBy = "productosVehiculo")
+    @Getter private List<Vehiculo> vehiculos;
+    @ManyToMany(mappedBy = "productosCotizacion")
+    @Getter private List<Cotizacion> cotizaciones;
 
-    private Vehiculo vehiculo;
-    
-    @ManyToOne
-    private CarritoDeCompras carrito;
 
-    public Producto() {}
-    public Producto(String nombre,String categoria, float valor, String moneda, Vehiculo vehiculo) throws LincolnLinesException {
+    public Producto() {
+        this.vehiculos = new ArrayList<>();
+        this.cotizaciones = new ArrayList<>();
+    }
+    public Producto(String nombre,String categoria, float valor, String moneda) {
         this.nombre = nombre;
         this.categoria = categoria;
-        this.setValor(valor);
+        this.valor = valor;
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
-        this.vehiculo = vehiculo;
+        this.vehiculos = new ArrayList<>();
+        this.cotizaciones = new ArrayList<>();
     }
-
-    public void setValor(float valor) throws LincolnLinesException {
-        if(valor < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
-        this.valor = valor;
+    public void agregarVehiculo(Vehiculo vehiculo) {
+        this.vehiculos.add(vehiculo);
     }
-
-    public void setImpuesto(float impuesto) throws LincolnLinesException {
-        if(impuesto < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
-        this.impuesto = impuesto;
+    public void agregarCotizacion(Cotizacion cotizacion) {
+        this.cotizaciones.add(cotizacion);
     }
-
-    public void setDescuento(float descuento) throws LincolnLinesException {
-        if(descuento < 0) throw new LincolnLinesException(LincolnLinesException.NEGATTIVE);
-        this.descuento = descuento;
-    }
-
-
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -79,19 +71,16 @@ public class Producto {
         result = prime * result + Float.floatToIntBits(impuesto);
         return result;
     }
-
+    @Override
     public boolean equals(Object obj) {
         try {
             Producto producto = (Producto) obj;
+
             return this.nombre.equals(producto.getNombre()) &&
-                    this.descripcionBreve.equals(producto.getDescripcionBreve())
-                    && this.descripcionTecnica.equals(producto.getDescripcionTecnica())
-                    && this.categoria.equals(producto.getCategoria())
-                    && this.imagen.equals(producto.getImagen())
+                    this.categoria.equals(producto.getCategoria())
                     && this.valor == producto.getValor()
                     && this.moneda.equals(producto.getMoneda())
-                    && this.descuento == producto.getDescuento()
-                    && this.impuesto == producto.getImpuesto();
+                    && this.hashCode() == producto.hashCode();
         } catch (Exception e) {
             return false;
         }

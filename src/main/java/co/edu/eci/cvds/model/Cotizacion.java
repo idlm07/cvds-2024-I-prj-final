@@ -1,90 +1,94 @@
 package co.edu.eci.cvds.model;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+
+@Entity
+@Table(name = "Cotizaciones")
 public class Cotizacion {
-    private String id;
-    private LocalDateTime fecha;
-    private Cliente cliente;
-    private List<Producto> productos;
-    private float subtotal;
-    private float impuestos;
-    private float total;
-    private EstadoCotizacion estado;
 
-    public Cotizacion(String id, LocalDateTime fecha, Cliente cliente, List<Producto> productos, float subtotal, float impuestos, float total, EstadoCotizacion estado) {
-        this.id = id;
-        this.fecha = fecha;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false)
+    @Getter private long iden;
+
+    @Column(name = "estado", length = 10, nullable = false)
+    @Getter @Setter private String estado;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fechaCreacion", nullable = false, updatable = false)
+    @Getter private Timestamp fechaCreacion;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "cita")
+    @Getter @Setter private Timestamp cita;
+
+    @Column(name = "ciudadRecogida", length = 50)
+    @Getter @Setter private String ciudadRecogida;
+    @Column(name = "direccionRecogida", length = 50)
+    @Getter @Setter private String direccionRecogida;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "Carrito",
+            joinColumns = @JoinColumn(name = "cotizacion"),
+            inverseJoinColumns = @JoinColumn(name = "producto", referencedColumnName = "nombre")
+    )
+    @Getter private List<Producto> productosCotizacion;
+
+    @ManyToOne
+    @JoinColumn(name = "correoCliente", referencedColumnName = "correo")
+    @Getter @Setter private Cliente cliente;
+
+
+
+
+    public Cotizacion() {
+        this.estado = "CREADO";
+        Date date = new Date();
+        this.fechaCreacion = new Timestamp(date.getTime());
+        this.productosCotizacion = new ArrayList<>();
+    }
+
+    public Cotizacion(Timestamp cita, String ciudadRecogida, String direccionRecogida, Cliente cliente){
+        Date date = new Date();
+        this.estado = "CREADO";
+        this.fechaCreacion = new Timestamp(date.getTime());
+        this.cita = cita;
+        this.ciudadRecogida = ciudadRecogida;
+        this.direccionRecogida = direccionRecogida;
         this.cliente = cliente;
-        this.productos = productos;
-        this.subtotal = subtotal;
-        this.impuestos = impuestos;
-        this.total = total;
-        this.estado = estado;
-    }
-    public String getId() {
-        return id;
+        this.productosCotizacion = new ArrayList<>();
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public int hashCode(){
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (iden ^ (iden >>> 32));
+        result = prime * result + ((fechaCreacion == null) ? 0 : fechaCreacion.hashCode());
+        result = prime * result + ((cita == null) ? 0 : cita.hashCode());
+        result = prime * result + ((ciudadRecogida == null) ? 0 : ciudadRecogida.hashCode());
+        result = prime * result + ((direccionRecogida == null) ? 0 : direccionRecogida.hashCode());
+        result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
+        return result;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
+    @Override
+    public boolean equals(Object obj){
+        try{
+            Cotizacion cotizacion = (Cotizacion) obj;
+            return cotizacion.getIden() == this.iden;
+        }catch(Exception e){
+            return false;
+        }
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
     }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<Producto> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Producto> productos) {
-        this.productos = productos;
-    }
-
-    public float getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(float subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public float getImpuestos() {
-        return impuestos;
-    }
-
-    public void setImpuestos(float impuestos) {
-        this.impuestos = impuestos;
-    }
-
-    public float getTotal() {
-        return total;
-    }
-
-    public void setTotal(float total) {
-        this.total = total;
-    }
-
-    public EstadoCotizacion getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoCotizacion estado) {
-        this.estado = estado;
-    }
-
 }
+
