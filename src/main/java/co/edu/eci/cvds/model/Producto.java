@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+
 
 @Entity
 @Table(name = "Productos")
@@ -27,23 +29,31 @@ public class Producto {
     @Getter @Setter private float descuento;
     @Column(name = "impuesto",nullable = false)
     @Getter @Setter private float impuesto;
-    @ManyToOne
-    @JoinColumn(name = "marcaVehiculo", referencedColumnName = "marca",nullable = false)
-    @JoinColumn(name = "modeloVehiculo", referencedColumnName = "modelo",nullable = false)
-    @JoinColumn(name = "yearVehiculo", referencedColumnName = "year",nullable = false)
-
-    private Vehiculo vehiculo;
+    @ManyToMany(mappedBy = "productosVehiculo")
+    @Getter private ArrayList<Vehiculo> vehiculos;
+    @ManyToMany(mappedBy = "productosCotizacion")
+    @Getter private ArrayList<Cotizacion> cotizaciones;
 
 
-    public Producto() {}
-    public Producto(String nombre,String categoria, float valor, String moneda, Vehiculo vehiculo) {
+    public Producto() {
+        this.vehiculos = new ArrayList<>();
+        this.cotizaciones = new ArrayList<>();
+    }
+    public Producto(String nombre,String categoria, float valor, String moneda) {
         this.nombre = nombre;
         this.categoria = categoria;
         this.valor = valor;
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
-        this.vehiculo = vehiculo;
+        this.vehiculos = new ArrayList<>();
+        this.cotizaciones = new ArrayList<>();
+    }
+    public void agregarVehiculo(Vehiculo vehiculo) {
+        this.vehiculos.add(vehiculo);
+    }
+    public void agregarCotizacion(Cotizacion cotizacion) {
+        this.cotizaciones.add(cotizacion);
     }
     @Override
     public int hashCode() {
@@ -59,10 +69,11 @@ public class Producto {
         result = prime * result + Float.floatToIntBits(impuesto);
         return result;
     }
-
+    @Override
     public boolean equals(Object obj) {
         try {
             Producto producto = (Producto) obj;
+
             return this.nombre.equals(producto.getNombre()) &&
                     this.descripcionBreve.equals(producto.getDescripcionBreve())
                     && this.descripcionTecnica.equals(producto.getDescripcionTecnica())
