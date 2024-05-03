@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.repository;
 
-import ID.VehiculoID;
+import co.edu.eci.cvds.ID.VehiculoID;
 import co.edu.eci.cvds.model.Vehiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

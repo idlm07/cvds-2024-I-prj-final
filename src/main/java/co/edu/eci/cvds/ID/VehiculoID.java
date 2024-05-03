@@ -1,4 +1,4 @@
-package ID;
+package co.edu.eci.cvds.ID;
 import lombok.Getter;
 import lombok.Setter;
 

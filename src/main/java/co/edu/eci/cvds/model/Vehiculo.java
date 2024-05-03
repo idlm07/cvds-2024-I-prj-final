@@ -2,9 +2,10 @@ package co.edu.eci.cvds.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import ID.VehiculoID;
+import co.edu.eci.cvds.ID.VehiculoID;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -31,7 +32,7 @@ public class Vehiculo {
             },
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
-    @Getter private ArrayList<Producto> productosVehiculo;
+    @Getter private List<Producto> productosVehiculo;
 
 
 
@@ -39,11 +40,15 @@ public class Vehiculo {
         this.marca = marca;
         this.model = model;
         this.year = year;
-        this.productosVehiculo = new ArrayList<>();
+        this.setProductosVehiculo(new ArrayList<>());
     }
 
     public Vehiculo() {
         this.productosVehiculo = new ArrayList<>();
+    }
+
+    public void setProductosVehiculo(List<Producto> productosVehiculo) {
+        this.productosVehiculo = productosVehiculo;
     }
 
     public void anadirProducto(Producto producto){
