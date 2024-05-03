@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -15,8 +16,9 @@ import java.util.Date;
 public class Cotizacion {
 
     @Id
-    @Column(name = "id")
-    @Getter private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false)
+    @Getter private long iden;
 
     @Column(name = "estado", length = 10, nullable = false)
     @Getter @Setter private String estado;
@@ -34,13 +36,13 @@ public class Cotizacion {
     @Column(name = "direccionRecogida", length = 50)
     @Getter @Setter private String direccionRecogida;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "ProductosPorCotizacion",
+            name = "Carrito",
             joinColumns = @JoinColumn(name = "cotizacion"),
             inverseJoinColumns = @JoinColumn(name = "producto", referencedColumnName = "nombre")
     )
-    @Getter private ArrayList<Producto> productosCotizacion;
+    @Getter private List<Producto> productosCotizacion;
 
     @ManyToOne
     @JoinColumn(name = "correoCliente", referencedColumnName = "correo")
@@ -71,7 +73,7 @@ public class Cotizacion {
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + (int) (iden ^ (iden >>> 32));
         result = prime * result + ((fechaCreacion == null) ? 0 : fechaCreacion.hashCode());
         result = prime * result + ((cita == null) ? 0 : cita.hashCode());
         result = prime * result + ((ciudadRecogida == null) ? 0 : ciudadRecogida.hashCode());
@@ -84,7 +86,7 @@ public class Cotizacion {
     public boolean equals(Object obj){
         try{
             Cotizacion cotizacion = (Cotizacion) obj;
-            return cotizacion.getId() == this.id;
+            return cotizacion.getIden() == this.iden;
         }catch(Exception e){
             return false;
         }

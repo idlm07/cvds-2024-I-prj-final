@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -24,7 +25,7 @@ public class Cliente {
     @Column(name = "celular", length = 10, nullable = false)
     @Getter @Setter private String celular;
     @OneToMany(mappedBy = "cliente")
-    private ArrayList<Cotizacion> cotizaciones;
+    private List<Cotizacion> cotizaciones;
 
     public Cliente() {
         cotizaciones = new ArrayList<>();
@@ -36,7 +37,7 @@ public class Cliente {
         this.primerApellido = primerApellido;
         this.segundoApellido = segundoApellido;
         this.celular = celular;
-        cotizaciones = new ArrayList<>();
+        this.cotizaciones = new ArrayList<>();
     }
 
     @Override

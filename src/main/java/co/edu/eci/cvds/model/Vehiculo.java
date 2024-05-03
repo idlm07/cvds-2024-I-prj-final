@@ -22,9 +22,9 @@ public class Vehiculo {
     @Id
     @Column(name = "year", length = 4, nullable = false)
     @Getter @Setter private String year;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "ProductosPorVehiculo",
+            name = "Productos_Por_Vehiculo",
             joinColumns = {
                     @JoinColumn(name = "marca"),
                     @JoinColumn(name = "modelo"),
@@ -40,16 +40,14 @@ public class Vehiculo {
         this.marca = marca;
         this.model = model;
         this.year = year;
-        this.setProductosVehiculo(new ArrayList<>());
+        this.productosVehiculo = new ArrayList<>();
     }
 
     public Vehiculo() {
         this.productosVehiculo = new ArrayList<>();
     }
 
-    public void setProductosVehiculo(List<Producto> productosVehiculo) {
-        this.productosVehiculo = productosVehiculo;
-    }
+
 
     public void anadirProducto(Producto producto){
         productosVehiculo.add(producto);
@@ -67,8 +65,8 @@ public class Vehiculo {
     @Override
     public boolean equals(Object obj) {
         try {
-            Vehiculo producto = (Vehiculo) obj;
-            return marca.equals(producto.getMarca()) && model.equals(producto.getModel()) && year.equals(producto.getYear());
+            Vehiculo vehiculo = (Vehiculo) obj;
+            return marca.equals(vehiculo.getMarca()) && model.equals(vehiculo.getModel()) && year.equals(vehiculo.getYear()) && this.hashCode() == vehiculo.hashCode();
         } catch (Exception e) {
             return false;
         }

@@ -1,10 +1,12 @@
 package co.edu.eci.cvds.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -30,9 +32,9 @@ public class Producto {
     @Column(name = "impuesto",nullable = false)
     @Getter @Setter private float impuesto;
     @ManyToMany(mappedBy = "productosVehiculo")
-    @Getter private ArrayList<Vehiculo> vehiculos;
+    @Getter private List<Vehiculo> vehiculos;
     @ManyToMany(mappedBy = "productosCotizacion")
-    @Getter private ArrayList<Cotizacion> cotizaciones;
+    @Getter private List<Cotizacion> cotizaciones;
 
 
     public Producto() {
@@ -75,14 +77,10 @@ public class Producto {
             Producto producto = (Producto) obj;
 
             return this.nombre.equals(producto.getNombre()) &&
-                    this.descripcionBreve.equals(producto.getDescripcionBreve())
-                    && this.descripcionTecnica.equals(producto.getDescripcionTecnica())
-                    && this.categoria.equals(producto.getCategoria())
-                    && this.imagen.equals(producto.getImagen())
+                    this.categoria.equals(producto.getCategoria())
                     && this.valor == producto.getValor()
                     && this.moneda.equals(producto.getMoneda())
-                    && this.descuento == producto.getDescuento()
-                    && this.impuesto == producto.getImpuesto();
+                    && this.hashCode() == producto.hashCode();
         } catch (Exception e) {
             return false;
         }

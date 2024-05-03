@@ -18,8 +18,13 @@ public class VehiculoService {
         this.vehiculoRepository = vehiculoRepository;
     }
 
-    public void agregarVehiculo(Vehiculo vehiculo) {
-        vehiculoRepository.save(vehiculo);
+    public Vehiculo agregarVehiculo(Vehiculo vehiculo) {
+
+        return vehiculoRepository.save(vehiculo);
+    }
+
+    public Vehiculo getVehiculo(String marca, String modelo, String year) {
+        return vehiculoRepository.findByMarcaAndModelAndYear(String.valueOf(marca), String.valueOf(modelo), String.valueOf(year)).get(0);
     }
 
     public void agregarProducto(String marca, String modelo, String year,Producto producto){
