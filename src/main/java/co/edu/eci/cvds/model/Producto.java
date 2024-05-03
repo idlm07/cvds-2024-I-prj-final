@@ -33,7 +33,9 @@ public class Producto {
     @JoinColumn(name = "yearVehiculo", referencedColumnName = "year",nullable = false)
 
     private Vehiculo vehiculo;
-
+    
+    @ManyToOne
+    private CarritoDeCompras carrito;
 
     public Producto() {}
     public Producto(String nombre,String categoria, float valor, String moneda, Vehiculo vehiculo) throws LincolnLinesException {
@@ -94,4 +96,5 @@ public class Producto {
             return false;
         }
     }
+    
 }
