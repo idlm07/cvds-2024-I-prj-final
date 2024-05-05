@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class CotizacionSerrvice {
     private final CotizacionRepository cotizacionRepository;
-    private Cotizacion cotizacion;
+
 
     @Autowired
     public CotizacionSerrvice(CotizacionRepository cotizacionRepository) {
@@ -27,42 +27,27 @@ public class CotizacionSerrvice {
 
     }
 
-    public void agendar(Cotizacion cotizacion){
-        Cotizacion currentCotizacion = encontrarCotizacion(cotizacion.getIden());
-        if(!currentCotizacion.getEstado().equals("ELIMINADO") && !(cotizacion.getCita() == null
-                        || cotizacion.getCiudadRecogida() == null
-                        || cotizacion.getDireccionRecogida() == null
-                        || cotizacion.getCliente() == null))
-        {
-            currentCotizacion.setCita(cotizacion.getCita());
-            currentCotizacion.setCiudadRecogida(cotizacion.getCiudadRecogida());
-            currentCotizacion.setDireccionRecogida(cotizacion.getDireccionRecogida());
-            currentCotizacion.setCliente(cotizacion.getCliente());
-        }
-
-    }
-
     public Cotizacion agregarAlCarritoPrimeraVez(Producto producto){
         Cotizacion cotizacion = new Cotizacion();
-        cotizacion.getProductosCotizacion().add(producto); 
+        cotizacion.agregarProductoAlCarrito(producto);
         cotizacionRepository.save(cotizacion); 
         return cotizacion;
     }
 
     public void agregarAlCarritoNVez(Producto producto, Cotizacion cotizacion){
-        cotizacion.getProductosCotizacion().add(producto); 
+        cotizacion.agregarProductoAlCarrito(producto);
         cotizacionRepository.save(cotizacion);
     }
 
     public void quitarDelCarrito(Producto producto, Cotizacion cotizacion){
-        cotizacion.getProductosCotizacion().remove(producto); 
+        cotizacion.eliminarProductoDelCarrito(producto);
         if (cotizacion.getProductosCotizacion().isEmpty()) {
         cotizacion.setEstado("ELIMINADO"); 
     }
     cotizacionRepository.save(cotizacion);
     }
 
-    public float calcularTotalCarrito(){
+    public float calcularTotalCarrito(Cotizacion cotizacion){
         float total = 0;
         for (Producto producto : cotizacion.getProductosCotizacion()) {
         total += producto.getValor(); 

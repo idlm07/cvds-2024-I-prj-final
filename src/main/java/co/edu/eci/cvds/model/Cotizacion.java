@@ -69,6 +69,14 @@ public class Cotizacion {
         this.productosCotizacion = new ArrayList<>();
     }
 
+    public void agregarProductoAlCarrito(Producto producto){
+        productosCotizacion.add(producto);
+    }
+
+    public void eliminarProductoDelCarrito(Producto producto){
+        productosCotizacion.remove(producto);
+    }
+
     @Override
     public int hashCode(){
         final int prime = 31;
