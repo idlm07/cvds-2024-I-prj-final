@@ -20,15 +20,15 @@ public class Vehiculo {
     @Column(name = "modelo", length = 20, nullable = false)
     @Getter @Setter private String model;
     @Id
-    @Column(name = "year", length = 4, nullable = false)
-    @Getter @Setter private String year;
+    @Column(name = "yearVehicle", length = 4, nullable = false)
+    @Getter @Setter private String yearVehicle;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Productos_Por_Vehiculo",
             joinColumns = {
                     @JoinColumn(name = "marca"),
                     @JoinColumn(name = "modelo"),
-                    @JoinColumn(name = "year")
+                    @JoinColumn(name = "yearVehicle")
             },
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
@@ -39,7 +39,7 @@ public class Vehiculo {
     public Vehiculo(String marca, String model, String year) {
         this.marca = marca;
         this.model = model;
-        this.year = year;
+        this.yearVehicle = year;
         this.productosVehiculo = new ArrayList<>();
     }
 
@@ -59,14 +59,14 @@ public class Vehiculo {
         int result = 1;
         result = prime * result + ((marca == null) ? 0 : marca.hashCode());
         result = prime * result + ((model == null) ? 0 : model.hashCode());
-        result = prime * result + ((year == null) ? 0 : year.hashCode());
+        result = prime * result + ((yearVehicle == null) ? 0 : yearVehicle.hashCode());
         return result;
     }
     @Override
     public boolean equals(Object obj) {
         try {
             Vehiculo vehiculo = (Vehiculo) obj;
-            return marca.equals(vehiculo.getMarca()) && model.equals(vehiculo.getModel()) && year.equals(vehiculo.getYear()) && this.hashCode() == vehiculo.hashCode();
+            return marca.equals(vehiculo.getMarca()) && model.equals(vehiculo.getModel()) && yearVehicle.equals(vehiculo.getYearVehicle()) && this.hashCode() == vehiculo.hashCode();
         } catch (Exception e) {
             return false;
         }

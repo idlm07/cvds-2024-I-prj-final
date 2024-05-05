@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface VehiculoRepository extends JpaRepository<Vehiculo, VehiculoID> {
-    public List<Vehiculo> findByMarcaAndModelAndYear(String marca, String model, String year);
+    public List<Vehiculo> findByMarcaAndModelAndYearVehicle(String marca, String model, String yearVehicle);
 }

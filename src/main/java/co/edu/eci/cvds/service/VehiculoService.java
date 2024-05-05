@@ -24,11 +24,11 @@ public class VehiculoService {
     }
 
     public Vehiculo getVehiculo(String marca, String modelo, String year) {
-        return vehiculoRepository.findByMarcaAndModelAndYear(String.valueOf(marca), String.valueOf(modelo), String.valueOf(year)).get(0);
+        return vehiculoRepository.findByMarcaAndModelAndYearVehicle(String.valueOf(marca), String.valueOf(modelo), String.valueOf(year)).get(0);
     }
 
     public void agregarProducto(String marca, String modelo, String year,Producto producto){
-        Vehiculo currentVehicle = vehiculoRepository.findByMarcaAndModelAndYear(marca,modelo,year).get(0);
+        Vehiculo currentVehicle = vehiculoRepository.findByMarcaAndModelAndYearVehicle(marca,modelo,year).get(0);
         currentVehicle.anadirProducto(producto);
         vehiculoRepository.save(currentVehicle);
     }

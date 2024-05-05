@@ -44,11 +44,11 @@ class SpringApplicationTests {
         Vehiculo vehiculo = new Vehiculo("Suzuki","i-40","2023");
         when(vehiculoRepository.save(any(Vehiculo.class))).thenReturn(vehiculo);
         when(vehiculoRepository.findAll()).thenReturn(List.of(vehiculo));
-        when(vehiculoRepository.findByMarcaAndModelAndYear(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
         Vehiculo vehiculoGuardado = vehiculoService.agregarVehiculo(vehiculo);
         assertEquals(vehiculo, vehiculoGuardado);
         assertEquals(1, vehiculoService.getVehiculos().size());
-        vehiculoGuardado = vehiculoRepository.findByMarcaAndModelAndYear(vehiculo.getMarca(),vehiculo.getModel(),vehiculo.getYear()).get(0);
+        vehiculoGuardado = vehiculoRepository.findByMarcaAndModelAndYearVehicle(vehiculo.getMarca(),vehiculo.getModel(),vehiculo.getYearVehicle()).get(0);
         assertEquals(vehiculoService.getVehiculo("Suzuki","i-40","2023"), vehiculoGuardado);
 
         Producto producto = new Producto("Motor1","Motor",(float)15.2,"US");
