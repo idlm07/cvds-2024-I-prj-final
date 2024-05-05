@@ -47,7 +47,7 @@ class SpringApplicationTests {
         when(vehiculoRepository.findByMarcaAndModelAndYear(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
         Vehiculo vehiculoGuardado = vehiculoService.agregarVehiculo(vehiculo);
         assertEquals(vehiculo, vehiculoGuardado);
-        assertEquals(vehiculoService.getVehiculos().size(),1);
+        assertEquals(1, vehiculoService.getVehiculos().size());
         vehiculoGuardado = vehiculoRepository.findByMarcaAndModelAndYear(vehiculo.getMarca(),vehiculo.getModel(),vehiculo.getYear()).get(0);
         assertEquals(vehiculoService.getVehiculo("Suzuki","i-40","2023"), vehiculoGuardado);
 
@@ -57,7 +57,7 @@ class SpringApplicationTests {
         when(productoRepository.findByNombre(anyString())).thenReturn(List.of(producto));
         Producto productoGuardado = productoService.agregarProducto(producto);
         assertEquals(producto, productoGuardado);
-        assertEquals(productoService.buscarProductos().size(),1);
+        assertEquals(1,productoService.buscarProductos().size());
         productoGuardado = productoRepository.findByNombre("Motor1").get(0);
         assertEquals(productoService.buscarProductoPorNombre("Motor1"),productoGuardado);
 
