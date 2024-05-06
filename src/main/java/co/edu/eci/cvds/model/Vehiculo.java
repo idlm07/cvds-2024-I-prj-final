@@ -3,9 +3,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import co.edu.eci.cvds.ID.VehiculoID;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -32,7 +31,10 @@ public class Vehiculo {
             },
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
-    @Getter private List<Producto> productosVehiculo;
+    @Getter private Set<Producto> productosVehiculo;
+
+    @OneToMany(mappedBy = "vehiculo")
+    @Getter private Set<Cotizacion> cotizaciones;
 
 
 
@@ -40,11 +42,13 @@ public class Vehiculo {
         this.marca = marca;
         this.model = model;
         this.yearVehicle = year;
-        this.productosVehiculo = new ArrayList<>();
+        this.productosVehiculo = new HashSet<>();
+        this.cotizaciones = new HashSet<>();
     }
 
     public Vehiculo() {
-        this.productosVehiculo = new ArrayList<>();
+        this.cotizaciones = new HashSet<>();
+        this.productosVehiculo = new HashSet<>();
     }
 
 
@@ -52,7 +56,15 @@ public class Vehiculo {
     public void anadirProducto(Producto producto){
         productosVehiculo.add(producto);
     }
+    public void eliminarProducto (Producto producto){productosVehiculo.remove(producto);}
+    public void agregarCotizacion(Cotizacion cotizacion){
+        cotizaciones.add(cotizacion);
+    }
 
+    public boolean productoApto(Producto producto){
+
+        return productosVehiculo.contains(producto);
+    }
     @Override
     public int hashCode() {
         final int prime = 31;

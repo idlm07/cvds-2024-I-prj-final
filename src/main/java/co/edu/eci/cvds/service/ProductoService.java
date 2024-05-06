@@ -26,7 +26,9 @@ public class ProductoService {
     }
 
     public Producto buscarProductoPorNombre(String nombre) {
-        return productoRepository.findByNombre(nombre).get(0);
+
+        if(!productoRepository.findByNombre(nombre).isEmpty()) return productoRepository.findByNombre(nombre).get(0);
+        else return null;
     }
 
     public List<Producto> buscarProductos() {
@@ -46,7 +48,8 @@ public class ProductoService {
                 productoExistente.setMoneda(producto.getMoneda());
                 productoExistente.setImpuesto(producto.getImpuesto());
                 productoExistente.setDescuento(producto.getDescuento());
-                productoRepository.save(productoExistente);
+                return productoRepository.save(productoExistente);
+
             }
             return null;
         }catch(NullPointerException e){
