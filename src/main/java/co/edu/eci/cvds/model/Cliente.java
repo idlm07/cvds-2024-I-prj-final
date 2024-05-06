@@ -3,9 +3,8 @@ package co.edu.eci.cvds.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -25,10 +24,10 @@ public class Cliente {
     @Column(name = "celular", length = 10, nullable = false)
     @Getter @Setter private String celular;
     @OneToMany(mappedBy = "cliente")
-    private List<Cotizacion> cotizaciones;
+    private Set<Cotizacion> cotizaciones;
 
     public Cliente() {
-        cotizaciones = new ArrayList<>();
+        cotizaciones = new HashSet<>();
     }
 
     public Cliente(String correo, String nombre, String primerApellido, String segundoApellido, String celular){
@@ -37,8 +36,12 @@ public class Cliente {
         this.primerApellido = primerApellido;
         this.segundoApellido = segundoApellido;
         this.celular = celular;
-        this.cotizaciones = new ArrayList<>();
+        this.cotizaciones = new HashSet<>();
     }
+
+    public void agregarCotizacion(Cotizacion cotizacion){this.cotizaciones.add(cotizacion);}
+
+    public void eliminarCotizacion(Cotizacion cotizacion){this.cotizaciones.remove(cotizacion);}
 
     @Override
     public int hashCode(){
@@ -59,8 +62,8 @@ public class Cliente {
             return correo.equals(client.getCorreo())
                     && nombre.equals(client.getNombre())
                     && primerApellido.equals(client.getPrimerApellido())
-                    && segundoApellido.equals(client.getSegundoApellido())
-                    && celular.equals(client.getCelular());
+                    && celular.equals(client.getCelular())
+                    && this.hashCode() == client.hashCode();
 
         }catch (Exception e){
             return false;

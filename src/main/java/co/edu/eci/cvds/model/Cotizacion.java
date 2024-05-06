@@ -15,6 +15,12 @@ import java.util.List;
 @Table(name = "Cotizaciones")
 public class Cotizacion {
 
+    public static final String CREADO = "CREADO";
+    public static final String EN_PROCESO = "EN PROCESO";
+    public static final String FINALIZADO = "FINALIZADO";
+    public static final String ELIMINADO = "ELIMINADO";
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -48,24 +54,39 @@ public class Cotizacion {
     @JoinColumn(name = "correoCliente", referencedColumnName = "correo")
     @Getter @Setter private Cliente cliente;
 
+    @ManyToOne
+    @JoinColumn(name = "marcaVehiculo")
+    @JoinColumn(name = "modeloVehiculo")
+    @JoinColumn(name = "yearVehiculo")
+    @Getter @Setter private Vehiculo vehiculo;
+
 
 
 
     public Cotizacion() {
-        this.estado = "CREADO";
+        this.estado = Cotizacion.CREADO;
         Date date = new Date();
         this.fechaCreacion = new Timestamp(date.getTime());
         this.productosCotizacion = new ArrayList<>();
     }
 
-    public Cotizacion(Timestamp cita, String ciudadRecogida, String direccionRecogida, Cliente cliente){
+    public Cotizacion(Timestamp cita, String ciudadRecogida, String direccionRecogida, Cliente cliente, Vehiculo vehiculo){
         Date date = new Date();
-        this.estado = "CREADO";
+        this.estado = Cotizacion.CREADO;
         this.fechaCreacion = new Timestamp(date.getTime());
         this.cita = cita;
         this.ciudadRecogida = ciudadRecogida;
         this.direccionRecogida = direccionRecogida;
         this.cliente = cliente;
+        this.productosCotizacion = new ArrayList<>();
+        this.vehiculo = vehiculo;
+    }
+
+    public Cotizacion(Vehiculo vehiculo){
+        this.vehiculo = vehiculo;
+        this.estado = Cotizacion.CREADO;
+        Date date = new Date();
+        this.fechaCreacion = new Timestamp(date.getTime());
         this.productosCotizacion = new ArrayList<>();
     }
 
@@ -94,7 +115,7 @@ public class Cotizacion {
     public boolean equals(Object obj){
         try{
             Cotizacion cotizacion = (Cotizacion) obj;
-            return cotizacion.getIden() == this.iden;
+            return cotizacion.getIden() == this.iden && this.hashCode() == cotizacion.hashCode();
         }catch(Exception e){
             return false;
         }

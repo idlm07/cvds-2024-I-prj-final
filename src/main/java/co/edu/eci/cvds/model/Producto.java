@@ -1,12 +1,10 @@
 package co.edu.eci.cvds.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -32,14 +30,14 @@ public class Producto {
     @Column(name = "impuesto",nullable = false)
     @Getter @Setter private float impuesto;
     @ManyToMany(mappedBy = "productosVehiculo")
-    @Getter private List<Vehiculo> vehiculos;
+    @Getter private Set<Vehiculo> vehiculos;
     @ManyToMany(mappedBy = "productosCotizacion")
-    @Getter private List<Cotizacion> cotizaciones;
+    @Getter private Set<Cotizacion> cotizaciones;
 
 
     public Producto() {
-        this.vehiculos = new ArrayList<>();
-        this.cotizaciones = new ArrayList<>();
+        this.vehiculos = new HashSet<>();
+        this.cotizaciones = new HashSet<>();
     }
     public Producto(String nombre,String categoria, float valor, String moneda) {
         this.nombre = nombre;
@@ -48,8 +46,8 @@ public class Producto {
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
-        this.vehiculos = new ArrayList<>();
-        this.cotizaciones = new ArrayList<>();
+        this.vehiculos = new HashSet<>();
+        this.cotizaciones = new HashSet<>();
     }
     public void agregarVehiculo(Vehiculo vehiculo) {
         this.vehiculos.add(vehiculo);
@@ -57,6 +55,9 @@ public class Producto {
     public void agregarCotizacion(Cotizacion cotizacion) {
         this.cotizaciones.add(cotizacion);
     }
+    public void eliminarVehiculo(Vehiculo vehiculo){this.vehiculos.remove(vehiculo);}
+    public void eliminarCotizacion(Cotizacion cotizacion){this.cotizaciones.remove(cotizacion);}
+
     @Override
     public int hashCode() {
         final int prime = 31;
