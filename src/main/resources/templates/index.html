@@ -10,19 +10,25 @@
             padding: 0;
             background-color: #0d1c2e; /* Fondo azul oscuro */
             font-family: Arial, sans-serif;
+            position: relative; /* Asegura que los elementos posicionados dentro de él sean relativos a él */
         }
         .container {
             position: relative;
             width: 100%;
             max-width: 1200px; /* Máximo ancho de la imagen */
             margin: 0 auto; /* Centra la imagen horizontalmente */
-            padding-top: 100px; /* Espacio para los botones */
+            padding-top: 50px; /* Espacio para los botones */
+            text-align: center; /* Centra horizontalmente los elementos */
+            margin-bottom: 100px; /* Espacio inferior para el footer */
         }
         .background-image {
-            position: relative;
-            width: 100%;
+            width: 80%; /* Reducir el tamaño de la imagen */
             height: auto; /* Para mantener la proporción de la imagen */
-            z-index: -1; /* Para que la imagen esté detrás del contenido */
+            margin: 0 auto; /* Centrar la imagen */
+            display: block; /* Hacer que la imagen sea un elemento de bloque */
+        }
+        .button-container {
+            margin-top: 20px; /* Espacio entre la imagen y los botones */
         }
         .button {
             display: inline-block;
@@ -40,19 +46,28 @@
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             padding: 10px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <img src="img/TopGear.jpg" class="background-image" alt="Imagen de fondo">
-    <a href="ruta/a/login" class="button">Loggin</a>
+    <a href="ruta/a/login" class="button">Login</a>
     <a href="ruta/a/productos-y-servicios" class="button">Ver Productos y Servicios</a>
+    <div class="button-container">
+        <img src="img/dreamgear.png" class="background-image" alt="Tu imagen">
+    </div>
 </div>
+<br>
 <div class="footer">
     <p>¿Quiénes somos? | Términos y Condiciones | Contacto</p>
 </div>
 </body>
 </html>
+
+
+
+
+
 
 
