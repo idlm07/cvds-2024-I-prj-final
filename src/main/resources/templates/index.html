@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="wide wow-animation" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
   <head>
     <!-- Titulo, favicon, formato-->
     <title>Inicio</title>
@@ -139,42 +139,11 @@
                       <p class="text-uppercase">Marca</p>
                       <div class="form-wrap form-wrap-validation">
                         <!--Select 2-->
-                        <select class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Marca" data-constraints="@Required">
+                        <select id="selectorMarca" class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Marca" data-constraints="@Required" onchange="cambiarMarca()">
                           <option>&nbsp;</option>
-                          <option value="1">AUDI</option>
-                          <option value="2">BMW</option>
-                          <option value="3">BYD</option>
-                          <option value="4">CHERRY</option>
-                          <option value="5">CHEVROLET</option>
-                          <option value="6">CITROËN</option>
-                          <option value="7">DAEWOO</option>
-                          <option value="8">DODGE</option>
-                          <option value="9">FAW</option>
-                          <option value="10">FIAT</option>
-                          <option value="11">FORD</option>
-                          <option value="12">GEELY</option>
-                          <option value="13">HINO</option>
-                          <option value="14">HONDA</option>
-                          <option value="15">HYUNDAI</option>
-                          <option value="16">JAC</option>
-                          <option value="17">JEEP</option>
-                          <option value="18">KIA</option>
-                          <option value="19">LAND ROVER</option>
-                          <option value="20">LIFAN</option>
-                          <option value="21">MAZDA</option>
-                          <option value="22">MERCEDES BENZ</option>
-                          <option value="23">MINI</option>
-                          <option value="24">MITSUBISHI</option>
-                          <option value="25">NISSAN</option>
-                          <option value="26">PEUGEOT</option>
-                          <option value="27">RENAULT</option>
-                          <option value="28">SKODA</option>
-                          <option value="29">SSANGYONG</option>
-                          <option value="30">SUBARU</option>
-                          <option value="31">SUZUKI</option>
-                          <option value="32">TOYOTA</option>
-                          <option value="33">VOLKSWAGEN</option>
-                          <option value="34">VOLVO</option>
+                          <option th:value="${marca}" th:text="${marca} " selected></option>
+                          <option th:each="vehicle : ${marcas}" th:value="${vehicle}" th:text="${vehicle}">&nbsp;</option>
+
                         </select>
                       </div>
                     </div>
@@ -182,13 +151,10 @@
                       <p class="text-uppercase">Modelo</p>
                       <div class="form-wrap form-wrap-validation">
                         <!--Select 2-->
-                        <select class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Modelo" data-constraints="@Required">
+                        <select id="selectorModelo" class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Modelo" data-constraints="@Required" onchange="cambiarModelo()">
                           <option>&nbsp;</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
+                          <option th:value="${modelo}" th:text="${modelo}" th:selected="${modelo}"></option>
+                          <option th:each="vehicle : ${modelos}" th:value="${vehicle}" th:text="${vehicle}">&nbsp;</option>
                         </select>
                       </div>
                     </div>
@@ -198,51 +164,7 @@
                         <!--Select 2-->
                         <select class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Año" data-constraints="@Required">
                           <option>&nbsp;</option>
-                          <option value="1">1980</option>
-                          <option value="2">1981</option>
-                          <option value="3">1982</option>
-                          <option value="4">1983</option>
-                          <option value="5">1984</option>
-                          <option value="6">1985</option>
-                          <option value="7">1986</option>
-                          <option value="8">1987</option>
-                          <option value="9">1988</option>
-                          <option value="10">1989</option>
-                          <option value="11">1990</option>
-                          <option value="12">1991</option>
-                          <option value="13">1992</option>
-                          <option value="14">1993</option>
-                          <option value="15">1994</option>
-                          <option value="16">1995</option>
-                          <option value="17">1996</option>
-                          <option value="18">1997</option>
-                          <option value="19">1998</option>
-                          <option value="20">1999</option>
-                          <option value="21">2000</option>
-                          <option value="22">2001</option>
-                          <option value="23">2002</option>
-                          <option value="24">2003</option>
-                          <option value="25">2004</option>
-                          <option value="26">2005</option>
-                          <option value="27">2006</option>
-                          <option value="28">2007</option>
-                          <option value="29">2008</option>
-                          <option value="30">2009</option>
-                          <option value="31">2010</option>
-                          <option value="32">2011</option>
-                          <option value="33">2012</option>
-                          <option value="34">2013</option>
-                          <option value="35">2014</option>
-                          <option value="36">2015</option>
-                          <option value="37">2016</option>
-                          <option value="38">2017</option>
-                          <option value="39">2018</option>
-                          <option value="40">2019</option>
-                          <option value="41">2020</option>
-                          <option value="42">2021</option>
-                          <option value="43">2022</option>
-                          <option value="44">2023</option>
-                          <option value="45">2024</option>
+                          <option th:each="ano : ${vehicleYears}" th:value="${ano}" th:text="${ano}">&nbsp;</option>
                           
                         </select>
                       </div>
@@ -301,5 +223,24 @@
     <script src="/js/core.min.js"></script>
     <script src="/js/script.js"></script>
     <!--Coded by Drel-->
+
+    <script>
+
+      function cambiarMarca(){
+        var selectorMarca = document.getElementById("selectorMarca").value;
+        window.location.href = '/home?marca=' + selectorMarca;
+      }
+
+      function cambiarModelo(){
+        var selectorMarca = document.getElementById("selectorMarca").value;
+        var selectorModelo = document.getElementById("selectorModelo").value;
+        window.location.href = '/home?marca=' + selectorMarca + '&modelo=' + selectorModelo;
+      }
+
+
+
+
+
+    </script>
   </body>
 </html>
