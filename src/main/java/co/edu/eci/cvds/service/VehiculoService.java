@@ -4,7 +4,9 @@ import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.model.Vehiculo;
 import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class VehiculoService {
 
 
     @Autowired
-    public VehiculoService(VehiculoRepository vehiculoRepository,ProductoRepository productoRepository) {
+    public VehiculoService(VehiculoRepository vehiculoRepository,ProductoRepository productoRepository, EntityManager em) {
         this.vehiculoRepository = vehiculoRepository;
         this.productoRepository = productoRepository;
     }
@@ -30,6 +32,8 @@ public class VehiculoService {
         return vehiculoRepository.findByMarcaAndModelAndYearVehicle(String.valueOf(marca), String.valueOf(modelo), String.valueOf(year)).get(0);
     }
 
+
+
     public void agregarProducto(String marca, String modelo, String year,Producto producto){
         Vehiculo currentVehicle = vehiculoRepository.findByMarcaAndModelAndYearVehicle(marca,modelo,year).get(0);
         currentVehicle.anadirProducto(producto);
@@ -40,5 +44,13 @@ public class VehiculoService {
 
     public List<Vehiculo> getVehiculos() {
         return vehiculoRepository.findAll();
+    }
+
+    public List<Vehiculo> getVehiculosByMarca(String marca) {
+        return vehiculoRepository.findByMarca(marca);
+    }
+
+    public List<Vehiculo> getVehiculosByMarcaModelo(String marca, String modelo) {
+        return vehiculoRepository.findByMarcaAndModel(marca,modelo);
     }
 }
