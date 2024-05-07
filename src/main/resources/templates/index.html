@@ -1,26 +1,58 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en"><!-- //NOSONAR -->
-<th:block th:replace="fragments/general.html::headerfiles('Greeting Page')"></th:block>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Página</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d1c2e; /* Fondo azul oscuro */
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; /* Máximo ancho de la imagen */
+            margin: 0 auto; /* Centra la imagen horizontalmente */
+            padding-top: 100px; /* Espacio para los botones */
+        }
+        .background-image {
+            position: relative;
+            width: 100%;
+            height: auto; /* Para mantener la proporción de la imagen */
+            z-index: -1; /* Para que la imagen esté detrás del contenido */
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 0;
+        }
+    </style>
+</head>
 <body>
-<main>
-    <h1 class="visually-hidden">Welcome Oculto</h1>
-
-    <div class="px-4 py-5 my-5 text-center">
-        <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-        <h1 class="display-5 fw-bold text-body-emphasis">Welcome</h1>
-        <div class="col-lg-6 mx-auto">
-            <p class="lead mb-4">This is a demo of Bootstrap CSS, for more examples to <a href="https://getbootstrap.com/docs/5.3/examples/">https://getbootstrap.com/docs/5.3/examples/</a></p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a type="button" class="btn btn-primary btn-lg px-4 gap-3" href="/greeting?name=Jorge">Go to Greeting example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/greeting/to-do-item/1">Go to "To Do" Table example</a>
-                <a type="button" class="btn btn-primary btn-lg px-4" href="/configuration/example">Go to get Configuration from DB example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/configuration/example/api">Go to consume from API example</a>
-                <a type="button" class="btn btn-primary btn-lg px-4" href="/login">Go to Simple Login example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/esto-no-existe">Example 404 ERROR!</a>
-            </div>
-        </div>
-    </div>
-</main>
-<footer th:replace="fragments/general::empty-footer"></footer>
+<div class="container">
+    <img src="img/TopGear.jpg" class="background-image" alt="Imagen de fondo">
+    <a href="ruta/a/login" class="button">Loggin</a>
+    <a href="ruta/a/productos-y-servicios" class="button">Ver Productos y Servicios</a>
+</div>
+<div class="footer">
+    <p>¿Quiénes somos? | Términos y Condiciones | Contacto</p>
+</div>
 </body>
 </html>
+
+
