@@ -18,6 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
+import javax.money.convert.CurrencyConversion;
+import javax.money.convert.ExchangeRateProvider;
+import javax.money.convert.MonetaryConversions;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -135,8 +138,8 @@ class SpringApplicationTests {
 
     @Test
     void shouldCalcularTotalCarrito(){
-        CurrencyUnit monedaGlobal = Monetary.getCurrency("COP");
-
+        CurrencyUnit usd = Monetary.getCurrency("USD");
+        CurrencyUnit cop = Monetary.getCurrency("COP");
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
         when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
@@ -150,7 +153,7 @@ class SpringApplicationTests {
         vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
         cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
         MonetaryAmount esperado = Monetary.getDefaultAmountFactory()
-                .setCurrency(monedaGlobal).setNumber(500000f).create();
+                .setCurrency(cop).setNumber(500000f).create();
         Money total = cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
         assertEquals(esperado.getCurrency().getCurrencyCode(),total.getCurrency().getCurrencyCode());
         assertEquals(esperado.getNumber().floatValue(),total.getNumber().floatValue());

@@ -90,24 +90,24 @@ public class CotizacionSerrvice {
         return cotizacion.getProductosCotizacion();
 
     }
-    
-        public Money calcularTotalCarritoEnPesos(Cotizacion cotizacion) {
-            CurrencyUnit cop = Monetary.getCurrency("COP");
-            Money totalEnPesos = Money.zero(cop);
-    
-            for (Producto producto : cotizacion.getProductosCotizacion()) {
-                CurrencyUnit monedaProducto = Monetary.getCurrency(producto.getMoneda());
-                Money precioProducto = Money.of(producto.getValor(), monedaProducto);
-    
-                // Convertir precio del producto a pesos colombianos
-                ExchangeRateProvider rateProvider = MonetaryConversions.getExchangeRateProvider();
-                CurrencyConversion conversion = rateProvider.getCurrencyConversion(monedaProducto);
-                Money precioProductoEnPesos = precioProducto.with(conversion);
-    
-                totalEnPesos = totalEnPesos.add(precioProductoEnPesos);
-            }
-    
-            return totalEnPesos;
+
+    public Money calcularTotalCarritoEnPesos(Cotizacion cotizacion) {
+        CurrencyUnit cop = Monetary.getCurrency("COP");
+        Money totalEnPesos = Money.zero(cop);
+
+        for (Producto producto : cotizacion.getProductosCotizacion()) {
+            CurrencyUnit monedaProducto = Monetary.getCurrency(producto.getMoneda());
+            Money precioProducto = Money.of(producto.getValor(), monedaProducto);
+
+            // Convertir precio del producto a pesos colombianos
+            ExchangeRateProvider rateProvider = MonetaryConversions.getExchangeRateProvider();
+            CurrencyConversion conversion = rateProvider.getCurrencyConversion(monedaProducto);
+            Money precioProductoEnPesos = precioProducto.with(conversion);
+
+            totalEnPesos = totalEnPesos.add(precioProductoEnPesos);
+        }
+
+        return totalEnPesos;
     }
 }
 
