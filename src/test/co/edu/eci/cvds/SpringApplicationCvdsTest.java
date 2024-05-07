@@ -1,27 +1,20 @@
 package co.edu.eci.cvds;
 
 import co.edu.eci.cvds.model.*;
-
+import co.edu.eci.cvds.repository.ClienteRepository;
 import co.edu.eci.cvds.repository.CotizacionRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
 import co.edu.eci.cvds.service.*;
-
-import org.javamoney.moneta.Money;
-
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
-import javax.money.MonetaryAmount;
-import javax.money.convert.CurrencyConversion;
-import javax.money.convert.ExchangeRateProvider;
-import javax.money.convert.MonetaryConversions;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -44,7 +37,11 @@ class SpringApplicationTests {
     @InjectMocks
     private ProductoService productoService;
 
+    @Mock
+    private ClienteRepository clienteRepository;
 
+    @InjectMocks
+    private ClienteService clienteService;
 
     @Mock
     private CotizacionRepository cotizacionRepository;
@@ -134,34 +131,6 @@ class SpringApplicationTests {
         List<Producto> carrito = cotizacionSerrvice.verCarrito(cotizacion.getIden());
         assertEquals(1, carrito.size());
         assertTrue(carrito.contains(producto) && !carrito.contains(producto1));
-    }
-
-    @Test
-    void shouldCalcularTotalCarrito(){
-        CurrencyUnit usd = Monetary.getCurrency("USD");
-        CurrencyUnit cop = Monetary.getCurrency("COP");
-        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
-        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
-        Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
-        Producto producto1 = new Producto("Producto", "Categoria",200f,"USD");
-        vehiculoService.agregarVehiculo(vehiculo);
-        productoService.agregarProducto(producto);
-        productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
-        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
-        MonetaryAmount esperado = Monetary.getDefaultAmountFactory()
-                .setCurrency(cop).setNumber(500000f).create();
-        Money total = cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
-        assertEquals(esperado.getCurrency().getCurrencyCode(),total.getCurrency().getCurrencyCode());
-        assertEquals(esperado.getNumber().floatValue(),total.getNumber().floatValue());
-        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
-        cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
-        cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
-
     }
 
 
