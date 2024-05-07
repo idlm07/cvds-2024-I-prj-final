@@ -1,29 +1,24 @@
 package co.edu.eci.cvds;
 
 import co.edu.eci.cvds.model.*;
-import co.edu.eci.cvds.repository.ClienteRepository;
+
 import co.edu.eci.cvds.repository.CotizacionRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
 import co.edu.eci.cvds.service.*;
-import org.aspectj.lang.annotation.Before;
+
 import org.javamoney.moneta.Money;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
-import javax.money.convert.CurrencyConversion;
-import javax.money.convert.ExchangeRateProvider;
-import javax.money.convert.MonetaryConversions;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -46,11 +41,7 @@ class SpringApplicationTests {
     @InjectMocks
     private ProductoService productoService;
 
-    @Mock
-    private ClienteRepository clienteRepository;
 
-    @InjectMocks
-    private ClienteService clienteService;
 
     @Mock
     private CotizacionRepository cotizacionRepository;
@@ -145,7 +136,7 @@ class SpringApplicationTests {
     @Test
     void shouldCalcularTotalCarrito(){
         CurrencyUnit monedaGlobal = Monetary.getCurrency("COP");
-        ExchangeRateProvider rateProvider = MonetaryConversions.getExchangeRateProvider();
+
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
         when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
@@ -164,9 +155,10 @@ class SpringApplicationTests {
         assertEquals(esperado.getCurrency().getCurrencyCode(),total.getCurrency().getCurrencyCode());
         assertEquals(esperado.getNumber().floatValue(),total.getNumber().floatValue());
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
         cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
+        cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
+
     }
 
 

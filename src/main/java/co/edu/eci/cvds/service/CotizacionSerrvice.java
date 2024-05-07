@@ -40,9 +40,9 @@ public class CotizacionSerrvice {
     }
 
     public Cotizacion agregarAlCarritoPrimeraVez(Producto producto, Vehiculo vehiculo){
-        Cotizacion cotizacion = null;
+        Cotizacion cotizacion = new Cotizacion(vehiculo);
         if(vehiculo.productoApto(producto)){
-            cotizacion = new Cotizacion(vehiculo);
+            cotizacion.setEstado(Cotizacion.EN_PROCESO);
             cotizacion.agregarProductoAlCarrito(producto);
             producto.agregarCotizacion(cotizacion);
             vehiculo.agregarCotizacion(cotizacion);
@@ -62,6 +62,7 @@ public class CotizacionSerrvice {
             cotizacionRepository.save(cotizacion);
             productoRepository.save(producto);
             vehiculoRepository.save(vehiculo);
+            if(cotizacion.getEstado().equals(Cotizacion.ELIMINADO)) cotizacion.setEstado(Cotizacion.EN_PROCESO);
         }
 
     }
