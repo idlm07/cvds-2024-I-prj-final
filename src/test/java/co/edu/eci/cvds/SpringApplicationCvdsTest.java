@@ -7,8 +7,8 @@ import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
 import co.edu.eci.cvds.service.*;
 
-import org.javamoney.moneta.Money;
 
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.money.MonetaryAmount;
+import javax.money.convert.ExchangeRate;
+import javax.money.convert.ExchangeRateProvider;
+import javax.money.convert.MonetaryConversions;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -153,12 +156,48 @@ class SpringApplicationTests {
         MonetaryAmount esperado = Monetary.getDefaultAmountFactory()
                 .setCurrency(monedaGlobal).setNumber(500000f).create();
         Money total = cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
-        assertEquals(esperado.getCurrency().getCurrencyCode(),total.getCurrency().getCurrencyCode());
+        assertEquals(esperado.getCurrency().getCurrencyCode(), ((Money) total).getCurrency().getCurrencyCode());
         assertEquals(esperado.getNumber().floatValue(),total.getNumber().floatValue());
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
         cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
         cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
+
+    }
+
+    @Test
+    void shouldCalcularTotal(){
+        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+        Cotizacion cotizacion = new Cotizacion(vehiculo);
+        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+        Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
+        Producto producto1 = new Producto("Producto", "Categoria",5,"USD");
+        Producto producto3 = new Producto("Producto2", "Categoria1",50,"EUR");
+        producto.setDescuento(0.8f);
+        producto.setImpuesto(0.2f);
+        producto1.setDescuento(0.1f);
+        producto1.setImpuesto(0.6f);
+        vehiculoService.agregarVehiculo(vehiculo);
+        productoService.agregarProducto(producto);
+        productoService.agregarProducto(producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto3);
+        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
+        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
+        cotizacionSerrvice.agregarAlCarritoNVez(producto3,cotizacion);
+        float calculado = cotizacionSerrvice.cotizacionTotal(cotizacion);
+        float esperado = 728799.79f + 101947.09f + 30514.26f;
+        assertTrue(0.15 < (esperado-calculado)/esperado);
+        /*
+        Carrito 728'799,79
+        Descuento 101947,09
+        Impuesto 30'514.26
+         */
+
+
 
     }
 
