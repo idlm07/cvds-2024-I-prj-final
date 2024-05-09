@@ -7,14 +7,18 @@ import co.edu.eci.cvds.repository.CotizacionRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
-import java.security.Timestamp;
+
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.LocalTime;
+
+
 import java.util.List;
-import javax.money.CurrencyUnit;
+
 import javax.money.Monetary;
 
 import javax.money.convert.CurrencyConversion;
@@ -28,7 +32,6 @@ public class CotizacionSerrvice {
     private final CotizacionRepository cotizacionRepository;
     private final ProductoRepository productoRepository;
     private final VehiculoRepository vehiculoRepository;
-    private List<LocalDateTime> citas = new ArrayList<>();
 
     @Autowired
     public CotizacionSerrvice(CotizacionRepository cotizacionRepository, ProductoRepository productoRepository, VehiculoRepository vehiculoRepository) {
@@ -46,6 +49,10 @@ public class CotizacionSerrvice {
 
     public List<Cotizacion> listarCotizaciones(){
         return cotizacionRepository.findAll();
+    }
+
+    public List<Cotizacion> cotizacionesAgendadas(){
+        return cotizacionRepository.findByCita();
     }
 
     public Cotizacion encontrarCotizacion(Long id){
@@ -133,50 +140,32 @@ public class CotizacionSerrvice {
         }
        return total.getNumber().floatValue();
     }
-    
-    public Money calcularTotalCarritoEnPesos(Cotizacion cotizacion) {
-            CurrencyUnit cop = Monetary.getCurrency("COP");
-            Money totalEnPesos = Money.zero(cop);
-    
-            for (Producto producto : cotizacion.getProductosCotizacion()) {
-                CurrencyUnit monedaProducto = Monetary.getCurrency(producto.getMoneda());
-                Money precioProducto = Money.of(producto.getValor(), monedaProducto);
-    
-                // Convertir precio del producto a pesos colombianos
-                ExchangeRateProvider rateProvider = MonetaryConversions.getExchangeRateProvider();
-                CurrencyConversion conversion = rateProvider.getCurrencyConversion(monedaProducto);
-                Money precioProductoEnPesos = precioProducto.with(conversion);
-    
-                totalEnPesos = totalEnPesos.add(precioProductoEnPesos);
-            }
-    
-            return totalEnPesos;
-    }
-    public boolean verificarDisponibilidadCita(String fechaHoraStr) {
-        LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
 
-        // Verificar si la fecha y hora de la cita se superponen con las citas existentes
-        for (LocalDateTime citaExistente : citas) {
-            if (fechaHora.isEqual(citaExistente) || fechaHora.isAfter(citaExistente) && fechaHora.isBefore(citaExistente.plusHours(1))) {
-                return false;
-            }
+    public boolean agendarCita(LocalDateTime cita, String ciudad,String direccion,Cotizacion cotizacion){
+        if(fechaDisponible(cita)){
+            cotizacion.agendar(cita,ciudad,direccion);
+            cotizacionRepository.save(cotizacion);
+            return true;
         }
-        return true; // No hay superposición, la cita está disponible
+        return false;
     }
 
-    public void registrarCita(String fechaHoraStr) {
-        LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        citas.add(fechaHora); // Agregar la nueva cita a la lista de citas
-    }
-    public Cotizacion solicitarCitaDesdeCarrito(Producto producto, Vehiculo vehiculo, String fechaHora, String servicio, String cliente) {
-        if (verificarDisponibilidadCita(fechaHora)) {
-            registrarCita(fechaHora);
-            return agregarAlCarritoPrimeraVez(producto, vehiculo);
-        } else {
-            return null; // No se puede solicitar la cita porque no hay disponibilidad
+    private boolean fechaDisponible(LocalDateTime fechaEsperada){
+        LocalDate fechaBase;
+        Duration entreCitas;
+        Duration nowVCita = Duration.between(LocalDateTime.now(),fechaEsperada);
+        LocalTime horaInicio = LocalTime.of(7,0);
+        LocalTime horaFin = LocalTime.of(18,30);
+        if(fechaEsperada.isEqual(LocalDateTime.now()) || fechaEsperada.isBefore(LocalDateTime.now())
+                || fechaEsperada.toLocalTime().isBefore(horaInicio) || fechaEsperada.toLocalTime().isAfter(horaFin)
+                || nowVCita.getSeconds() <= 7200) return false;
+        for(Cotizacion c: this.cotizacionesAgendadas()){
+            fechaBase = c.getCita().toLocalDate();
+            entreCitas = Duration.between(c.getCita(),fechaEsperada);
+            if(fechaBase.isEqual(fechaEsperada.toLocalDate()) && entreCitas.getSeconds() <= 1800) return false;
         }
-     
-        
- }
+        return true;
+    }
+
 
 }

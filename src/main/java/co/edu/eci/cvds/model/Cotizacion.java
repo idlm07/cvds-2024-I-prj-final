@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
+
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -18,7 +18,7 @@ public class Cotizacion {
     public static final String EN_PROCESO = "EN PROCESO";
     public static final String FINALIZADO = "FINALIZADO";
     public static final String ELIMINADO = "ELIMINADO";
-
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     @Getter private long iden;
@@ -28,16 +28,16 @@ public class Cotizacion {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fechaCreacion", nullable = false, updatable = false)
-    @Getter private Timestamp fechaCreacion;
+    @Getter private LocalDateTime fechaCreacion;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "cita")
-    @Getter @Setter private Timestamp cita;
+    @Getter private LocalDateTime cita;
 
     @Column(name = "ciudadRecogida", length = 50)
-    @Getter @Setter private String ciudadRecogida;
+    @Getter private String ciudadRecogida;
     @Column(name = "direccionRecogida", length = 50)
-    @Getter @Setter private String direccionRecogida;
+    @Getter private String direccionRecogida;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -61,15 +61,14 @@ public class Cotizacion {
 
     public Cotizacion() {
         this.estado = Cotizacion.CREADO;
-        Date date = new Date();
-        this.fechaCreacion = new Timestamp(date.getTime());
+
+        this.fechaCreacion = LocalDateTime.now();
         this.productosCotizacion = new ArrayList<>();
     }
 
-    public Cotizacion(Timestamp cita, String ciudadRecogida, String direccionRecogida, Cliente cliente, Vehiculo vehiculo){
-        Date date = new Date();
+    public Cotizacion(LocalDateTime cita, String ciudadRecogida, String direccionRecogida, Cliente cliente, Vehiculo vehiculo){
         this.estado = Cotizacion.CREADO;
-        this.fechaCreacion = new Timestamp(date.getTime());
+        this.fechaCreacion = LocalDateTime.now();
         this.cita = cita;
         this.ciudadRecogida = ciudadRecogida;
         this.direccionRecogida = direccionRecogida;
@@ -81,8 +80,7 @@ public class Cotizacion {
     public Cotizacion(Vehiculo vehiculo){
         this.vehiculo = vehiculo;
         this.estado = Cotizacion.CREADO;
-        Date date = new Date();
-        this.fechaCreacion = new Timestamp(date.getTime());
+        this.fechaCreacion = LocalDateTime.now();
         this.productosCotizacion = new ArrayList<>();
     }
 
@@ -92,6 +90,12 @@ public class Cotizacion {
 
     public void eliminarProductoDelCarrito(Producto producto){
         productosCotizacion.remove(producto);
+    }
+
+    public void agendar(LocalDateTime cita, String ciudadRecogida, String direccionRecogida){
+        this.cita = cita;
+        this.ciudadRecogida = ciudadRecogida;
+        this.direccionRecogida = direccionRecogida;
     }
 
     @Override
