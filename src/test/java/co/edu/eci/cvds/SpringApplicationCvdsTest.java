@@ -156,9 +156,9 @@ class SpringApplicationTests {
     void shouldAgendar(){
         Cotizacion cotizaion1 = new Cotizacion(new Vehiculo("Suzuki","Swift","2014"));
         Cotizacion cotizaion2 = new Cotizacion(new Vehiculo("Mercedes","Sedan","2022"));
-        cotizacionSerrvice.agendarCita(LocalDateTime.of(2024,5,10,8,0),"Bogota","Calle 159 #7-74",cotizaion1);
+        assertTrue(cotizacionSerrvice.agendarCita(LocalDateTime.of(2024, 5, 10, 8, 0), "Bogota", "Calle 159 #7-74", cotizaion1));
         when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1));
-        cotizacionSerrvice.agendarCita(LocalDateTime.of(2024,5,10,15,0),"Bogota","Calle 66 #11-50",cotizaion2);
+        assertTrue(cotizacionSerrvice.agendarCita(LocalDateTime.of(2024,5,10,15,0),"Bogota","Calle 66 #11-50",cotizaion2));
         when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1,cotizaion2));
         assertEquals(2,cotizacionSerrvice.cotizacionesAgendadas().size());
 
