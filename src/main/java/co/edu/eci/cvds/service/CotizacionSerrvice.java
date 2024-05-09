@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+
 import javax.money.convert.CurrencyConversion;
+
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
 import org.javamoney.moneta.Money;
@@ -35,6 +37,13 @@ public class CotizacionSerrvice {
         this.vehiculoRepository = vehiculoRepository;
     }
 
+    private Money convertidorCop(Money origen){
+        ExchangeRateProvider proveedor = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
+        CurrencyConversion conversion = proveedor.getCurrencyConversion("USD");
+        Money productMoneyUsd = origen.with(conversion);
+        return Money.of(productMoneyUsd.getNumber().floatValue()*3900,"COP");
+    }
+
     public List<Cotizacion> listarCotizaciones(){
         return cotizacionRepository.findAll();
     }
@@ -45,9 +54,9 @@ public class CotizacionSerrvice {
     }
 
     public Cotizacion agregarAlCarritoPrimeraVez(Producto producto, Vehiculo vehiculo){
-        Cotizacion cotizacion = null;
+        Cotizacion cotizacion = new Cotizacion(vehiculo);
         if(vehiculo.productoApto(producto)){
-            cotizacion = new Cotizacion(vehiculo);
+            cotizacion.setEstado(Cotizacion.EN_PROCESO);
             cotizacion.agregarProductoAlCarrito(producto);
             producto.agregarCotizacion(cotizacion);
             vehiculo.agregarCotizacion(cotizacion);
@@ -67,6 +76,7 @@ public class CotizacionSerrvice {
             cotizacionRepository.save(cotizacion);
             productoRepository.save(producto);
             vehiculoRepository.save(vehiculo);
+            if(cotizacion.getEstado().equals(Cotizacion.ELIMINADO)) cotizacion.setEstado(Cotizacion.EN_PROCESO);
         }
 
     }
@@ -81,18 +91,47 @@ public class CotizacionSerrvice {
         productoRepository.save(producto);
     }
 
-    public float calcularTotalCarrito(Cotizacion cotizacion){
-        float total = 0;
-        for (Producto producto : cotizacion.getProductosCotizacion()) {
-        total += producto.getValor(); 
-        }
-    return total;
-    }
+
 
     public List<Producto> verCarrito(Long cotizacionId){
         Cotizacion cotizacion = cotizacionRepository.findByIden(cotizacionId).get(0);
         return cotizacion.getProductosCotizacion();
 
+    }
+
+    private Money moneyConversion(Producto producto){
+        if(!producto.getMoneda().equals("COP")) return convertidorCop(Money.of(producto.getValor(),producto.getMoneda()));
+        else return Money.of(producto.getValor(),producto.getMoneda());
+    }
+
+    public Money calcularTotalCarrito(Cotizacion cotizacion){
+        Money total = Money.zero(Monetary.getCurrency("COP"));
+        for (Producto producto : verCarrito(cotizacion.getIden())) {
+           total = total.add(moneyConversion(producto));
+        }
+        return total;
+    }
+
+    public float cotizacionTotal(Cotizacion cotizacion){
+        Money total = calcularTotalCarrito(cotizacion);
+        float totalDescuento = 0;
+        float totalImpuesto = 0;
+        Money mTotalDescuento;
+        Money mTotalImpuesto;
+        for(Producto producto : verCarrito(cotizacion.getIden())){
+            totalDescuento = producto.getValor() * producto.getDescuento();
+            totalImpuesto = (producto.getValor() - totalDescuento) * producto.getImpuesto();
+            if(!producto.getMoneda().equals("COP")){
+               mTotalDescuento = convertidorCop(Money.of(totalDescuento,producto.getMoneda()));
+               mTotalImpuesto = convertidorCop(Money.of(totalImpuesto,producto.getMoneda()));
+           }else{
+                mTotalDescuento = Money.of(totalDescuento,producto.getMoneda());
+                mTotalImpuesto = Money.of(totalImpuesto,producto.getMoneda());
+            }
+            total = total.subtract(mTotalDescuento);
+            total = total.add(mTotalImpuesto);
+        }
+       return total.getNumber().floatValue();
     }
     
     public Money calcularTotalCarritoEnPesos(Cotizacion cotizacion) {

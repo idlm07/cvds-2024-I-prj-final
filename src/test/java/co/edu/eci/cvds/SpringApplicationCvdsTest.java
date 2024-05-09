@@ -1,20 +1,27 @@
 package co.edu.eci.cvds;
 
+
 import co.edu.eci.cvds.model.*;
-import co.edu.eci.cvds.repository.ClienteRepository;
 import co.edu.eci.cvds.repository.CotizacionRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
 import co.edu.eci.cvds.service.*;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.Assertions;
+
+
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import javax.money.MonetaryAmount;
+import javax.money.convert.ExchangeRate;
+import javax.money.convert.ExchangeRateProvider;
+import javax.money.convert.MonetaryConversions;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -37,17 +44,14 @@ class SpringApplicationTests {
     @InjectMocks
     private ProductoService productoService;
 
-    @Mock
-    private ClienteRepository clienteRepository;
 
-    @InjectMocks
-    private ClienteService clienteService;
 
     @Mock
     private CotizacionRepository cotizacionRepository;
 
     @InjectMocks
     private CotizacionSerrvice cotizacionSerrvice;
+
 
 
 
@@ -81,7 +85,7 @@ class SpringApplicationTests {
      * Prueba para verificar el método equals de Producto.
      */
     @Test
-     void testEquals() {
+    void testEquals() {
         Producto producto1 = new Producto("nombre1", "categoria1", 100.0f, "USD");
         Producto producto2 = new Producto("nombre1", "categoria1", 100.0f, "USD");
         Producto producto3 = new Producto("nombre2", "categoria2", 200.0f, "EUR");
@@ -94,7 +98,7 @@ class SpringApplicationTests {
 
 
     @Test
-     void shouldAgregarAlCarrito() {
+    void shouldAgregarAlCarrito() {
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
         when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
@@ -133,6 +137,70 @@ class SpringApplicationTests {
         assertTrue(carrito.contains(producto) && !carrito.contains(producto1));
     }
 
+    @Test
+    void shouldCalcularTotalCarrito(){
+        CurrencyUnit monedaGlobal = Monetary.getCurrency("COP");
+
+        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+        Cotizacion cotizacion = new Cotizacion(vehiculo);
+        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+        Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
+        Producto producto1 = new Producto("Producto", "Categoria",200f,"USD");
+        vehiculoService.agregarVehiculo(vehiculo);
+        productoService.agregarProducto(producto);
+        productoService.agregarProducto(producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
+        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
+        MonetaryAmount esperado = Monetary.getDefaultAmountFactory()
+                .setCurrency(monedaGlobal).setNumber(500000f).create();
+        Money total = cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
+        assertEquals(esperado.getCurrency().getCurrencyCode(), ((Money) total).getCurrency().getCurrencyCode());
+        assertEquals(esperado.getNumber().floatValue(),total.getNumber().floatValue());
+        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
+        cotizacionSerrvice.calcularTotalCarritoEnPesos(cotizacion);
+        cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
+
+    }
+
+    @Test
+    void shouldCalcularTotal(){
+        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+        Cotizacion cotizacion = new Cotizacion(vehiculo);
+        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+        Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
+        Producto producto1 = new Producto("Producto", "Categoria",5,"USD");
+        Producto producto3 = new Producto("Producto2", "Categoria1",50,"EUR");
+        producto.setDescuento(0.8f);
+        producto.setImpuesto(0.2f);
+        producto1.setDescuento(0.1f);
+        producto1.setImpuesto(0.6f);
+        vehiculoService.agregarVehiculo(vehiculo);
+        productoService.agregarProducto(producto);
+        productoService.agregarProducto(producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto3);
+        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
+        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
+        cotizacionSerrvice.agregarAlCarritoNVez(producto3,cotizacion);
+        float calculado = cotizacionSerrvice.cotizacionTotal(cotizacion);
+        float esperado = 728799.79f + 101947.09f + 30514.26f;
+        assertTrue(0.15 < (esperado-calculado)/esperado);
+        /*
+        Carrito 728'799,79
+        Descuento 101947,09
+        Impuesto 30'514.26
+         */
+
+
+
+    }
+
 
 
 
@@ -141,7 +209,7 @@ class SpringApplicationTests {
      * Prueba para quitar un producto del carrito.
      */
     @Test
-     void testQuitarDelCarrito() {
+    void testQuitarDelCarrito() {
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
         when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
@@ -166,7 +234,7 @@ class SpringApplicationTests {
      * Prueba para agregar un vehículo.
      */
     @Test
-     void testAgregarVehiculo() {
+    void testAgregarVehiculo() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
         when(vehiculoRepository.save(any(Vehiculo.class))).thenReturn(vehiculo);
         Vehiculo addedVehiculo = vehiculoService.agregarVehiculo(vehiculo);
@@ -177,7 +245,7 @@ class SpringApplicationTests {
      * Prueba para obtener un vehículo por marca, modelo y año.
      */
     @Test
-     void testGetVehiculo() {
+    void testGetVehiculo() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
         vehiculoService.agregarVehiculo(vehiculo);
         when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
@@ -189,7 +257,7 @@ class SpringApplicationTests {
      * Prueba para obtener la lista de vehículos.
      */
     @Test
-     void testGetVehiculos() {
+    void testGetVehiculos() {
         Vehiculo vehiculo1 = new Vehiculo("Toyota", "Corolla", "2022");
         Vehiculo vehiculo2 = new Vehiculo("Honda", "Civic", "2023");
         vehiculoService.agregarVehiculo(vehiculo1);
@@ -206,7 +274,7 @@ class SpringApplicationTests {
      * Prueba para buscar un producto por su nombre.
      */
     @Test
-     void testBuscarProductos() {
+    void testBuscarProductos() {
         Producto producto1 = new Producto("Mouse", "Computación", 20.0f, "USD");
         Producto producto2 = new Producto("Teclado", "Computación", 40.0f, "USD");
         productoService.agregarProducto(producto1);
@@ -223,7 +291,7 @@ class SpringApplicationTests {
      * Prueba para actualizar producto.
      */
     @Test
-     void testActualizarProducto() {
+    void testActualizarProducto() {
         Producto producto = new Producto("Mouse", "Computación", 20.0f, "USD");
         productoService.agregarProducto(producto);
         when(productoRepository.findByNombre(anyString())).thenReturn(List.of(producto));
@@ -236,7 +304,7 @@ class SpringApplicationTests {
 
 
     @Test
-     void testBorrarProducto() {
+    void testBorrarProducto() {
 
         Producto producto = new Producto("Impresora", "Oficina", 200.0f, "USD");
         when(productoRepository.save(any(Producto.class))).thenReturn(producto);
@@ -252,7 +320,7 @@ class SpringApplicationTests {
      * Prueba para borrar un producto.
      */
     @Test
-     void testBorrarProductoService() {
+    void testBorrarProductoService() {
         Producto producto = new Producto("Impresora", "Oficina", 200.0f, "USD");
         productoService.agregarProducto(producto);
 
@@ -266,14 +334,14 @@ class SpringApplicationTests {
      * Prueba para obtener un vehículo utilizando el servicio.
      */
     @Test
-     void testGetVehiculoService() {
+    void testGetVehiculoService() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
         vehiculoService.agregarVehiculo(vehiculo);
         when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
         Vehiculo retrievedVehiculo = vehiculoService.getVehiculo("Toyota", "Corolla", "2022");
         assertEquals(vehiculo, retrievedVehiculo);
     }
-    
+
     @Test
     void shouldBeEquals(){
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
