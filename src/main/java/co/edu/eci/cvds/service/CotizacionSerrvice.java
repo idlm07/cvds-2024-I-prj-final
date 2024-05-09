@@ -8,6 +8,11 @@ import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -21,7 +26,7 @@ public class CotizacionSerrvice {
     private final CotizacionRepository cotizacionRepository;
     private final ProductoRepository productoRepository;
     private final VehiculoRepository vehiculoRepository;
-
+    private List<LocalDateTime> citas = new ArrayList<>();
 
     @Autowired
     public CotizacionSerrvice(CotizacionRepository cotizacionRepository, ProductoRepository productoRepository, VehiculoRepository vehiculoRepository) {
@@ -90,7 +95,7 @@ public class CotizacionSerrvice {
 
     }
     
-        public Money calcularTotalCarritoEnPesos(Cotizacion cotizacion) {
+    public Money calcularTotalCarritoEnPesos(Cotizacion cotizacion) {
             CurrencyUnit cop = Monetary.getCurrency("COP");
             Money totalEnPesos = Money.zero(cop);
     
@@ -108,5 +113,30 @@ public class CotizacionSerrvice {
     
             return totalEnPesos;
     }
-}
+    public boolean verificarDisponibilidadCita(String fechaHoraStr) {
+        LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
 
+        // Verificar si la fecha y hora de la cita se superponen con las citas existentes
+        for (LocalDateTime citaExistente : citas) {
+            if (fechaHora.isEqual(citaExistente) || fechaHora.isAfter(citaExistente) && fechaHora.isBefore(citaExistente.plusHours(1))) {
+                return false;
+            }
+        }
+        return true; // No hay superposición, la cita está disponible
+    }
+
+    public void registrarCita(String fechaHoraStr) {
+        LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        citas.add(fechaHora); // Agregar la nueva cita a la lista de citas
+    }
+    public Cotizacion solicitarCitaDesdeCarrito(Producto producto, Vehiculo vehiculo, String fechaHora, String servicio, String cliente) {
+        if (verificarDisponibilidadCita(fechaHora)) {
+            registrarCita(fechaHora);
+            return agregarAlCarritoPrimeraVez(producto, vehiculo);
+        } else {
+            return null; // No se puede solicitar la cita porque no hay disponibilidad
+        }
+     
+   
+ }
+}

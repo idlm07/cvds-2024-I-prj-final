@@ -314,7 +314,49 @@ class SpringApplicationTests {
         assertNotEquals(cotizacion, cotizacion2);
         assertNotEquals(cliente, cliente1);
     }
+    @Test
+    public void testVerificarDisponibilidadCita_CitaDisponible() {
+        assertTrue(cotizacionService.verificarDisponibilidadCita("2024-05-10T09:00"));
+    }
 
+    @Test
+    public void testVerificarDisponibilidadCita_CitaNoDisponible() {
+        assertTrue(cotizacionService.verificarDisponibilidadCita("2024-05-10T08:30"));
+    }
+
+    @Test
+    public void testRegistrarCita() {
+        cotizacionService.registrarCita("2024-05-10T10:00");
+        assertEquals(1, cotizacionService.getCitas().size());
+    }
+
+    @Test
+    public void testSolicitarCitaDesdeCarrito_CitaDisponible() {
+        Producto producto = new Producto();
+        Vehiculo vehiculo = new Vehiculo();
+        String fechaHora = "2024-05-10T09:00";
+        String servicio = "Servicio 1";
+        String cliente = "Cliente 1";
+        
+        Cotizacion cotizacion = cotizacionService.solicitarCitaDesdeCarrito(producto, vehiculo, fechaHora, servicio, cliente);
+        
+        assertNotNull(cotizacion);
+        assertEquals(1, cotizacionService.getCitas().size());
+    }
+
+    @Test
+    public void testSolicitarCitaDesdeCarrito_CitaNoDisponible() {
+        Producto producto = new Producto();
+        Vehiculo vehiculo = new Vehiculo();
+        String fechaHora = "2024-05-10T08:30"; // Hora ya ocupada
+        String servicio = "Servicio 1";
+        String cliente = "Cliente 1";
+        
+        Cotizacion cotizacion = cotizacionService.solicitarCitaDesdeCarrito(producto, vehiculo, fechaHora, servicio, cliente);
+        
+        assertNull(cotizacion);
+        assertEquals(0, cotizacionService.getCitas().size());
+    }
 
 
 

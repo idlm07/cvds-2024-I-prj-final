@@ -1,11 +1,11 @@
 package co.edu.eci.cvds.model;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,14 +14,11 @@ import java.util.List;
 @Entity
 @Table(name = "Cotizaciones")
 public class Cotizacion {
-
     public static final String CREADO = "CREADO";
     public static final String EN_PROCESO = "EN PROCESO";
     public static final String FINALIZADO = "FINALIZADO";
     public static final String ELIMINADO = "ELIMINADO";
 
-
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     @Getter private long iden;
@@ -59,7 +56,6 @@ public class Cotizacion {
     @JoinColumn(name = "modeloVehiculo")
     @JoinColumn(name = "yearVehiculo")
     @Getter @Setter private Vehiculo vehiculo;
-
 
 
 
