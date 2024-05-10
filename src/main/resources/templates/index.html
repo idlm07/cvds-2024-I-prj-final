@@ -1,26 +1,58 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en"><!-- //NOSONAR -->
-<th:block th:replace="fragments/general.html::headerfiles('Greeting Page')"></th:block>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOPQUOTER COTIZADOR</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
 <body>
-<main>
-    <h1 class="visually-hidden">Welcome Oculto</h1>
-
-    <div class="px-4 py-5 my-5 text-center">
-        <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-        <h1 class="display-5 fw-bold text-body-emphasis">Welcome</h1>
-        <div class="col-lg-6 mx-auto">
-            <p class="lead mb-4">This is a demo of Bootstrap CSS, for more examples to <a href="https://getbootstrap.com/docs/5.3/examples/">https://getbootstrap.com/docs/5.3/examples/</a></p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a type="button" class="btn btn-primary btn-lg px-4 gap-3" href="/greeting?name=Jorge">Go to Greeting example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/greeting/to-do-item/1">Go to "To Do" Table example</a>
-                <a type="button" class="btn btn-primary btn-lg px-4" href="/configuration/example">Go to get Configuration from DB example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/configuration/example/api">Go to consume from API example</a>
-                <a type="button" class="btn btn-primary btn-lg px-4" href="/login">Go to Simple Login example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/esto-no-existe">Example 404 ERROR!</a>
-            </div>
-        </div>
+  <header>
+    <div class="header-container">
+        <img src="/static/Images/logo.png" alt="logo">
+        <h1>TOP GEAR CENTRO AUTOMOTRIZ BOGOTÁ</h1>
     </div>
-</main>
-<footer th:replace="fragments/general::empty-footer"></footer>
+  </header>
+  <section class="principal">
+    <h2>Solicita una cotización</h2>
+    <section class="formulario">
+        <h3>Cotiza los servicios para tu vehículo</h3>
+        <form action="#">
+        <div class="campo">
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" name="marca" placeholder="Marca del vehículo">
+        </div>
+
+        <div class="campo">
+            <label for="modelo">Modelo:</label>
+            <input type="text" id="modelo" name="modelo" placeholder="Modelo del vehículo">
+        </div>
+        <div class="campo">
+            <label for="año">Año:</label>
+            <input type="text" id="año" name="año" placeholder="Año del vehículo">
+        </div>
+
+        <a type="button" class="Botoncito" href="cotizaciones">¡Cotizar Ahora!</a>
+        </form>
+    </section>
+    <p>Somos tu centro automotriz de confianza.  Experiencia, calidad, buenos precios y por supuesto, descuentos. Revisa nuestras ofertas y ponte a TOP con nosotros.</p>
+  </section>
+
+  <section class="informacion">
+    <div class="dato">
+      <p>+2230</p>
+      <span>Vehículos trabajados</span>
+    </div>
+
+    <div class="dato">
+      <p>+250</p>
+      <span>Alistamientos exitosos</span>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 TopQuoter By Leoncicos</p>
+  </footer>
 </body>
 </html>
+

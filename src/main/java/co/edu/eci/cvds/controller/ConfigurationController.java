@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/configuration")
+@RequestMapping(value = "")
 public class ConfigurationController {
 
     private final ConfigurationService configurationService;
@@ -31,6 +31,17 @@ public class ConfigurationController {
         return "example-api";
     }
 
+    @GetMapping("/cotizaciones")
+    public String cotizaciones(Model model) {
+        return "cotizaciones";
+    }
+
+    @GetMapping("/carrito")
+    public String carrito(Model model) {
+        return "carrito";
+    }
+
+    
     @GetMapping("/example/api/configurations")
     @ResponseBody
     public List<Configuration> exampleApiConfigurations() {

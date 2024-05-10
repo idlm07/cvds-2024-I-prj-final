@@ -1,0 +1,124 @@
+*{
+    margin:0px;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.headerimg {
+    width: 5%;
+    position:relative;
+    top: 20px;
+    left: 20px;
+    width: 20%;
+    height:20%;
+}
+
+header {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.7),
+        rgba(0, 0, 0, 0.7)),
+        url(https://www.eluniversal.com.mx/resizer/mtAfCjT-LB5ze4cCq6Yj6vTFDXU=/1100x666/cloudfront-us-east-1.images.arcpublishing.com/eluniversal/XSFDXWPLWFEE3IEWVHN2NP3K7U.jpg);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #ffda06;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    margin: 0;
+    text-align: center;
+    padding: 40px;
+}
+
+main {
+    background-color:#292C33;
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 40px;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.foto {
+    background-color: #ffffff;
+    width: 100%;
+    height: 50%;
+    border: 1px solid #000;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.service {
+    background-color: #0D131A;
+    border: 1px solid #000;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.service h3 {
+    margin-bottom: 10px;
+}
+
+.service a {
+    display: block;
+    background-color: #e01010;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #e01010;
+}
+
+.service a:hover { /* Added hover effect for button */
+    background-color:#e01010;
+    border-color: #e01010;
+}
+
+footer {
+    background-color: #1b1b20;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+.carrito{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/3144/3144456.png');
+    background-size:contain; /* Ajusta el tamaño de la imagen */
+    color: #ffffff;
+    width: 60px; /* Ancho del botón */
+    height: 60px; /* Alto del botón */
+    border: 1px solid #ffffff;
+    border-radius: 40%; /* Para hacer un botón redondo */
+    cursor: pointer;
+  }
