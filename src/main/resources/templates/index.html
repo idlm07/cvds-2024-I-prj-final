@@ -139,11 +139,9 @@
                       <p class="text-uppercase">Marca</p>
                       <div class="form-wrap form-wrap-validation">
                         <!--Select 2-->
-                        <select id="selectorMarca" class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Marca" data-constraints="@Required" onchange="cambiarMarca()">
+                        <select id="selectorMarca" class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Marca" data-constraints="@Required" onchange="actualizarModelos()">
                           <option>&nbsp;</option>
-                          <option th:value="${marca}" th:text="${marca} " selected></option>
                           <option th:each="vehicle : ${marcas}" th:value="${vehicle}" th:text="${vehicle}">&nbsp;</option>
-
                         </select>
                       </div>
                     </div>
@@ -151,22 +149,15 @@
                       <p class="text-uppercase">Modelo</p>
                       <div class="form-wrap form-wrap-validation">
                         <!--Select 2-->
-                        <select id="selectorModelo" class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Modelo" data-constraints="@Required" onchange="cambiarModelo()">
+                        <select id="selectorModelo" class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Modelo" data-constraints="@Required" onchange="actualizarYears()">
                           <option>&nbsp;</option>
-                          <option th:value="${modelo}" th:text="${modelo}" th:selected="${modelo}"></option>
-                          <option th:each="vehicle : ${modelos}" th:value="${vehicle}" th:text="${vehicle}">&nbsp;</option>
                         </select>
                       </div>
                     </div>
                     <div class="cell-lg-12 cell-md-4 cell-sm-6">
                       <p class="text-uppercase">Año</p>
                       <div class="form-wrap form-wrap-validation">
-                        <!--Select 2-->
-                        <select class="form-input select-filter" data-minimum-results-search="-1" data-placeholder="Año" data-constraints="@Required">
-                          <option>&nbsp;</option>
-                          <option th:each="ano : ${vehicleYears}" th:value="${ano}" th:text="${ano}">&nbsp;</option>
-                          
-                        </select>
+                        <input type="number" id="selectorYear" min="1990" max="1991" required disabled>
                       </div>
                     </div>
                     <div class="cell-lg-12 cell-md-4">
@@ -226,15 +217,37 @@
 
     <script>
 
-      function cambiarMarca(){
+      function actualizarModelos(){
         var selectorMarca = document.getElementById("selectorMarca").value;
-        window.location.href = '/home?marca=' + selectorMarca;
+        var selectorModel = document.getElementById("selectorModelo");
+        var selectorYear = document.getElementById("selectorYear");
+        var opcion = document.createElement("option");
+        selectorModel.innerHTML = "";
+        selectorModel.add(opcion);
+        selectorYear.value = "";
+        selectorYear.disabled = true;
+        fetch('/vehiculos/modelos/' + selectorMarca).then(response => response.json())
+                .then(data => {
+                  data.forEach(v =>{
+                    var option = document.createElement("option");
+                    option.value = v.model;
+                    option.text = v.model;
+                    selectorModel.add(option);
+                  });
+                });
       }
 
-      function cambiarModelo(){
+      function actualizarYears(){
         var selectorMarca = document.getElementById("selectorMarca").value;
-        var selectorModelo = document.getElementById("selectorModelo").value;
-        window.location.href = '/home?marca=' + selectorMarca + '&modelo=' + selectorModelo;
+        var selectorModel = document.getElementById("selectorModelo").value;
+        var selectorYear = document.getElementById("selectorYear");
+        selectorYear.value = "";
+        selectorYear.disabled = false;
+        fetch('/vehiculos/anos/' + selectorMarca + '/' + selectorModel).then(response => response.json())
+                .then(data => {
+                  selectorYear.min = data[0];
+                  selectorYear.max = data[1];
+                });
       }
 
 

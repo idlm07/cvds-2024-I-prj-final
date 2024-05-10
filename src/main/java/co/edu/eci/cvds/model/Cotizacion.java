@@ -57,7 +57,6 @@ public class Cotizacion {
     @ManyToOne
     @JoinColumn(name = "marcaVehiculo")
     @JoinColumn(name = "modeloVehiculo")
-    @JoinColumn(name = "yearVehiculo")
     @Getter @Setter private Vehiculo vehiculo;
 
 
