@@ -39,6 +39,13 @@ public class CotizacionSerrvice {
         this.productoRepository = productoRepository;
         this.vehiculoRepository = vehiculoRepository;
     }
+    /**
+    * Función que convierte cualquier moneda a pesos colombianos
+    * @param origen, moneda que convierte cualquier divisa a USD para luego
+     convertirlo a COP
+    * @return, moneda convertida a COP
+    *
+    */
 
     private Money convertidorCop(Money origen){
         ExchangeRateProvider proveedor = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
@@ -47,19 +54,40 @@ public class CotizacionSerrvice {
         return Money.of(productMoneyUsd.getNumber().floatValue()*3900,"COP");
     }
 
+    /**
+     * Función que devuelve lista de cotizaciones en la Base de Datos
+     *
+     * @return, lista de vehiculos que esta en la base de datos.
+     */
+
     public List<Cotizacion> listarCotizaciones(){
         return cotizacionRepository.findAll();
     }
 
+    /**
+     *
+     * @return lista de las cotizaciones que ya fueron agendadas.
+     */
     public List<Cotizacion> cotizacionesAgendadas(){
         return cotizacionRepository.findByCita();
     }
 
+    /**
+     * Función que devuelve la información de una cotización que se desea encontrar
+     * @param id, identificador de la cotización que se desea encontrar
+     * @return Cotizacion con el id especificado.
+     */
     public Cotizacion encontrarCotizacion(Long id){
         return cotizacionRepository.findByIden(id).get(0);
 
     }
 
+    /**
+     * Función que agrega por primera vez un producto en la lista de productos de una cotizacion que se crea dentro de la misma funcion
+     * @param producto producto ue va a ser agregado.
+     * @param vehiculo vehiculo al cual se le esta haciendo la cotizacion
+     * @return cotizacion creada para el vehiculo especificado y ya tiene en su carrito un producto.
+     */
     public Cotizacion agregarAlCarritoPrimeraVez(Producto producto, Vehiculo vehiculo){
         Cotizacion cotizacion = new Cotizacion(vehiculo);
         if(vehiculo.productoApto(producto)){
@@ -74,6 +102,11 @@ public class CotizacionSerrvice {
         return cotizacion;
     }
 
+    /**
+     *Metodo que agrega un
+     * @param producto
+     * @param cotizacion
+     */
     public void agregarAlCarritoNVez(Producto producto, Cotizacion cotizacion){
         Vehiculo vehiculo = cotizacion.getVehiculo();
         if(vehiculo.productoApto(producto)){
@@ -118,6 +151,8 @@ public class CotizacionSerrvice {
         }
         return total;
     }
+
+
 
     public float cotizacionTotal(Cotizacion cotizacion){
         Money total = calcularTotalCarrito(cotizacion);
