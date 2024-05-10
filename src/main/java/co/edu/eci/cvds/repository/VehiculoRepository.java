@@ -13,7 +13,6 @@ import java.util.List;
 
 @Repository
 public interface VehiculoRepository extends JpaRepository<Vehiculo, VehiculoID> {
-    List<Vehiculo> findByMarcaAndModelAndYearVehicle(String marca, String model, String yearVehicle);
     List<Vehiculo> findByMarca(String marca);
     List<Vehiculo> findByMarcaAndModel(String marca, String model);
 }

@@ -18,7 +18,6 @@ public class Vehiculo {
     @Id
     @Column(name = "modelo", length = 20, nullable = false)
     @Getter @Setter private String model;
-    @Id
     @Column(name = "yearVehicle", length = 4, nullable = false)
     @Getter @Setter private String yearVehicle;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -26,8 +25,7 @@ public class Vehiculo {
             name = "Productos_Por_Vehiculo",
             joinColumns = {
                     @JoinColumn(name = "marca"),
-                    @JoinColumn(name = "modelo"),
-                    @JoinColumn(name = "yearVehicle")
+                    @JoinColumn(name = "modelo")
             },
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
