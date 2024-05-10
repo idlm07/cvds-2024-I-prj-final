@@ -16,26 +16,15 @@ import java.util.Map;
 import java.util.UUID;
 
 @Controller
-@RequestMapping(value = "/login")
-public class LoginController {
+@RequestMapping(value = "/Cotizacion")
+public class CitaController {
 
-    private static final String LOGIN_PAGE = "login/login";
+    private static final String LOGIN_PAGE = "Cotizacion/Agendamiento";
 
-    @Autowired
-    // Constructor vacío (la anotación @Autowired no es necesaria aquí)
-    public LoginController() {
-    }
-
-    // Manejador para la solicitud GET en /login
-    @GetMapping("")
-    public String login() {
-        return LOGIN_PAGE; // Retorna la página de inicio de sesión
-    }
-
-    // Manejador para la solicitud GET en /login/register
-    @GetMapping("register")
-    public String register() {
-        return "login/register"; // Retorna la página de registro
+    // Manejador para la solicitud GET en /login/Agendamiento
+    @GetMapping("Agendamiento")
+    public String Agendamiento() {
+        return "Cotizacion/Agendamiento"; // Retorna la vista "Agendamiento"
     }
 
 }

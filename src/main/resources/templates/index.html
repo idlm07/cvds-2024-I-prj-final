@@ -1,26 +1,36 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML> <!-- Defines the document type and version of HTML -->
 <html xmlns:th="http://www.thymeleaf.org" lang="en"><!-- //NOSONAR -->
+
+<!-- The th:block tag is a Thymeleaf-specific tag that is used to group other tags or text. -->
 <th:block th:replace="fragments/general.html::headerfiles('Greeting Page')"></th:block>
+
 <body>
 <main>
+    <!-- The h1 tag defines a heading. The class "visually-hidden" hides the heading from view. -->
     <h1 class="visually-hidden">Welcome Oculto</h1>
 
     <div class="px-4 py-5 my-5 text-center">
+        <!-- The img tag defines an image. The src attribute specifies the URL of the image. -->
         <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
         <h1 class="display-5 fw-bold text-body-emphasis">Welcome</h1>
         <div class="col-lg-6 mx-auto">
+            <!-- The p tag defines a paragraph. -->
             <p class="lead mb-4">This is a demo of Bootstrap CSS, for more examples to <a href="https://getbootstrap.com/docs/5.3/examples/">https://getbootstrap.com/docs/5.3/examples/</a></p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <!-- The a tag defines a hyperlink. The href attribute specifies the URL of the page the link goes to. -->
                 <a type="button" class="btn btn-primary btn-lg px-4 gap-3" href="/greeting?name=Jorge">Go to Greeting example</a>
                 <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/greeting/to-do-item/1">Go to "To Do" Table example</a>
                 <a type="button" class="btn btn-primary btn-lg px-4" href="/configuration/example">Go to get Configuration from DB example</a>
-                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/configuration/example/api">Go to consume from API example</a>
-                <a type="button" class="btn btn-primary btn-lg px-4" href="/login">Go to Simple Login example</a>
+                <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/configuration/topgear/cotizacion">Cotizacion</a>
+                <a type="button" class="btn btn-primary btn-lg px-4" href="/login">Login</a>
                 <a type="button" class="btn btn-outline-secondary btn-lg px-4" href="/esto-no-existe">Example 404 ERROR!</a>
             </div>
         </div>
     </div>
 </main>
+
+<!-- The footer tag defines a footer for a document or section. -->
 <footer th:replace="fragments/general::empty-footer"></footer>
+
 </body>
 </html>
