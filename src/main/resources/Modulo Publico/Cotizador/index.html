@@ -1,267 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>QuoteGear</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-    </head>
-    <body>
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #D91F28;">
-            <div class="container px-4 px-lg-5 d-flex align-items-center">
-                <div>
-                    <a class="navbar-brand" href="#!">
-                        <img src="assets/Logo Sistema.png" alt="Logo" style="max-height: 40px;">
-                    </a>
-                    <span class="text-white ms-2">QuoteGear</span>
-                </div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="../Pagina Principal/index.html">Home</a></li>
-                        <!-- Eliminado el botón "About" -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#!">All Products</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                                <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <form class="d-flex">
-                        <button class="btn btn-outline-dark" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Carrito
-                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                        </button>
-                    </form>
-                </div>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>QuoteGear</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #FFCF28;">
+        <div class="container px-4 px-lg-5 d-flex align-items-center">
+            <div>
+                <a class="navbar-brand" href="#!">
+                    <img src="assets/Logo Sistema.png" alt="Logo" style="max-height: 40px;">
+                </a>
+                <!-- Cambio de color del texto "QuoteGear" -->
+                <span class="ms-2" style="color: #D01F27;">QuoteGear</span>
             </div>
-        </nav>               
-        <!-- Header-->
-        <header class="bg-dark py-5" style="background-color: #292C33;">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Cotiza ahora al mejor precio!</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">Sabemos que buscas experiencia, calidad, buenos precios y por supuesto, descuentos.</p>
-                </div>
+
+            <!-- Botón para el menú colapsable -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Contenido del menú colapsable -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="../Pagina Principal/index.html">Inicio</a></li>
+                    <!-- Eliminado el botón "About" -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Corizar</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#!">Todos los Productos</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" href="#Revisión">Revisión</a></li>
+                            <li><a class="dropdown-item" href="#Servicios">Servicios</a></li>
+                            <li><a class="dropdown-item" href="#Productos">Productos</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
-        </header> 
-        <!-- Section-->
-        <section class="py-5" style="background-color: #0D131A; color: #FFFFFF;">
-            <div class="container px-4 px-lg-5 mt-5">
-                <!-- Barra de acceso rápido -->
-                <div class="row">
-                    <div class="col">
-                        <button class="btn btn-danger btn-oval" data-bs-toggle="collapse" href="#servicios-mas-agendados">1. Los servicios más agendados</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-danger btn-oval" data-bs-toggle="collapse" href="#identificar-fallas">2. Identificar Fallas</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-danger btn-oval" data-bs-toggle="collapse" href="#realizar-revision">3. Realizar Revisión</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-danger btn-oval" data-bs-toggle="collapse" href="#mantenimiento-kilometraje">4. Mantenimiento por Kilometraje</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-danger btn-oval" data-bs-toggle="collapse" href="#mantenimientos-rapidos">5. Mantenimientos Rápidos</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-danger btn-oval" data-bs-toggle="collapse" href="#latoneria-pintura">6. Latonería y Pintura</button>
+
+            <!-- Imagen justo después del menú colapsable -->
+            <div class="ms-auto space-between">
+                <img src="../Pagina Principal/assets/img/TOPGEAR logo.png" alt="TOPGEAR logo" style="max-height: 40px;">
+            </div>
+
+            <!-- Carrito -->
+            <form class="d-flex">
+                <button class="btn btn-outline-dark" type="submit">
+                    <i class="bi-cart-fill me-1"></i>
+                    Carrito
+                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- CSS personalizado para crear un espacio entre la imagen y el botón del carrito -->
+    <style>
+        .space-between {
+            margin-right: 425px; /* Ajusta este valor según sea necesario */
+        }
+    </style>
+    <!-- Header-->
+    <header class="bg-dark py-5" style="background-color: #292C33;">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Cotiza ahora al mejor precio!</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Sabemos que buscas experiencia, calidad, buenos precios y por supuesto, descuentos.</p>
+            </div>
+        </div>
+    </header> 
+    <!-- Seccion Principal -->
+    <section class="py-5" style="background-color: #0D131A; color: #FFFFFF;">
+        <div class="container px-4 px-lg-5 mt-5">
+            <style>
+                .custom-btn {
+                    font-size: 1.5rem; /* Tamaño de fuente */
+                    padding: 1rem 2rem; /* Espacio de relleno */
+                }
+            </style>
+        <!-- Barra de acceso rápido -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-auto mx-3">
+                <a class="btn btn-warning btn-oval custom-btn" href="#Revisión" style="padding: 1rem 2.5rem; border: 2px solid black;">Revisión</a>
+            </div>
+            <div class="col-auto mx-3">
+                <a class="btn btn-warning btn-oval custom-btn" href="#Servicios" style="padding: 1rem 2.5rem; border: 2px solid black;">Servicios</a>
+            </div>
+            <div class="col-auto mx-3">
+                <a class="btn btn-warning btn-oval custom-btn" href="#Productos" style="padding: 1rem 2.5rem; border: 2px solid black;">Productos</a>
+            </div>
+        </div>             
+            <!-- Grupo 1: Revisión -->
+            <section id="Revisión" class="py-5">
+                <div class="container px-4 px-lg-5">
+                    <h2 class="text-center">Revisión</h2>
+                    <!-- Dropdown del grupo 1 -->
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                                    Seleccionar Producto
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width: 100%;">
+                                    <!-- Opciones de producto del grupo 1 -->
+                                    <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Producto 1', 'dropdownMenuButton1')">Producto 1</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Producto 2', 'dropdownMenuButton1')">Producto 2</a></li>
+                                    <!-- Repetir para otros productos -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton1" disabled>Agregar al carrito</button>
+                        </div>
                     </div>
                 </div>
-                <!-- Grupo 1: Los servicios más agendados -->
-                <section id="servicios-mas-agendados" class="py-5">
-                    <div class="container px-4 px-lg-5">
-                        <h2 class="text-center">Los servicios más agendados</h2>
-                        <!-- Dropdown del grupo 1 -->
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                                        Seleccionar Producto
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width: 100%;">
-                                        <!-- Opciones de producto del grupo 1 -->
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 1', 'dropdownMenuButton1')">Producto 1</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 2', 'dropdownMenuButton1')">Producto 2</a></li>
-                                        <!-- Repetir para otros productos -->
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary w-100 btn-oval" style="background-color: #D91F28; border-color: black;" id="addToCartButton1" disabled>Agregar al carrito</button>
+            </section>
+            
+            <!-- Grupo 2: Servicios -->
+            <section id="Servicios" class="py-5">
+                <div class="container px-4 px-lg-5">
+                    <h2 class="text-center">Servicios</h2>
+                    <!-- Dropdown del grupo 2 -->
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                                    Seleccionar Producto
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2" style="width: 100%;">
+                                    <!-- Opciones de producto del grupo 2 -->
+                                    <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Producto 1', 'dropdownMenuButton2')">Producto 1</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Producto 2', 'dropdownMenuButton2')">Producto 2</a></li>
+                                    <!-- Repetir para otros productos -->
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Grupo 2: Identificar Fallas -->
-                <section id="identificar-fallas" class="py-5">
-                    <div class="container px-4 px-lg-5">
-                        <h2 class="text-center">Identificar Fallas</h2>
-                        <!-- Dropdown del grupo 2 -->
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
-                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                                        Seleccionar Producto
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2" style="width: 100%;">
-                                        <!-- Opciones de producto del grupo 2 -->
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 1', 'dropdownMenuButton2')">Producto 1</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 2', 'dropdownMenuButton2')">Producto 2</a></li>
-                                        <!-- Repetir para otros productos -->
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary w-100 btn-oval" style="background-color: #D91F28; border-color: black;" id="addToCartButton2" disabled>Agregar al carrito</button>
-                            </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton2" disabled>Agregar al carrito</button>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <!-- Grupo 3: Realizar Revisión -->
-                <section id="realizar-revision" class="py-5">
-                    <div class="container px-4 px-lg-5">
-                        <h2 class="text-center">Realizar Revisión</h2>
-                        <!-- Dropdown del grupo 3 -->
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3"
-                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                                        Seleccionar Producto
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3" style="width: 100%;">
-                                        <!-- Opciones de producto del grupo 3 -->
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 1', 'dropdownMenuButton3')">Producto 1</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 2', 'dropdownMenuButton3')">Producto 2</a></li>
-                                        <!-- Repetir para otros productos -->
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary w-100 btn-oval" style="background-color: #D91F28; border-color: black;" id="addToCartButton3" disabled>Agregar al carrito</button>
+            <!-- Grupo 3: Productos -->
+            <section id="Productos" class="py-5">
+                <div class="container px-4 px-lg-5">
+                    <h2 class="text-center">Productos</h2>
+                    <!-- Dropdown del grupo 3 -->
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                                    Seleccionar Producto
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3" style="width: 100%;">
+                                    <!-- Opciones de producto del grupo 3 -->
+                                    <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Producto 1', 'dropdownMenuButton3')">Producto 1</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Producto 2', 'dropdownMenuButton3')">Producto 2</a></li>
+                                    <!-- Repetir para otros productos -->
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Grupo 4: Mantenimiento por Kilometraje -->
-                <section id="mantenimiento-kilometraje" class="py-5">
-                    <div class="container px-4 px-lg-5">
-                        <h2 class="text-center">Mantenimiento por Kilometraje</h2>
-                        <!-- Dropdown del grupo 4 -->
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4"
-                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                                        Seleccionar Producto
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton4" style="width: 100%;">
-                                        <!-- Opciones de producto del grupo 4 -->
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 1', 'dropdownMenuButton4')">Producto 1</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 2', 'dropdownMenuButton4')">Producto 2</a></li>
-                                        <!-- Repetir para otros productos -->
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary w-100 btn-oval" style="background-color: #D91F28; border-color: black;" id="addToCartButton4" disabled>Agregar al carrito</button>
-                            </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton3" disabled>Agregar al carrito</button>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
+        </div>
+    </section>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-                <!-- Grupo 5: Mantenimientos Rápidos -->
-                <section id="mantenimientos-rapidos" class="py-5">
-                    <div class="container px-4 px-lg-5">
-                        <h2 class="text-center">Mantenimientos Rápidos</h2>
-                        <!-- Dropdown del grupo 5 -->
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton5"
-                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                                        Seleccionar Producto
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton5" style="width: 100%;">
-                                        <!-- Opciones de producto del grupo 5 -->
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 1', 'dropdownMenuButton5')">Producto 1</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 2', 'dropdownMenuButton5')">Producto 2</a></li>
-                                        <!-- Repetir para otros productos -->
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary w-100 btn-oval" style="background-color: #D91F28; border-color: black;" id="addToCartButton5" disabled>Agregar al carrito</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+    <script>
+        function selectProduct(event, productName, dropdownId) {
+            event.preventDefault();
+            document.getElementById(dropdownId).innerText = productName;
+            document.getElementById('addToCartButton' + dropdownId.charAt(dropdownId.length - 1)).disabled = false;
+            var dropdownMenu = document.getElementById(dropdownId).nextElementSibling;
+            dropdownMenu.classList.remove('show');
+        }
+    </script>
 
-                <!-- Grupo 6: Latonería y Pintura -->
-                <section id="latoneria-pintura" class="py-5">
-                    <div class="container px-4 px-lg-5">
-                        <h2 class="text-center">Latonería y Pintura</h2>
-                        <!-- Dropdown del grupo 6 -->
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton6"
-                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                                        Seleccionar Producto
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton6" style="width: 100%;">
-                                        <!-- Opciones de producto del grupo 6 -->
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 1', 'dropdownMenuButton6')">Producto 1</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="selectProduct('Producto 2', 'dropdownMenuButton6')">Producto 2</a></li>
-                                        <!-- Repetir para otros productos -->
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary w-100 btn-oval" style="background-color: #D91F28; border-color: black;" id="addToCartButton6" disabled>Agregar al carrito</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </section>
-        <!-- Bootstrap JS -->
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-        <script>
-            function selectProduct(productName, dropdownId) {
-                document.getElementById(dropdownId).innerText = productName;
-                document.getElementById('addToCartButton' + dropdownId.charAt(dropdownId.length - 1)).disabled = false;
-                var dropdownMenu = document.getElementById(dropdownId).nextElementSibling;
-                dropdownMenu.classList.remove('show');
-            }
-        </script> 
-        <!-- Footer-->
-        <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
-        </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
 </html>
