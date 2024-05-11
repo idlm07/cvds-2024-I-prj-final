@@ -19,7 +19,9 @@ import java.util.UUID;
 @Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
 
-
+    /**
+     *
+     */
     @Autowired
     public BasicAuthInterceptor() {
     }
