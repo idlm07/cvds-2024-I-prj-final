@@ -203,6 +203,9 @@ body *{
     color: var(--inactivo);
 }
 
+
+
+
 #anterior{
     margin-right: 25px;
 }
@@ -229,7 +232,8 @@ body *{
     z-index: 1;
 
 }
-#calendario .contenido .dias li:hover{
+#calendario .contenido .dias li:hover,
+#calendario .contenido .dias li.activo{
     color: #0b0b0b;
 }
 
@@ -245,13 +249,18 @@ body *{
     transform: translate(-50%, -50%);
 }
 
-#calendario .contenido .dias li:hover::before{
+#calendario .contenido .dias li:hover::before,
+#calendario .contenido .dias li.activo::before{
     background: aquamarine;
 }
 
 #calendario header div.icons{
     position: absolute;
     right: 20px;
+}
+
+#informacion{
+    margin-left: 20px;
 }
 
 

@@ -1,42 +1,70 @@
-const fecha = document.getElementById("fecha-actual");
-const dias = document.querySelector(".dias");
-const prevNext = document.querySelectorAll(".icons span");
+const fecha = document.getElementById("fecha-actual"),
+dias = document.querySelector(".dias"),
+    prevNext = document.querySelectorAll(".icons span");
+
+const contenidoC = document.querySelector("#calendario div.contenido"),
+    contenidoI = document.querySelector("#informacion div.contenido");
 
 
-let date = new Date();
-ano = date.getFullYear();
+let date = new Date(),
+ano = date.getFullYear(),
 mes = date.getMonth();
 
 const meses = ["Enero","Febreo","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
 function ajustarCalendario(){
-    let ultimoDiaDelMes = new Date(ano,mes + 1,0).getDate(),
-        primerDiaDelMes =new Date(ano,mes,1).getDate(),
-        ultimoDiaDelUltimoiMes = new Date(ano,mes,0).getDate(),
-        ultimoDia = new Date(ano,mes,ultimoDiaDelMes).getDay();
+    let primerDiaDelMes = new Date(ano,mes ,1).getDay(),
+        ultimaFechaDelMes =new Date(ano,mes + 1,0).getDate(),
+        ultimoDiaDelMes = new Date(ano,mes,ultimaFechaDelMes).getDay(),
+        ultimaFechaDelUltimoMes = new Date(ano,mes,0).getDate();
     let liTag = "";
-    for(let i = 3; i > 0;i--){
-        liTag +=  `<li class="inactivo">${ultimoDiaDelUltimoiMes - i + 1}</li>`;
+    for(let i = primerDiaDelMes; i > 0;i--){
+        liTag +=  `<li class="inactivo">${ultimaFechaDelUltimoMes - i + 1}</li>`;
     }
 
-    for(let i = 1; i <= ultimoDiaDelMes;i++){
-        liTag +=  `<li>${i}</li>`;
+    for(let i = 1; i <= ultimaFechaDelMes;i++){
+        let esHoy = i === date.getDate() && mes === new Date().getMonth() && ano === new Date().getFullYear() ? "activo" : "";
+        liTag +=  `<li class="${esHoy}" onclick="seleccionar(this)">${i}</li>`;
     }
 
 
-    for(let i = ultimoDia; i < 6 ;i++){
-        liTag +=  `<li class="inactivo">${i - ultimoDia + 1}</li>`;
+    for(let i = ultimoDiaDelMes; i < 6 ;i++){
+        liTag +=  `<li class="inactivo">${i - ultimoDiaDelMes + 1}</li>`;
     }
 
     fecha.innerText = meses[mes] + ', ' + ano ;
     dias.innerHTML = liTag;
 }
 
-ajustarCalendario();
-
 prevNext.forEach(icon =>{
    icon.addEventListener("click",() =>{
       mes = icon.id === "anterior" ? mes - 1 : mes + 1;
+      if(mes < 0 || mes > 11){
+          date = new Date(ano,mes, new Date().getDate());
+          ano = date.getFullYear();
+          mes = date.getMonth();
+      }else {
+          date = new Date();
+      }
       ajustarCalendario();
    });
 });
+
+
+function seleccionar(elemento){
+    const activo = document.querySelector("li.activo");
+
+    activo.classList.remove("activo");
+    elemento.classList.toggle("activo");
+}
+
+function igualarAltura(){
+    const alturaMaximaC = contenidoC.offsetHeight;
+    const alturaMaximaI = contenidoI.offsetHeight;
+    const alturaMaxima = Math.max(alturaMaximaC,alturaMaximaI);
+    contenidoI.style.height = `${alturaMaxima}px`
+
+}
+
+ajustarCalendario();
+igualarAltura();
