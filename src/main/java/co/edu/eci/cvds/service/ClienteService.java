@@ -19,6 +19,10 @@ public class ClienteService {
         return clienteRepository.findByCorreo(correo).get(0);
     }
 
+    /**
+     * Devuelve una lista de todos los clientes registrados en la base de datos.
+     * @return lista de todos los clientes en la base de datos
+     */
     public List<Cliente> listarClientes(){
         return clienteRepository.findAll();
     }

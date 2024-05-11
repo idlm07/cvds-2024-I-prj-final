@@ -21,6 +21,11 @@ public class VehiculoService {
         this.productoRepository = productoRepository;
     }
 
+    /**
+     * Metodo que guarda un vehiculo en la base de datos
+     * @param vehiculo, vehiculo a registrar
+     * @return vehiculo registrado
+     */
     public Vehiculo agregarVehiculo(Vehiculo vehiculo) {
 
         return vehiculoRepository.save(vehiculo);
