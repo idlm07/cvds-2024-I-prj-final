@@ -16,31 +16,36 @@ public class ConfigurationController {
     private final ConfigurationService configurationService;
 
     @Autowired
+    // Constructor que inyecta el servicio de configuración
     public ConfigurationController(ConfigurationService configurationService) {
         this.configurationService = configurationService;
     }
 
+    // Manejador para la solicitud GET en /configuration/example
     @GetMapping("/example")
     public String example(Model model) {
         model.addAttribute("premio", configurationService.getPremio());
-        return "example";
+        return "example"; // Retorna la vista "example"
     }
 
-    @GetMapping("/example/api")
+    // Manejador para la solicitud GET en /configuration/example/api
+    @GetMapping("/topgear/cotizacion")
     public String exampleApi() {
-        return "example-api";
+        return "/lista/cotizacionFinal"; // Retorna la vista "example-api"
     }
 
+    // Manejador para la solicitud GET en /configuration/example/api/configurations
     @GetMapping("/example/api/configurations")
     @ResponseBody
     public List<Configuration> exampleApiConfigurations() {
-        return configurationService.getAllConfigurations();
+        return configurationService.getAllConfigurations(); // Retorna todas las configuraciones como respuesta JSON
     }
 
+    // Manejador para la solicitud POST en /configuration/example/api/configurations
     @PostMapping("/example/api/configurations")
     @ResponseBody
     public List<Configuration> exampleApiConfigurations(@RequestBody Configuration configuration) {
-        configurationService.addConfiguration(configuration);
-        return configurationService.getAllConfigurations();
+        configurationService.addConfiguration(configuration); // Agrega una nueva configuración
+        return configurationService.getAllConfigurations(); // Retorna todas las configuraciones como respuesta JSON
     }
 }
