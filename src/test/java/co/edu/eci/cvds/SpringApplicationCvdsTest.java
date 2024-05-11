@@ -56,12 +56,12 @@ class SpringApplicationTests {
         Vehiculo vehiculo = new Vehiculo("Suzuki","i-40","2023");
         when(vehiculoRepository.save(any(Vehiculo.class))).thenReturn(vehiculo);
         when(vehiculoRepository.findAll()).thenReturn(List.of(vehiculo));
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
         Vehiculo vehiculoGuardado = vehiculoService.agregarVehiculo(vehiculo);
         assertEquals(vehiculo, vehiculoGuardado);
         assertEquals(1,vehiculoService.getVehiculos().size());
-        vehiculoGuardado = vehiculoRepository.findByMarcaAndModelAndYearVehicle(vehiculo.getMarca(),vehiculo.getModel(),vehiculo.getYearVehicle()).get(0);
-        assertEquals(vehiculoService.getVehiculo("Suzuki","i-40","2023"), vehiculoGuardado);
+        vehiculoGuardado = vehiculoRepository.findByMarcaAndModel(vehiculo.getMarca(),vehiculo.getModel()).get(0);
+        assertEquals(vehiculoService.getVehiculo("Suzuki","i-40"), vehiculoGuardado);
 
         Producto producto = new Producto("Motor1","Motor",(float)15.2,"US");
         when(productoRepository.save(any(Producto.class))).thenReturn(producto);
@@ -94,15 +94,15 @@ class SpringApplicationTests {
     void shouldAgregarAlCarrito() {
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
         when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
         Producto producto =  new Producto("Producto1","Categoria",200f,"US");
         Producto producto1 = new Producto("Producto", "Categoria",200f,"US");
         vehiculoService.agregarVehiculo(vehiculo);
         productoService.agregarProducto(producto);
         productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
         cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
@@ -114,14 +114,14 @@ class SpringApplicationTests {
     void shouldNotAgregarCarrito(){
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
         when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
         Producto producto =  new Producto("Producto1","Categoria",200f,"US");
         Producto producto1 = new Producto("Producto2", "Categoria",200f,"US");
         vehiculoService.agregarVehiculo(vehiculo);
         productoService.agregarProducto(producto);
         productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
         cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
@@ -134,15 +134,15 @@ class SpringApplicationTests {
     void shouldCalcularTotalCarrito(){
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
         when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
         Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
         Producto producto1 = new Producto("Producto", "Categoria",200f,"USD");
         vehiculoService.agregarVehiculo(vehiculo);
         productoService.agregarProducto(producto);
         productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
         cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
@@ -156,9 +156,9 @@ class SpringApplicationTests {
     void shouldAgendar(){
         Cotizacion cotizaion1 = new Cotizacion(new Vehiculo("Suzuki","Swift","2014"));
         Cotizacion cotizaion2 = new Cotizacion(new Vehiculo("Mercedes","Sedan","2022"));
-        cotizacionSerrvice.agendarCita(LocalDateTime.of(2024,5,10,8,0),"Bogota","Calle 159 #7-74",cotizaion1);
+        assertTrue(cotizacionSerrvice.agendarCita(LocalDateTime.of(2025, 5, 10, 8, 0), "Bogota", "Calle 159 #7-74", cotizaion1));
         when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1));
-        cotizacionSerrvice.agendarCita(LocalDateTime.of(2024,5,10,15,0),"Bogota","Calle 66 #11-50",cotizaion2);
+        assertTrue(cotizacionSerrvice.agendarCita(LocalDateTime.of(2026,5,10,15,0),"Bogota","Calle 66 #11-50",cotizaion2));
         when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1,cotizaion2));
         assertEquals(2,cotizacionSerrvice.cotizacionesAgendadas().size());
 
@@ -168,7 +168,7 @@ class SpringApplicationTests {
     void shouldCalcularTotal(){
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
         when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
         Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
         Producto producto1 = new Producto("Producto", "Categoria",5,"USD");
@@ -180,9 +180,9 @@ class SpringApplicationTests {
         vehiculoService.agregarVehiculo(vehiculo);
         productoService.agregarProducto(producto);
         productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto3);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto3);
         cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
@@ -211,15 +211,15 @@ class SpringApplicationTests {
     void testQuitarDelCarrito() {
         Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
         Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
         when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
         Producto producto =  new Producto("Producto1","Categoria",200f,"US");
         Producto producto1 = new Producto("Producto", "Categoria",200f,"US");
         vehiculoService.agregarVehiculo(vehiculo);
         productoService.agregarProducto(producto);
         productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS","2005",producto1);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
         cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
         when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
         cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
@@ -247,8 +247,8 @@ class SpringApplicationTests {
     void testGetVehiculo() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
         vehiculoService.agregarVehiculo(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
-        Vehiculo retrievedVehiculo = vehiculoService.getVehiculo("Toyota", "Corolla", "2022");
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+        Vehiculo retrievedVehiculo = vehiculoService.getVehiculo("Toyota", "Corolla");
         assertEquals(vehiculo, retrievedVehiculo);
     }
 
@@ -336,8 +336,8 @@ class SpringApplicationTests {
     void testGetVehiculoService() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
         vehiculoService.agregarVehiculo(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModelAndYearVehicle(anyString(),anyString(),anyString())).thenReturn(List.of(vehiculo));
-        Vehiculo retrievedVehiculo = vehiculoService.getVehiculo("Toyota", "Corolla", "2022");
+        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+        Vehiculo retrievedVehiculo = vehiculoService.getVehiculo("Toyota", "Corolla");
         assertEquals(vehiculo, retrievedVehiculo);
     }
 

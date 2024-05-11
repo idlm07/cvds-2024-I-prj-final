@@ -10,8 +10,7 @@ public class VehiculoID implements Serializable {
     private String marca;
     @Getter @Setter
     private String model;
-    @Getter @Setter
-    private String yearVehicle;
+
 
 
 

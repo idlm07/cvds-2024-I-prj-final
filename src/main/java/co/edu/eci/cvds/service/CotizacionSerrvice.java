@@ -156,8 +156,8 @@ public class CotizacionSerrvice {
 
     public float cotizacionTotal(Cotizacion cotizacion){
         Money total = calcularTotalCarrito(cotizacion);
-        float totalDescuento = 0;
-        float totalImpuesto = 0;
+        float totalDescuento ;
+        float totalImpuesto ;
         Money mTotalDescuento;
         Money mTotalImpuesto;
         for(Producto producto : verCarrito(cotizacion.getIden())){
@@ -189,15 +189,15 @@ public class CotizacionSerrvice {
         LocalDate fechaBase;
         Duration entreCitas;
         Duration nowVCita = Duration.between(LocalDateTime.now(),fechaEsperada);
-        LocalTime horaInicio = LocalTime.of(7,0);
-        LocalTime horaFin = LocalTime.of(18,30);
+        LocalTime horaInicio = LocalTime.of(8,0);
+        LocalTime horaFin = LocalTime.of(15,0);
         if(fechaEsperada.isEqual(LocalDateTime.now()) || fechaEsperada.isBefore(LocalDateTime.now())
                 || fechaEsperada.toLocalTime().isBefore(horaInicio) || fechaEsperada.toLocalTime().isAfter(horaFin)
                 || nowVCita.getSeconds() <= 7200) return false;
         for(Cotizacion c: this.cotizacionesAgendadas()){
             fechaBase = c.getCita().toLocalDate();
             entreCitas = Duration.between(c.getCita(),fechaEsperada);
-            if(fechaBase.isEqual(fechaEsperada.toLocalDate()) && entreCitas.getSeconds() <= 1800) return false;
+            if(fechaBase.isEqual(fechaEsperada.toLocalDate()) && entreCitas.getSeconds() <= 7200) return false;
         }
         return true;
     }
