@@ -1,5 +1,6 @@
 package co.edu.eci.cvds.model;
 
+import co.edu.eci.cvds.Exception.LincolnLinesException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,7 +84,13 @@ public class Cotizacion {
         this.productosCotizacion = new ArrayList<>();
     }
 
-    public void agregarProductoAlCarrito(Producto producto){
+    /**
+     * Metodo que agrega un producto al carrito
+     * @param producto, producto a agregar
+     * @throws LincolnLinesException PRODUCTO_NO_COMPATIBLE si el producto no es apto para el vehiculo al cual se le esta haciendo la cotizacion.
+     */
+    public void agregarProductoAlCarrito(Producto producto) throws LincolnLinesException {
+        if(!this.vehiculo.productoApto(producto)) throw  new LincolnLinesException(LincolnLinesException.PRODUCTO_NO_COMPATIBLE);
         productosCotizacion.add(producto);
     }
 
@@ -107,6 +114,7 @@ public class Cotizacion {
         result = prime * result + ((ciudadRecogida == null) ? 0 : ciudadRecogida.hashCode());
         result = prime * result + ((direccionRecogida == null) ? 0 : direccionRecogida.hashCode());
         result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
+        result = prime * result + ((vehiculo == null) ? 0 : vehiculo.hashCode());
         return result;
     }
 

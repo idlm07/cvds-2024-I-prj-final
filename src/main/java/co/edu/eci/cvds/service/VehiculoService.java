@@ -37,11 +37,23 @@ public class VehiculoService {
         return vehiculoRepository.save(vehiculo);
     }
 
+    /**
+     * Funcion que busca un vehiculo en especifico
+     * @param marca del vehiculo
+     * @param modelo del vehiculo
+     * @return vehiculo acorde a la marca y  modelo indicados
+     */
+
     public Vehiculo getVehiculo(String marca, String modelo) {
         return vehiculoRepository.findByMarcaAndModel(String.valueOf(marca), String.valueOf(modelo)).get(0);
     }
 
-
+    /**
+     * Metodo que asocia un vehiculo con un producto es decir, indica que productos son aptos para que vehiculo.
+     * @param marca del carro
+     * @param modelo del carro
+     * @param producto apto para el vehiculo
+     */
 
     public void agregarProducto(String marca, String modelo,Producto producto){
         Vehiculo currentVehicle = this.getVehiculo(marca, modelo);
@@ -51,10 +63,18 @@ public class VehiculoService {
         productoRepository.save(producto);
     }
 
+    /**
+     *
+     * @return lista de vehiculos registrados en la base de datos
+     */
     public List<Vehiculo> getVehiculos() {
         return vehiculoRepository.findAll();
     }
 
+    /**
+     * Indica las marcas registradas en la base de datos
+     * @return nombres de las marcas registradas en la base de datos.
+     */
     public Set<String> getMarcas(){
         HashSet<String> marcas = new HashSet<>();
         for(Vehiculo vehiculo : this.getVehiculos()){
@@ -63,10 +83,22 @@ public class VehiculoService {
         return marcas;
     }
 
+    /**
+     * Funcion que indica los modelos disponibles para una marca en especifico
+     * @param marca marca que se desea averiguar
+     * @return lista de los modelos disponibles para dicha marca.
+     */
     public List<Vehiculo> getModelosMarca(String marca) {
 
         return vehiculoRepository.findByMarca(marca);
     }
+
+    /**
+     * Funcion que indica el año desde que se creo el modelo del vehiculo hasta la fecha actual
+     * @param marca del vehiculo
+     * @param modelo del vehiculo
+     * @return lista de interos de dos elementos, año inicial y año final.
+     */
 
     public int[] getMinMaxYear(String marca, String modelo) {
         int creado = Integer.parseInt(vehiculoRepository.findByMarcaAndModel(marca,modelo).get(0).getYearVehicle());

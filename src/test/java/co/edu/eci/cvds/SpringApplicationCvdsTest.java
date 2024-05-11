@@ -1,6 +1,7 @@
 package co.edu.eci.cvds;
 
 
+import co.edu.eci.cvds.Exception.LincolnLinesException;
 import co.edu.eci.cvds.model.*;
 import co.edu.eci.cvds.repository.CotizacionRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
@@ -53,25 +54,30 @@ class SpringApplicationTests {
 
     @Test
     void shouldLLenarTablas(){
-        Vehiculo vehiculo = new Vehiculo("Suzuki","i-40","2023");
-        when(vehiculoRepository.save(any(Vehiculo.class))).thenReturn(vehiculo);
-        when(vehiculoRepository.findAll()).thenReturn(List.of(vehiculo));
-        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
-        Vehiculo vehiculoGuardado = vehiculoService.agregarVehiculo(vehiculo);
-        assertEquals(vehiculo, vehiculoGuardado);
-        assertEquals(1,vehiculoService.getVehiculos().size());
-        vehiculoGuardado = vehiculoRepository.findByMarcaAndModel(vehiculo.getMarca(),vehiculo.getModel()).get(0);
-        assertEquals(vehiculoService.getVehiculo("Suzuki","i-40"), vehiculoGuardado);
+        try {
+            Vehiculo vehiculo = new Vehiculo("Suzuki","i-40","2023");
+            when(vehiculoRepository.save(any(Vehiculo.class))).thenReturn(vehiculo);
+            when(vehiculoRepository.findAll()).thenReturn(List.of(vehiculo));
+            when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+            Vehiculo vehiculoGuardado = vehiculoService.agregarVehiculo(vehiculo);
+            assertEquals(vehiculo, vehiculoGuardado);
+            assertEquals(1,vehiculoService.getVehiculos().size());
+            vehiculoGuardado = vehiculoRepository.findByMarcaAndModel(vehiculo.getMarca(),vehiculo.getModel()).get(0);
+            assertEquals(vehiculoService.getVehiculo("Suzuki","i-40"), vehiculoGuardado);
 
-        Producto producto = new Producto("Motor1","Motor",(float)15.2,"US");
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
-        when(productoRepository.findAll()).thenReturn(List.of(producto));
-        when(productoRepository.findByNombre(anyString())).thenReturn(List.of(producto));
-        Producto productoGuardado = productoService.agregarProducto(producto);
-        assertEquals(producto, productoGuardado);
-        assertEquals(1,productoService.buscarProductos().size());
-        productoGuardado = productoRepository.findByNombre("Motor1").get(0);
-        assertEquals(productoService.buscarProductoPorNombre("Motor1"),productoGuardado);
+            Producto producto = new Producto("Motor1","Motor",(float)15.2,"US");
+            when(productoRepository.save(any(Producto.class))).thenReturn(producto);
+            when(productoRepository.findAll()).thenReturn(List.of(producto));
+            when(productoRepository.findByNombre(anyString())).thenReturn(List.of(producto));
+            Producto productoGuardado = productoService.agregarProducto(producto);
+            assertEquals(producto, productoGuardado);
+            assertEquals(1,productoService.buscarProductos().size());
+            productoGuardado = productoRepository.findByNombre("Motor1").get(0);
+            assertEquals(productoService.buscarProductoPorNombre("Motor1"),productoGuardado);
+        }catch (LincolnLinesException e){
+            fail("Lanzo excepción");
+        }
+
     }
 
     /**
@@ -92,23 +98,28 @@ class SpringApplicationTests {
 
     @Test
     void shouldAgregarAlCarrito() {
-        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
-        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
-        Producto producto =  new Producto("Producto1","Categoria",200f,"US");
-        Producto producto1 = new Producto("Producto", "Categoria",200f,"US");
-        vehiculoService.agregarVehiculo(vehiculo);
-        productoService.agregarProducto(producto);
-        productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
-        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
-        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
-        List<Producto> carrito = cotizacionSerrvice.verCarrito(cotizacion.getIden());
-        assertEquals(2, carrito.size());
-        assertTrue(carrito.contains(producto) && carrito.contains(producto1));
+        try{
+            Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+            Cotizacion cotizacion = new Cotizacion(vehiculo);
+            when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+            when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+            Producto producto =  new Producto("Producto1","Categoria",200f,"US");
+            Producto producto1 = new Producto("Producto", "Categoria",200f,"US");
+            vehiculoService.agregarVehiculo(vehiculo);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(producto1);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
+            cotizacion = cotizacionSerrvice.agregarAlCarrito(producto,vehiculo,null);
+            when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+            cotizacionSerrvice.agregarAlCarrito(producto1,vehiculo,cotizacion);
+            List<Producto> carrito = cotizacionSerrvice.verCarrito(cotizacion.getIden());
+            assertEquals(2, carrito.size());
+            assertTrue(carrito.contains(producto) && carrito.contains(producto1));
+        }catch (LincolnLinesException e){
+            fail("Lanzo Excepcion");
+        }
+
     }
     @Test
     void shouldNotAgregarCarrito(){
@@ -119,85 +130,104 @@ class SpringApplicationTests {
         Producto producto =  new Producto("Producto1","Categoria",200f,"US");
         Producto producto1 = new Producto("Producto2", "Categoria",200f,"US");
         vehiculoService.agregarVehiculo(vehiculo);
-        productoService.agregarProducto(producto);
-        productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
-        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
-        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
-        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        List<Producto> carrito = cotizacionSerrvice.verCarrito(cotizacion.getIden());
-        assertEquals(1, carrito.size());
-        assertTrue(carrito.contains(producto) && !carrito.contains(producto1));
+        try {
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(producto1);
+        } catch (LincolnLinesException e) {
+            fail("No lanzo Excepcion");
+        }
+
+        try{
+
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+            cotizacion = cotizacionSerrvice.agregarAlCarrito(producto,vehiculo,null);
+        }catch (LincolnLinesException e){
+            fail("Lanzo excepcion");
+        }
+
+        try{
+            cotizacionSerrvice.agregarAlCarrito(producto1,cotizacion.getVehiculo(),cotizacion);
+            fail("No lanzo Excepcion");
+        }catch (LincolnLinesException e){
+            when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+            List<Producto> carrito = cotizacionSerrvice.verCarrito(cotizacion.getIden());
+            assertEquals(1, carrito.size());
+            assertTrue(carrito.contains(producto) && !carrito.contains(producto1));
+        }
     }
 
     @Test
     void shouldCalcularTotalCarrito(){
-        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
-        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
-        Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
-        Producto producto1 = new Producto("Producto", "Categoria",200f,"USD");
-        vehiculoService.agregarVehiculo(vehiculo);
-        productoService.agregarProducto(producto);
-        productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
-        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
-        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
-        Money calculado = cotizacionSerrvice.calcularTotalCarrito(cotizacion);
-        assertEquals(Monetary.getCurrency("COP"),calculado.getCurrency());
-        float tasaError = (779600f-calculado.getNumber().floatValue())/779600f;
-        assertTrue(tasaError <= 0.15);
+        try{
+            Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+            Cotizacion cotizacion = new Cotizacion(vehiculo);
+            when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+            when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+            Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
+            Producto producto1 = new Producto("Producto", "Categoria",200f,"USD");
+            vehiculoService.agregarVehiculo(vehiculo);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(producto1);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
+            cotizacion = cotizacionSerrvice.agregarAlCarrito(producto,vehiculo,null);
+            when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+            cotizacionSerrvice.agregarAlCarrito(producto1,cotizacion.getVehiculo(),cotizacion);
+            Money calculado = cotizacionSerrvice.calcularTotalCarrito(cotizacion);
+            assertEquals(Monetary.getCurrency("COP"),calculado.getCurrency());
+            float tasaError = (779600f-calculado.getNumber().floatValue())/779600f;
+            assertTrue(tasaError <= 0.15);
+        }catch (LincolnLinesException e){
+            fail("Lanzo Excepcion");
+        }
     }
 
     @Test
     void shouldAgendar(){
-        Cotizacion cotizaion1 = new Cotizacion(new Vehiculo("Suzuki","Swift","2014"));
-        Cotizacion cotizaion2 = new Cotizacion(new Vehiculo("Mercedes","Sedan","2022"));
-        assertTrue(cotizacionSerrvice.agendarCita(LocalDateTime.of(2025, 5, 10, 8, 0), "Bogota", "Calle 159 #7-74", cotizaion1));
-        when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1));
-        assertTrue(cotizacionSerrvice.agendarCita(LocalDateTime.of(2026,5,10,15,0),"Bogota","Calle 66 #11-50",cotizaion2));
-        when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1,cotizaion2));
-        assertEquals(2,cotizacionSerrvice.cotizacionesAgendadas().size());
+       try{
+           Cotizacion cotizaion1 = new Cotizacion(new Vehiculo("Suzuki","Swift","2014"));
+           Cotizacion cotizaion2 = new Cotizacion(new Vehiculo("Mercedes","Sedan","2022"));
+           cotizacionSerrvice.agendarCita(LocalDateTime.of(2025, 5, 10, 8, 0), "Bogota", "Calle 159 #7-74", cotizaion1);
+           when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1));
+           cotizacionSerrvice.agendarCita(LocalDateTime.of(2026,5,10,15,0),"Bogota","Calle 66 #11-50",cotizaion2);
+           when(cotizacionRepository.findByCita()).thenReturn(List.of(cotizaion1,cotizaion2));
+           assertEquals(2,cotizacionSerrvice.cotizacionesAgendadas().size());
+       }catch (LincolnLinesException e){
+           fail("Lanzo excepcion");
+       }
 
     }
 
     @Test
     void shouldCalcularTotal(){
-        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
-        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
-        Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
-        Producto producto1 = new Producto("Producto", "Categoria",5,"USD");
-        Producto producto3 = new Producto("Producto2", "Categoria1",50,"EUR");
-        producto.setDescuento(0.8f);
-        producto.setImpuesto(0.2f);
-        producto1.setDescuento(0.1f);
-        producto1.setImpuesto(0.6f);
-        vehiculoService.agregarVehiculo(vehiculo);
-        productoService.agregarProducto(producto);
-        productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto3);
-        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
-        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
-        cotizacionSerrvice.agregarAlCarritoNVez(producto3,cotizacion);
-        float calculado = cotizacionSerrvice.cotizacionTotal(cotizacion);
-        float esperado = 728799.79f + 101947.09f + 30514.26f;
-        assertTrue(0.15 <= (esperado-calculado)/esperado);
-        /*
-        Carrito 728'799,79
-        Descuento 101947,09
-        Impuesto 30'514.26
-         */
-
-
-
+        try{
+            Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+            Cotizacion cotizacion = new Cotizacion(vehiculo);
+            when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+            when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+            Producto producto =  new Producto("Producto1","Categoria",500000f,"COP");
+            Producto producto1 = new Producto("Producto", "Categoria",5,"USD");
+            Producto producto3 = new Producto("Producto2", "Categoria1",50,"EUR");
+            producto.setDescuento(0.8f);
+            producto.setImpuesto(0.2f);
+            producto1.setDescuento(0.1f);
+            producto1.setImpuesto(0.6f);
+            vehiculoService.agregarVehiculo(vehiculo);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(producto1);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto3);
+            cotizacion = cotizacionSerrvice.agregarAlCarrito(producto,vehiculo,null);
+            when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+            cotizacionSerrvice.agregarAlCarrito(producto1,cotizacion.getVehiculo(),cotizacion);
+            cotizacionSerrvice.agregarAlCarrito(producto3,cotizacion.getVehiculo(),cotizacion);
+            float calculado = cotizacionSerrvice.cotizacionTotal(cotizacion);
+            float esperado = 728799.79f + 101947.09f + 30514.26f;
+            assertTrue(0.15 <= (esperado-calculado)/esperado);
+        }catch (LincolnLinesException e){
+            fail("Lanzar excepcion");
+        }
     }
 
 
@@ -209,24 +239,28 @@ class SpringApplicationTests {
      */
     @Test
     void testQuitarDelCarrito() {
-        Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
-        when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
-        Producto producto =  new Producto("Producto1","Categoria",200f,"US");
-        Producto producto1 = new Producto("Producto", "Categoria",200f,"US");
-        vehiculoService.agregarVehiculo(vehiculo);
-        productoService.agregarProducto(producto);
-        productoService.agregarProducto(producto1);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
-        vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
-        cotizacion = cotizacionSerrvice.agregarAlCarritoPrimeraVez(producto,vehiculo);
-        when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
-        cotizacionSerrvice.agregarAlCarritoNVez(producto1,cotizacion);
-        cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
-        assertEquals(1,cotizacionSerrvice.verCarrito(cotizacion.getIden()).size());
-        assertFalse(cotizacionSerrvice.verCarrito(cotizacion.getIden()).contains(producto));
-        assertTrue(cotizacionSerrvice.verCarrito(cotizacion.getIden()).contains(producto1));
+        try{
+            Vehiculo vehiculo = new Vehiculo("TOYOTAF","PRIUS","2005");
+            Cotizacion cotizacion = new Cotizacion(vehiculo);
+            when(vehiculoRepository.findByMarcaAndModel(anyString(),anyString())).thenReturn(List.of(vehiculo));
+            when(cotizacionRepository.save(any(Cotizacion.class))).thenReturn(cotizacion);
+            Producto producto =  new Producto("Producto1","Categoria",200f,"US");
+            Producto producto1 = new Producto("Producto", "Categoria",200f,"US");
+            vehiculoService.agregarVehiculo(vehiculo);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(producto1);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto);
+            vehiculoService.agregarProducto("TOYOTAF","PRIUS",producto1);
+            cotizacion = cotizacionSerrvice.agregarAlCarrito(producto,vehiculo,null);
+            when(cotizacionRepository.findByIden(anyLong())).thenReturn(List.of(cotizacion));
+            cotizacionSerrvice.agregarAlCarrito(producto1,cotizacion.getVehiculo(),cotizacion);
+            cotizacionSerrvice.quitarDelCarrito(producto,cotizacion);
+            assertEquals(1,cotizacionSerrvice.verCarrito(cotizacion.getIden()).size());
+            assertFalse(cotizacionSerrvice.verCarrito(cotizacion.getIden()).contains(producto));
+            assertTrue(cotizacionSerrvice.verCarrito(cotizacion.getIden()).contains(producto1));
+        }catch (LincolnLinesException e){
+            fail("Lanzo Excepcion");
+        }
     }
 
     /**
@@ -274,16 +308,20 @@ class SpringApplicationTests {
      */
     @Test
     void testBuscarProductos() {
-        Producto producto1 = new Producto("Mouse", "Computación", 20.0f, "USD");
-        Producto producto2 = new Producto("Teclado", "Computación", 40.0f, "USD");
-        productoService.agregarProducto(producto1);
-        productoService.agregarProducto(producto2);
-        when(productoRepository.findAll()).thenReturn(List.of(producto1,producto2));
-        List<Producto> productos = productoService.buscarProductos();
+        try{
+            Producto producto1 = new Producto("Mouse", "Computación", 20.0f, "USD");
+            Producto producto2 = new Producto("Teclado", "Computación", 40.0f, "USD");
+            productoService.agregarProducto(producto1);
+            productoService.agregarProducto(producto2);
+            when(productoRepository.findAll()).thenReturn(List.of(producto1,producto2));
+            List<Producto> productos = productoService.buscarProductos();
+            assertEquals(2, productos.size());
+            assertTrue(productos.contains(producto1));
+            assertTrue(productos.contains(producto2));
+        }catch (LincolnLinesException e){
+            fail("Lanzo Excepcion");
+        }
 
-        assertEquals(2, productos.size());
-        assertTrue(productos.contains(producto1));
-        assertTrue(productos.contains(producto2));
     }
 
     /**
@@ -291,28 +329,38 @@ class SpringApplicationTests {
      */
     @Test
     void testActualizarProducto() {
-        Producto producto = new Producto("Mouse", "Computación", 20.0f, "USD");
-        productoService.agregarProducto(producto);
-        when(productoRepository.findByNombre(anyString())).thenReturn(List.of(producto));
-        Producto updatedProducto = new Producto("Mouse", "Computación", 25.0f, "USD");
-        productoService.actualizarProducto(updatedProducto);
-        when(productoRepository.findByNombre(anyString())).thenReturn(List.of(updatedProducto));
-        Producto foundProducto = productoService.buscarProductoPorNombre("Mouse");
-        assertEquals(25.0f, foundProducto.getValor());
+        try{
+            Producto producto = new Producto("Mouse", "Computación", 20.0f, "USD");
+            productoService.agregarProducto(producto);
+            when(productoRepository.findByNombre(anyString())).thenReturn(List.of(producto));
+            Producto updatedProducto = new Producto("Mouse", "Computación", 25.0f, "USD");
+            productoService.actualizarProducto(updatedProducto);
+            when(productoRepository.findByNombre(anyString())).thenReturn(List.of(updatedProducto));
+            Producto foundProducto = productoService.buscarProductoPorNombre("Mouse");
+            assertEquals(25.0f, foundProducto.getValor());
+        }catch (LincolnLinesException e){
+            fail("Lanzo Excepcion");
+        }
+
+
     }
 
 
     @Test
     void testBorrarProducto() {
 
-        Producto producto = new Producto("Impresora", "Oficina", 200.0f, "USD");
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
-        productoService.agregarProducto(producto);
+        try{
+            Producto producto = new Producto("Impresora", "Oficina", 200.0f, "USD");
+            when(productoRepository.save(any(Producto.class))).thenReturn(producto);
+            productoService.agregarProducto(producto);
+            productoService.borrarProducto("Impresora");
+            Producto foundProducto = productoService.buscarProductoPorNombre("Impresora");
+            assertNull(foundProducto);
+        }catch (LincolnLinesException e){
+            fail("Lanzo Excepcion");
+        }
 
-        productoService.borrarProducto("Impresora");
 
-        Producto foundProducto = productoService.buscarProductoPorNombre("Impresora");
-        assertNull(foundProducto);
     }
 
     /**
@@ -320,13 +368,17 @@ class SpringApplicationTests {
      */
     @Test
     void testBorrarProductoService() {
-        Producto producto = new Producto("Impresora", "Oficina", 200.0f, "USD");
-        productoService.agregarProducto(producto);
+       try{
+           Producto producto = new Producto("Impresora", "Oficina", 200.0f, "USD");
+           productoService.agregarProducto(producto);
 
-        productoService.borrarProducto("Impresora");
+           productoService.borrarProducto("Impresora");
 
-        Producto foundProducto = productoService.buscarProductoPorNombre("Impresora");
-        assertNull(foundProducto);
+           Producto foundProducto = productoService.buscarProductoPorNombre("Impresora");
+           assertNull(foundProducto);
+       }catch (LincolnLinesException e){
+           fail("Lanzo excepcion");
+       }
     }
 
     /**

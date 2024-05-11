@@ -1,5 +1,6 @@
 package co.edu.eci.cvds.service;
 
+import co.edu.eci.cvds.Exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Cotizacion;
 import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.model.Vehiculo;
@@ -83,44 +84,34 @@ public class CotizacionSerrvice {
     }
 
     /**
-     * Función que agrega por primera vez un producto en la lista de productos de una cotizacion que se crea dentro de la misma funcion
-     * @param producto producto ue va a ser agregado.
-     * @param vehiculo vehiculo al cual se le esta haciendo la cotizacion
-     * @return cotizacion creada para el vehiculo especificado y ya tiene en su carrito un producto.
+     * Funcion que agrega un producto a la lista de productos de cotizaciones
+     * @param producto, producto a agregar al carrito.
+     * @param vehiculo, vehiculo para el cual se hace la consulta
+     * @param cotizacion, cotizacion en cuestion
+     * @return cotizacion especificada.
+     * @throws LincolnLinesException DATOS_FALTANTES si tanto vehiculo como cotizacion son null
+     * VEHICULO_NO_COMPATIBLE si el vehiculo ingresado es diferente al de la cotizacion
      */
-    public Cotizacion agregarAlCarritoPrimeraVez(Producto producto, Vehiculo vehiculo){
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        if(vehiculo.productoApto(producto)){
-            cotizacion.setEstado(Cotizacion.EN_PROCESO);
-            cotizacion.agregarProductoAlCarrito(producto);
-            producto.agregarCotizacion(cotizacion);
-            vehiculo.agregarCotizacion(cotizacion);
-            cotizacionRepository.save(cotizacion);
-            productoRepository.save(producto);
-            vehiculoRepository.save(vehiculo);
-        }
+    public Cotizacion agregarAlCarrito(Producto producto, Vehiculo vehiculo, Cotizacion cotizacion) throws LincolnLinesException {
+        if(cotizacion == null && vehiculo == null) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
+        if(cotizacion != null && !cotizacion.getVehiculo().equals(vehiculo)) throw new LincolnLinesException(LincolnLinesException.VEHICULO_NO_COMPATIBLE);
+        if(cotizacion == null) cotizacion = new Cotizacion(vehiculo);
+        cotizacion.setEstado(Cotizacion.EN_PROCESO);
+        cotizacion.agregarProductoAlCarrito(producto);
+        producto.agregarCotizacion(cotizacion);
+        vehiculo.agregarCotizacion(cotizacion);
+        cotizacionRepository.save(cotizacion);
+        productoRepository.save(producto);
+        vehiculoRepository.save(vehiculo);
         return cotizacion;
     }
 
+
     /**
-     *Metodo que agrega un
-     * @param producto
-     * @param cotizacion
+     * Metodo que quita producto del carrito
+     * @param producto, producto a quitar
+     * @param cotizacion cotizacion de la cual se va a quitar el producto
      */
-    public void agregarAlCarritoNVez(Producto producto, Cotizacion cotizacion){
-        Vehiculo vehiculo = cotizacion.getVehiculo();
-        if(vehiculo.productoApto(producto)){
-            cotizacion.agregarProductoAlCarrito(producto);
-            producto.agregarCotizacion(cotizacion);
-            vehiculo.agregarCotizacion(cotizacion);
-            cotizacionRepository.save(cotizacion);
-            productoRepository.save(producto);
-            vehiculoRepository.save(vehiculo);
-            if(cotizacion.getEstado().equals(Cotizacion.ELIMINADO)) cotizacion.setEstado(Cotizacion.EN_PROCESO);
-        }
-
-    }
-
     public void quitarDelCarrito(Producto producto, Cotizacion cotizacion){
         cotizacion.eliminarProductoDelCarrito(producto);
         producto.eliminarCotizacion(cotizacion);
@@ -132,13 +123,22 @@ public class CotizacionSerrvice {
     }
 
 
-
+    /**
+     * Funcion que investiga los productos que estan incluidos en el carrito de una cotizacion en especifico
+     * @param cotizacionId, identificador del cotizador  a avegiruar
+     * @return lita de productos
+     */
     public List<Producto> verCarrito(Long cotizacionId){
         Cotizacion cotizacion = cotizacionRepository.findByIden(cotizacionId).get(0);
         return cotizacion.getProductosCotizacion();
 
     }
 
+    /**
+     * Funcion que convierte cualquier producto del carrito a pesos colombianos
+     * @param producto, producto  a convertir
+     * @return total de los productos en el carrito.
+     */
     private Money moneyConversion(Producto producto){
         if(!producto.getMoneda().equals("COP")) return convertidorCop(Money.of(producto.getValor(),producto.getMoneda()));
         else return Money.of(producto.getValor(),producto.getMoneda());
@@ -152,7 +152,11 @@ public class CotizacionSerrvice {
         return total;
     }
 
-
+    /**
+     * Calcula el total teniendo en cuenta, total del carrito, impuesto y descuento
+     * @param cotizacion
+     * @return total a paraagar.
+     */
 
     public float cotizacionTotal(Cotizacion cotizacion){
         Money total = calcularTotalCarrito(cotizacion);
@@ -176,14 +180,26 @@ public class CotizacionSerrvice {
        return total.getNumber().floatValue();
     }
 
-    public boolean agendarCita(LocalDateTime cita, String ciudad,String direccion,Cotizacion cotizacion){
-        if(fechaDisponible(cita)){
-            cotizacion.agendar(cita,ciudad,direccion);
-            cotizacionRepository.save(cotizacion);
-            return true;
-        }
-        return false;
+    /**
+     * Metodo para separar cita
+     * @param cita, fecha y hora en la que se va a realizar la cita
+     * @param ciudad, ciudad donde dse va a recoger el vehiculo
+     * @param direccion, direccion donde se va a recoger el vehiculo
+     * @param cotizacion
+     * @throws LincolnLinesException FECHA_NO_DISPONIBLE si alguna de las cotizaciones ya agendadas se  ruza con la actual.
+     */
+    public void agendarCita(LocalDateTime cita, String ciudad,String direccion,Cotizacion cotizacion) throws LincolnLinesException {
+        if(!fechaDisponible(cita)) throw new LincolnLinesException(LincolnLinesException.FECHA_NO_DISPONIBLE);
+        cotizacion.agendar(cita,ciudad,direccion);
+        cotizacionRepository.save(cotizacion);
+
     }
+
+    /**
+     * Funcion que se encarta de verificar que una clase tenga baja punteria
+     * @param fechaEsperada, fecha la cul se va a comparar con lods demas
+     * @return boolean que inidca si se va a poder agendar cita
+     */
 
     private boolean fechaDisponible(LocalDateTime fechaEsperada){
         LocalDate fechaBase;
