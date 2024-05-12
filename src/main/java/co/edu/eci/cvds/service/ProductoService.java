@@ -1,8 +1,10 @@
 package co.edu.eci.cvds.service;
 
 import co.edu.eci.cvds.Exception.LincolnLinesException;
+import co.edu.eci.cvds.model.Categoria;
 import co.edu.eci.cvds.model.Producto;
-import co.edu.eci.cvds.model.Vehiculo;
+
+import co.edu.eci.cvds.repository.CategoriaRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,12 @@ import java.util.List;
 @Service
 public class ProductoService {
     private final ProductoRepository productoRepository;
+    private final CategoriaRepository categoriaRepository;
 
     @Autowired
-    public ProductoService(ProductoRepository productoRepository) {
+    public ProductoService(ProductoRepository productoRepository, CategoriaRepository categoriaRepository) {
         this.productoRepository = productoRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     /**
@@ -78,6 +82,17 @@ public class ProductoService {
      */
     public void borrarProducto(String nombre) {
         productoRepository.deleteById(nombre);
+    }
+
+    /**
+     * Metodo que asocia una categoria con un producto
+     * @param categoria, categoria a la que pertenece el producto
+     * @param producto, producto que se desea asociar
+     */
+    public void asociarProducto(Categoria categoria, Producto producto){
+        producto.agregarCategoria(categoria);
+        categoriaRepository.save(categoria);
+        productoRepository.save(producto);
     }
 
 

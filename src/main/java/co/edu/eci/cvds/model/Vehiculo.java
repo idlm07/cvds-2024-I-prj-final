@@ -90,6 +90,7 @@ public class Vehiculo {
         result = prime * result + ((marca == null) ? 0 : marca.hashCode());
         result = prime * result + ((model == null) ? 0 : model.hashCode());
         result = prime * result + ((yearVehicle == null) ? 0 : yearVehicle.hashCode());
+
         return result;
     }
     @Override
