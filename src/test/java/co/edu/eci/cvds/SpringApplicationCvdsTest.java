@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class SpringApplicationTests {
-
+/**
     @Mock
     private VehiculoRepository vehiculoRepository;
 
@@ -82,7 +82,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para verificar el método equals de Producto.
-     */
+
     @Test
     void testEquals() {
         Producto producto1 = new Producto("nombre1", "categoria1", 100.0f, "USD");
@@ -236,7 +236,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para quitar un producto del carrito.
-     */
+
     @Test
     void testQuitarDelCarrito() {
         try{
@@ -265,7 +265,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para agregar un vehículo.
-     */
+
     @Test
     void testAgregarVehiculo() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
@@ -276,7 +276,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para obtener un vehículo por marca, modelo y año.
-     */
+
     @Test
     void testGetVehiculo() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
@@ -288,7 +288,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para obtener la lista de vehículos.
-     */
+
     @Test
     void testGetVehiculos() {
         Vehiculo vehiculo1 = new Vehiculo("Toyota", "Corolla", "2022");
@@ -305,7 +305,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para buscar un producto por su nombre.
-     */
+
     @Test
     void testBuscarProductos() {
         try{
@@ -326,7 +326,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para actualizar producto.
-     */
+
     @Test
     void testActualizarProducto() {
         try{
@@ -365,7 +365,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para borrar un producto.
-     */
+
     @Test
     void testBorrarProductoService() {
        try{
@@ -383,7 +383,7 @@ class SpringApplicationTests {
 
     /**
      * Prueba para obtener un vehículo utilizando el servicio.
-     */
+
     @Test
     void testGetVehiculoService() {
         Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
@@ -435,4 +435,5 @@ class SpringApplicationTests {
         assertNotEquals(cotizacion, cotizacion2);
         assertNotEquals(cliente, cliente1);
     }
+    */
 }

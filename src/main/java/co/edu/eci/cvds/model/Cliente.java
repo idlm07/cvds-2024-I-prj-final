@@ -1,5 +1,7 @@
 package co.edu.eci.cvds.model;
 
+import co.edu.eci.cvds.ID.ClienteID;
+import co.edu.eci.cvds.ID.VehiculoID;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Clientes")
+@IdClass(ClienteID.class)
 public class Cliente {
     @Id
     @Column(name = "nombre", length = 50,nullable = false)

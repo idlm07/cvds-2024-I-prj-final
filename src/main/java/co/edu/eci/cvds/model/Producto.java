@@ -38,7 +38,7 @@ public class Producto {
     @Getter private Set<Vehiculo> vehiculos;
     @ManyToMany(mappedBy = "productosCotizacion")
     @Getter private Set<Cotizacion> cotizaciones;
-    @ManyToMany(mappedBy = "v")
+    @ManyToMany(mappedBy = "productosCategoria")
     @Getter private Set<Categoria> categorias;
 
 

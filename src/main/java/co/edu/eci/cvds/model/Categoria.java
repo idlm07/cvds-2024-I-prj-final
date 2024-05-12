@@ -22,16 +22,16 @@ public class Categoria {
     @Getter private String nombre;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "v",
+            name = "ProductosPorCategoria",
             joinColumns = {
                     @JoinColumn(name = "nombre")
             },
             inverseJoinColumns = @JoinColumn(name = "producto", referencedColumnName = "nombre")
     )
-    @Getter private Set<Producto> productos;
+    @Getter private Set<Producto> productosCategoria;
 
     public Categoria(){
-        this.productos = new HashSet<>();
+        this.productosCategoria = new HashSet<>();
     }
 
     /**
@@ -40,7 +40,7 @@ public class Categoria {
      */
     public Categoria(String nombre){
         this.nombre = nombre;
-        this.productos = new HashSet<>();
+        this.productosCategoria = new HashSet<>();
     }
 
     /**
@@ -48,15 +48,15 @@ public class Categoria {
      * @param producto a agregar
      */
     public void agregarProducto(Producto producto){
-        this.productos.add((producto));
+        this.productosCategoria.add((producto));
     }
 
     /**
-     * Metodo que elimina un producto de la lista de productos
+     * Metodo que elimina un producto de la lista de productosCategoria
      * @param producto a eliminar
      */
     public void eliminarProducto(Producto producto){
-        this.productos.remove(producto);
+        this.productosCategoria.remove(producto);
     }
 
 

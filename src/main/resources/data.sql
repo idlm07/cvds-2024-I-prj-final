@@ -1,4 +1,5 @@
-/*Poblando VEHICULOS*/
+INSERT INTO CONFIGURATION (PROPIEDAD, VALOR) VALUES ('1', 'Valor 1');
+/*Poblando VEHICULOS
 INSERT INTO VEHICULOS (MARCA, MODELO, YEAR_VEHICLE)VALUES('Toyota','PRIUS','1997');
 INSERT INTO VEHICULOS (MARCA, MODELO, YEAR_VEHICLE)VALUES('Toyota','SUPRA','1978');
 INSERT INTO VEHICULOS (MARCA, MODELO, YEAR_VEHICLE)VALUES('Toyota','CROWN','1955');
@@ -10,7 +11,6 @@ insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('GMC', '2500 Club Co
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Dodge', 'Durango', '1999');
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Dodge', 'Neon', '2001');
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('BMW', 'X3', '2011');
-
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('BMW', '745', 2002);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Nissan', 'Maxima', 1997);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Cadillac', 'STS-V', 2006);
@@ -41,9 +41,7 @@ insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Chevrolet', 'Suburb
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Toyota', 'Tundra', 2008);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Kia', 'Amanti', 2009);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('GMC', 'Savana', 2011);
-
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Chrysler', 'Cirrus', 1999);
-
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Ford', 'Explorer', 1994);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Mazda', 'Millenia', 1996);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Lincoln', 'Continental', 1992);
@@ -93,4 +91,4 @@ insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Dodge', 'Ram', 2009
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Mitsubishi', 'Endeavor', 2007);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('Chrysler', 'LHS', 2001);
 insert into VEHICULOS (MARCA, MODELO, YEAR_VEHICLE) values ('GMC', 'Sierra Hybrid', 2006);
-
+*/

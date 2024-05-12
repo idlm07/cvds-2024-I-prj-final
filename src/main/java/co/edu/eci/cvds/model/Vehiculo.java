@@ -34,7 +34,6 @@ public class Vehiculo {
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
     @Getter private Set<Producto> productosVehiculo;
-
     @OneToMany(mappedBy = "vehiculo")
     @Getter private Set<Cotizacion> cotizaciones;
 
