@@ -1,9 +1,11 @@
 package co.edu.eci.cvds.service;
 
 import co.edu.eci.cvds.Exception.LincolnLinesException;
+import co.edu.eci.cvds.model.Cliente;
 import co.edu.eci.cvds.model.Cotizacion;
 import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.model.Vehiculo;
+import co.edu.eci.cvds.repository.ClienteRepository;
 import co.edu.eci.cvds.repository.CotizacionRepository;
 import co.edu.eci.cvds.repository.ProductoRepository;
 import co.edu.eci.cvds.repository.VehiculoRepository;
@@ -28,17 +30,24 @@ import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
 import org.javamoney.moneta.Money;
 
+/**
+ * Clase Service de cotizacion
+ * @author Equipo Pixel Pulse
+ * 10/05/2024
+ */
 @Service
-public class CotizacionSerrvice {
+public class CotizacionService {
     private final CotizacionRepository cotizacionRepository;
     private final ProductoRepository productoRepository;
     private final VehiculoRepository vehiculoRepository;
+    private final ClienteRepository clienteRepository;
 
     @Autowired
-    public CotizacionSerrvice(CotizacionRepository cotizacionRepository, ProductoRepository productoRepository, VehiculoRepository vehiculoRepository) {
+    public CotizacionService(CotizacionRepository cotizacionRepository, ProductoRepository productoRepository, VehiculoRepository vehiculoRepository,ClienteRepository clienteRepository) {
         this.cotizacionRepository = cotizacionRepository;
         this.productoRepository = productoRepository;
         this.vehiculoRepository = vehiculoRepository;
+        this.clienteRepository = clienteRepository;
     }
     /**
     * Función que convierte cualquier moneda a pesos colombianos
@@ -47,18 +56,15 @@ public class CotizacionSerrvice {
     * @return, moneda convertida a COP
     *
     */
-
     private Money convertidorCop(Money origen){
         ExchangeRateProvider proveedor = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
         CurrencyConversion conversion = proveedor.getCurrencyConversion("USD");
         Money productMoneyUsd = origen.with(conversion);
         return Money.of(productMoneyUsd.getNumber().floatValue()*3900,"COP");
     }
-
     /**
      * Función que devuelve lista de cotizaciones en la Base de Datos
-     *
-     * @return, lista de vehiculos que esta en la base de datos.
+     * @return, lista de cotizaciones que esta en la base de datos.
      */
 
     public List<Cotizacion> listarCotizaciones(){
@@ -66,7 +72,7 @@ public class CotizacionSerrvice {
     }
 
     /**
-     *
+     *Funcion que indica cotizaciones con citas agendadas
      * @return lista de las cotizaciones que ya fueron agendadas.
      */
     public List<Cotizacion> cotizacionesAgendadas(){
@@ -94,12 +100,10 @@ public class CotizacionSerrvice {
      */
     public Cotizacion agregarAlCarrito(Producto producto, Vehiculo vehiculo, Cotizacion cotizacion) throws LincolnLinesException {
         if(cotizacion == null && vehiculo == null) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
-        if(cotizacion != null && !cotizacion.getVehiculo().equals(vehiculo)) throw new LincolnLinesException(LincolnLinesException.VEHICULO_NO_COMPATIBLE);
-        if(cotizacion == null) cotizacion = new Cotizacion(vehiculo);
+        else if(cotizacion == null) cotizacion = new Cotizacion(vehiculo);
+        else vehiculo = cotizacion.getVehiculo();
         cotizacion.setEstado(Cotizacion.EN_PROCESO);
         cotizacion.agregarProductoAlCarrito(producto);
-        producto.agregarCotizacion(cotizacion);
-        vehiculo.agregarCotizacion(cotizacion);
         cotizacionRepository.save(cotizacion);
         productoRepository.save(producto);
         vehiculoRepository.save(vehiculo);
@@ -114,10 +118,6 @@ public class CotizacionSerrvice {
      */
     public void quitarDelCarrito(Producto producto, Cotizacion cotizacion){
         cotizacion.eliminarProductoDelCarrito(producto);
-        producto.eliminarCotizacion(cotizacion);
-        if (cotizacion.getProductosCotizacion().isEmpty()) {
-            cotizacion.setEstado(Cotizacion.ELIMINADO);
-        }
         cotizacionRepository.save(cotizacion);
         productoRepository.save(producto);
     }
@@ -135,15 +135,20 @@ public class CotizacionSerrvice {
     }
 
     /**
-     * Funcion que convierte cualquier producto del carrito a pesos colombianos
-     * @param producto, producto  a convertir
-     * @return total de los productos en el carrito.
+     * Funcion que revisa si un producto esta en pesos colombianos, de no estarlo, convierte su valor a pesos colombianos
+     * @param producto, producto  a analizar
+     * @return valor del producto en pesos colombianos
      */
     private Money moneyConversion(Producto producto){
         if(!producto.getMoneda().equals("COP")) return convertidorCop(Money.of(producto.getValor(),producto.getMoneda()));
         else return Money.of(producto.getValor(),producto.getMoneda());
     }
 
+    /**
+     * Calcula el subtotal de los productos agregados al carrito
+     * @param cotizacion, cotizacion que se desea realizar
+     * @return Money del subtotal del carrito
+     */
     public Money calcularTotalCarrito(Cotizacion cotizacion){
         Money total = Money.zero(Monetary.getCurrency("COP"));
         for (Producto producto : verCarrito(cotizacion.getIden())) {
@@ -153,9 +158,9 @@ public class CotizacionSerrvice {
     }
 
     /**
-     * Calcula el total teniendo en cuenta, total del carrito, impuesto y descuento
+     * Calcula el total de una cotizacion teniendo en cuenta, subtotal del carrito, impuesto y descuento
      * @param cotizacion
-     * @return total a paraagar.
+     * @return total a pagar.
      */
 
     public float cotizacionTotal(Cotizacion cotizacion){
@@ -181,17 +186,18 @@ public class CotizacionSerrvice {
     }
 
     /**
-     * Metodo para separar cita
+     * Metodo para separar cita a una cotizacion especifica
      * @param cita, fecha y hora en la que se va a realizar la cita
      * @param ciudad, ciudad donde dse va a recoger el vehiculo
      * @param direccion, direccion donde se va a recoger el vehiculo
-     * @param cotizacion
-     * @throws LincolnLinesException FECHA_NO_DISPONIBLE si alguna de las cotizaciones ya agendadas se  ruza con la actual.
+     * @param cotizacion a la cual se le va agendar cita
+     * @throws LincolnLinesException FECHA_NO_DISPONIBLE si la fecha que se desea agendar ya esta tomada.
      */
-    public void agendarCita(LocalDateTime cita, String ciudad,String direccion,Cotizacion cotizacion) throws LincolnLinesException {
+    public void agendarCita(LocalDateTime cita, String ciudad, String direccion, Cotizacion cotizacion, Cliente cliente) throws LincolnLinesException {
         if(!fechaDisponible(cita)) throw new LincolnLinesException(LincolnLinesException.FECHA_NO_DISPONIBLE);
-        cotizacion.agendar(cita,ciudad,direccion);
+        cotizacion.agendar(cita,ciudad,direccion,cliente);
         cotizacionRepository.save(cotizacion);
+        clienteRepository.save(cliente);
 
     }
 

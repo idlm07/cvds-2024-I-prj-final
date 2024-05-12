@@ -399,14 +399,12 @@ class SpringApplicationTests {
         Vehiculo vehiculo2 = new Vehiculo("Toyota", "Corolla", "2022");
         Producto producto = new Producto("Producto1","Categoria",200f,"COP");
         Producto producto1 = new Producto("Producto1","Categoria",200f,"COP");
-        producto.setImpuesto(0.15f);
         producto.setImagen("...");
-        producto1.setImpuesto(0.15f);
         producto1.setImagen("...");
         Cotizacion cotizacion = new Cotizacion();
         Cotizacion cotizacion2 = new Cotizacion();
-        Cliente cliente = new Cliente("castanocamilo522@gmail.com","Camilo","Casta",null,"3183074075");
-        Cliente cliente1 = new Cliente("castanocamilo522@gmail.com","Camilo","Casta",null,"3183074075");
+        Cliente cliente = new Cliente("Camilo","Casta","3183074075","castanocamilo522@gmail.com");
+        Cliente cliente1 = new Cliente("Camilo","Casta","3183074075","castanocamilo522@gmail.com");
         assertEquals(vehiculo, vehiculo2);
         assertEquals(producto, producto1);
         assertEquals(cotizacion, cotizacion2);
@@ -420,14 +418,18 @@ class SpringApplicationTests {
         vehiculo2.setModel("Cambio");
         Producto producto = new Producto("Producto1","Categoria",200f,"COP");
         Producto producto1 = new Producto("Producto1","Categoria",200f,"COP");
-        producto.setImpuesto(0.15f);
+        try {
+            producto.setImpuesto(0.15f);
+        }catch (LincolnLinesException e){
+            fail("lanzo Excepcion");
+        }
         producto.setImagen("...");
         Cotizacion cotizacion = new Cotizacion();
         Cotizacion cotizacion2 = new Cotizacion();
         cotizacion2.agendar(null,"Bogota",null);
-        Cliente cliente = new Cliente("castanocamilo522@gmail.com","Camilo","Casta",null,"3183074075");
-        Cliente cliente1 = new Cliente("castanocamilo522@gmail.com","Camilo","Casta",null,"3183074075");
-        cliente.setSegundoApellido("Quintanilla");
+        Cliente cliente = new Cliente("Camilo","Casta","3183074075","castanocamilo522@gmail.com");
+        Cliente cliente1 = new Cliente("Camilo","Casta","3183074075","castanocamilo522@gmail.com");
+        cliente.setApellido("Quintanilla");
         assertNotEquals(vehiculo, vehiculo2);
         assertNotEquals(producto, producto1);
         assertNotEquals(cotizacion, cotizacion2);

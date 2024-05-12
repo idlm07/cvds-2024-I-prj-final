@@ -15,6 +15,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Clase Service de Vehiculo
+ * @author Equipo Pixel Pulse
+ * 10/05/2024
+ */
+
 @Service
 public class VehiculoService {
     private final VehiculoRepository vehiculoRepository;
@@ -33,7 +39,6 @@ public class VehiculoService {
      * @return vehiculo registrado
      */
     public Vehiculo agregarVehiculo(Vehiculo vehiculo) {
-
         return vehiculoRepository.save(vehiculo);
     }
 

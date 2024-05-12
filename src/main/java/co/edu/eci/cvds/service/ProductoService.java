@@ -2,6 +2,7 @@ package co.edu.eci.cvds.service;
 
 import co.edu.eci.cvds.Exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Producto;
+import co.edu.eci.cvds.model.Vehiculo;
 import co.edu.eci.cvds.repository.ProductoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,12 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+
+/**
+ * Clase Service de Producto
+ * @author Equipo Pixel Pulse
+ * 10/05/2024
+ */
 
 @Service
 public class ProductoService {
@@ -23,10 +30,8 @@ public class ProductoService {
      * Funcion que registra un producto a la base de datos.
      * @param producto, producto a registrar
      * @return producto registrado
-     * @throws LincolnLinesException VALOR_NEGATIVO si el producto ingresado tiene algun valor (valor, impuesto o descuento) negativo
      */
-    public Producto agregarProducto(Producto producto) throws LincolnLinesException {
-            if(producto.getValor() < 0 || producto.getImpuesto() < 0 || producto.getDescuento() < 0)  throw new LincolnLinesException(LincolnLinesException.VALOR_NEGATIVO);
+    public Producto agregarProducto(Producto producto){
             return productoRepository.save(producto);
 
     }
@@ -41,25 +46,28 @@ public class ProductoService {
         else return null;
     }
 
+    /**
+     * Funcion que devuelve lista de productos
+     * @return lista de productos registrada en la base de datos
+     */
     public List<Producto> buscarProductos() {
         return productoRepository.findAll();
     }
 
     /**
-     * @param producto
+     * Metodo que actualiza el producto especificado
+     * @param producto con los nuevos valores
      */
     public void actualizarProducto(Producto producto) throws LincolnLinesException {
-        if(producto.getValor() < 0 || producto.getImpuesto() < 0 || producto.getDescuento() < 0) throw new LincolnLinesException(LincolnLinesException.VALOR_NEGATIVO);
         Producto productoExistente = this.buscarProductoPorNombre(producto.getNombre());
+        productoExistente.setValor(producto.getValor());
+        productoExistente.setImpuesto(producto.getImpuesto());
+        productoExistente.setDescuento(producto.getDescuento());
         productoExistente.setNombre(producto.getNombre());
         productoExistente.setDescripcionBreve(producto.getDescripcionBreve());
         productoExistente.setDescripcionTecnica(producto.getDescripcionTecnica());
-        productoExistente.setCategoria(producto.getCategoria());
         productoExistente.setImagen(producto.getImagen());
-        productoExistente.setValor(producto.getValor());
         productoExistente.setMoneda(producto.getMoneda());
-        productoExistente.setImpuesto(producto.getImpuesto());
-        productoExistente.setDescuento(producto.getDescuento());
         productoRepository.save(producto);
 
     }
@@ -71,6 +79,8 @@ public class ProductoService {
     public void borrarProducto(String nombre) {
         productoRepository.deleteById(nombre);
     }
+
+
 
 
 

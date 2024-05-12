@@ -6,21 +6,23 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Clase - Entidad Cliente
+ * @author Equipo Pixel Pulse
+ * 10/05/2024
+ */
+
 @Entity
-@Table(
-        name = "Clientes",
-        uniqueConstraints = {@UniqueConstraint(name = "UK_Clientes", columnNames = {"nombre","primerApellido","segundoApellido"})}
-)
+@Table(name = "Clientes")
 public class Cliente {
     @Id
-    @Column(name = "correo", length = 50, nullable = false)
-    @Getter @Setter private String correo;
     @Column(name = "nombre", length = 50,nullable = false)
     @Getter @Setter private String nombre;
-    @Column(name = "primerApellido", length = 50, nullable = false)
-    @Getter @Setter private String primerApellido;
-    @Column(name = "segundoApellido",length = 50)
-    @Getter @Setter private String segundoApellido;
+    @Id
+    @Column(name = "apellido", length = 100, nullable = false)
+    @Getter @Setter private String apellido;
+    @Column(name = "correo", length = 50)
+    @Getter @Setter private String correo;
     @Column(name = "celular", length = 10, nullable = false)
     @Getter @Setter private String celular;
     @OneToMany(mappedBy = "cliente")
@@ -30,17 +32,31 @@ public class Cliente {
         cotizaciones = new HashSet<>();
     }
 
-    public Cliente(String correo, String nombre, String primerApellido, String segundoApellido, String celular){
+    /**
+     * Constructos de la clase Cliente
+     * @param correo, correlo electronico del cliente.
+     * @param nombre, nombre del cliente.
+     * @param apellido, los dos apellidos del cliente
+     * @param celular, celular del cliente
+     */
+    public Cliente(String nombre, String apellido, String celular,String correo){
         this.correo = correo;
         this.nombre = nombre;
-        this.primerApellido = primerApellido;
-        this.segundoApellido = segundoApellido;
+        this.apellido = apellido;
         this.celular = celular;
         this.cotizaciones = new HashSet<>();
     }
 
+    /**
+     * Metodo, que agrega una cotizacion al conjunto de Clientes
+     * @param cotizacion, cotizacion a agregar
+     */
     public void agregarCotizacion(Cotizacion cotizacion){this.cotizaciones.add(cotizacion);}
 
+    /**
+     * Metodo que elimina cotizacion del conjunto de cotizacions
+     * @param cotizacion, cotizaciona eliminar
+     */
     public void eliminarCotizacion(Cotizacion cotizacion){this.cotizaciones.remove(cotizacion);}
 
     @Override
@@ -49,8 +65,7 @@ public class Cliente {
         int result = 1;
         result = prime * result + ((correo == null) ? 0 : correo.hashCode());
         result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-        result = prime * result + ((primerApellido == null) ? 0 : primerApellido.hashCode());
-        result = prime * result + ((segundoApellido == null) ? 0 : segundoApellido.hashCode());
+        result = prime * result + ((apellido == null) ? 0 : apellido.hashCode());
         result = prime * result + ((celular == null) ? 0 : celular.hashCode());
         return result;
     }
@@ -61,7 +76,7 @@ public class Cliente {
             Cliente client = (Cliente) obj;
             return correo.equals(client.getCorreo())
                     && nombre.equals(client.getNombre())
-                    && primerApellido.equals(client.getPrimerApellido())
+                    && apellido.equals(client.getApellido())
                     && celular.equals(client.getCelular())
                     && this.hashCode() == client.hashCode();
 
