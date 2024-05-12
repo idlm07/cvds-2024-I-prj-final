@@ -50,7 +50,7 @@ public class VehiculoService {
      */
 
     public Vehiculo getVehiculo(String marca, String modelo) {
-        return vehiculoRepository.findByMarcaAndModel(String.valueOf(marca), String.valueOf(modelo)).get(0);
+        return vehiculoRepository.findByMarcaAndModel(marca, modelo).get(0);
     }
 
     /**
@@ -60,12 +60,12 @@ public class VehiculoService {
      * @param producto apto para el vehiculo
      */
 
-    public void agregarProducto(String marca, String modelo,Producto producto){
+    public Vehiculo agregarProducto(String marca, String modelo,Producto producto){
         Vehiculo currentVehicle = this.getVehiculo(marca, modelo);
         currentVehicle.anadirProducto(producto);
-        producto.agregarVehiculo(currentVehicle);
-        vehiculoRepository.save(currentVehicle);
         productoRepository.save(producto);
+        return vehiculoRepository.save(currentVehicle);
+
     }
 
     /**

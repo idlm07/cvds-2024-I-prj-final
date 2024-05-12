@@ -1,7 +1,6 @@
 package co.edu.eci.cvds.model;
 
-import co.edu.eci.cvds.ID.ClienteID;
-import co.edu.eci.cvds.ID.VehiculoID;
+import co.edu.eci.cvds.id.ClienteID;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +28,7 @@ public class Cliente {
     @Column(name = "celular", length = 10, nullable = false)
     @Getter @Setter private String celular;
     @OneToMany(mappedBy = "cliente")
-    private Set<Cotizacion> cotizaciones;
+    @Getter private Set<Cotizacion> cotizaciones;
 
     public Cliente() {
         cotizaciones = new HashSet<>();
@@ -77,8 +76,7 @@ public class Cliente {
     public boolean equals(Object obj){
         try{
             Cliente client = (Cliente) obj;
-            return correo.equals(client.getCorreo())
-                    && nombre.equals(client.getNombre())
+            return nombre.equals(client.getNombre())
                     && apellido.equals(client.getApellido())
                     && celular.equals(client.getCelular())
                     && this.hashCode() == client.hashCode();

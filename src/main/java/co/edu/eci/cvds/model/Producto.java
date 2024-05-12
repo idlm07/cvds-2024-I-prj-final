@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.model;
 
-import co.edu.eci.cvds.Exception.LincolnLinesException;
+import co.edu.eci.cvds.exception.LincolnLinesException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,11 +34,11 @@ public class Producto {
     @Getter private float descuento;
     @Column(name = "impuesto",nullable = false)
     @Getter  private float impuesto;
-    @ManyToMany(mappedBy = "productosVehiculo")
+    @ManyToMany(mappedBy = "productosVehiculo",fetch = FetchType.EAGER)
     @Getter private Set<Vehiculo> vehiculos;
-    @ManyToMany(mappedBy = "productosCotizacion")
+    @ManyToMany(mappedBy = "productosCotizacion",fetch = FetchType.EAGER)
     @Getter private Set<Cotizacion> cotizaciones;
-    @ManyToMany(mappedBy = "productosCategoria")
+    @ManyToMany(mappedBy = "productosCategoria",fetch = FetchType.EAGER)
     @Getter private Set<Categoria> categorias;
 
 
@@ -127,8 +127,9 @@ public class Producto {
      */
 
     public void agregarCategoria(Categoria categoria){
-        this.categorias.add(categoria);
         categoria.agregarProducto(this);
+        this.categorias.add(categoria);
+
     }
     @Override
     public int hashCode() {
@@ -142,6 +143,7 @@ public class Producto {
         result = prime * result + ((moneda == null) ? 0 : moneda.hashCode());
         result = prime * result + Float.floatToIntBits(descuento);
         result = prime * result + Float.floatToIntBits(impuesto);
+        result = prime * result + ((categorias == null) ? 0 : categorias.hashCode());
         return result;
     }
     @Override

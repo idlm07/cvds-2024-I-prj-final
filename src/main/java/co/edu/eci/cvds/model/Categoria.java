@@ -59,6 +59,24 @@ public class Categoria {
         this.productosCategoria.remove(producto);
     }
 
+    @Override
+    public int hashCode() {
+        return 31 + ((nombre == null) ? 0 : nombre.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            Categoria categoria = (Categoria) obj;
+
+            return this.nombre.equals(categoria.getNombre())
+                    && this.hashCode() == categoria.hashCode();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 
 
 

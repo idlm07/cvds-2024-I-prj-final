@@ -2,7 +2,7 @@ package co.edu.eci.cvds.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import co.edu.eci.cvds.ID.VehiculoID;
+import co.edu.eci.cvds.id.VehiculoID;
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -26,7 +26,7 @@ public class Vehiculo {
     @Getter @Setter private String yearVehicle;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "Productos_Por_Vehiculo",
+            name = "ProductosPorVehiculo",
             joinColumns = {
                     @JoinColumn(name = "marca"),
                     @JoinColumn(name = "modelo")
@@ -34,7 +34,7 @@ public class Vehiculo {
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
     @Getter private Set<Producto> productosVehiculo;
-    @OneToMany(mappedBy = "vehiculo")
+    @OneToMany(mappedBy = "vehiculo", fetch = FetchType.EAGER)
     @Getter private Set<Cotizacion> cotizaciones;
 
 
@@ -63,14 +63,17 @@ public class Vehiculo {
      * @param producto, producto apto para el vehiculo
      */
     public void anadirProducto(Producto producto){
+
+        producto.agregarVehiculo(this);
         productosVehiculo.add(producto);
+
     }
 
     /**
      * Aoscia una cotizacion con el vehiculo
      * @param cotizacion, cotizacion que se realiza para el vehiculo
      */
-    public void agregarCotizacion(Cotizacion cotizacion){
+    protected void agregarCotizacion(Cotizacion cotizacion){
         cotizaciones.add(cotizacion);
     }
 
@@ -90,7 +93,7 @@ public class Vehiculo {
         result = prime * result + ((marca == null) ? 0 : marca.hashCode());
         result = prime * result + ((model == null) ? 0 : model.hashCode());
         result = prime * result + ((yearVehicle == null) ? 0 : yearVehicle.hashCode());
-
+        result = prime * result + ((productosVehiculo == null) ? 0 : productosVehiculo.hashCode());
         return result;
     }
     @Override

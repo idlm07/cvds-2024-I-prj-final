@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.service;
 
-import co.edu.eci.cvds.Exception.LincolnLinesException;
+import co.edu.eci.cvds.exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Cliente;
 import co.edu.eci.cvds.model.Cotizacion;
 import co.edu.eci.cvds.model.Producto;

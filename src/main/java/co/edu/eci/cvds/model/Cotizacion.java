@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.model;
 
-import co.edu.eci.cvds.Exception.LincolnLinesException;
+import co.edu.eci.cvds.exception.LincolnLinesException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,12 +56,12 @@ public class Cotizacion {
     @ManyToOne
     @JoinColumn(name = "nombreCliente", referencedColumnName = "nombre")
     @JoinColumn(name = "apellidoCliente", referencedColumnName = "apellido")
-    @Getter @Setter private Cliente cliente;
+    @Getter private Cliente cliente;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "marcaVehiculo")
     @JoinColumn(name = "modeloVehiculo")
-    @Getter @Setter private Vehiculo vehiculo;
+    @Getter private Vehiculo vehiculo;
 
 
 
@@ -81,6 +81,7 @@ public class Cotizacion {
         this.fechaCreacion = LocalDateTime.now();
         this.productosCotizacion = new ArrayList<>();
         this.vehiculo.agregarCotizacion(this);
+
     }
 
     /**
@@ -90,8 +91,10 @@ public class Cotizacion {
      */
     public void agregarProductoAlCarrito(Producto producto) throws LincolnLinesException {
         if(!this.vehiculo.productoApto(producto)) throw  new LincolnLinesException(LincolnLinesException.PRODUCTO_NO_COMPATIBLE);
-        productosCotizacion.add(producto);
+        if(cita != null) throw  new LincolnLinesException(LincolnLinesException.FECHA_CLONCLUIDA);
         producto.agregarCotizacion(this);
+        productosCotizacion.add(producto);
+
     }
 
     /**
@@ -137,6 +140,7 @@ public class Cotizacion {
         result = prime * result + ((direccionRecogida == null) ? 0 : direccionRecogida.hashCode());
         result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
         result = prime * result + ((vehiculo == null) ? 0 : vehiculo.hashCode());
+        result = prime * result + ((productosCotizacion == null) ? 0 : productosCotizacion.hashCode());
         return result;
     }
 
@@ -150,4 +154,6 @@ public class Cotizacion {
         }
 
     }
+
+
 }
