@@ -18,14 +18,14 @@ public class SpringApplicationCvds {
 
     private final ProductoService productoService;
     private final VehiculoService vehiculoService;
-    private final CotizacionSerrvice cotizacionSerrvice;
+    private final CotizacionService cotizacionSerrvice;
     private final ClienteService clienteService;
 
     @Autowired
     public SpringApplicationCvds(
             ProductoService productoService,
             VehiculoService vehiculoService,
-            CotizacionSerrvice cotizacionService,
+            CotizacionService cotizacionService,
             ClienteService clienteService
 
     ) {
@@ -50,6 +50,19 @@ public class SpringApplicationCvds {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    public static String stringStandar(String frase) {
+        frase = frase.toLowerCase();
+        String[] palabras = frase.split(" ");
+        StringBuilder fraseStandar = new StringBuilder();
+        for(String palabra : palabras) {
+            if(!palabra.isEmpty()){
+                fraseStandar.append(palabra.substring(0, 1).toUpperCase()).append(palabra.substring(1).toLowerCase());
+            }
+        }
+        return fraseStandar.toString();
+
     }
 
 }

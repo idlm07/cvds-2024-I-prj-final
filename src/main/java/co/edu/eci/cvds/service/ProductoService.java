@@ -1,35 +1,48 @@
 package co.edu.eci.cvds.service;
 
-import co.edu.eci.cvds.Exception.LincolnLinesException;
+import co.edu.eci.cvds.SpringApplicationCvds;
+import co.edu.eci.cvds.exception.LincolnLinesException;
+import co.edu.eci.cvds.model.Categoria;
 import co.edu.eci.cvds.model.Producto;
-import co.edu.eci.cvds.repository.ProductoRepository;
+import co.edu.eci.cvds.model.Vehiculo;
 
+import co.edu.eci.cvds.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Set;
+
+/**
+ * Clase Service de Producto
+ * @author Equipo Pixel Pulse
+ * 10/05/2024
+ */
 
 @Service
 public class ProductoService {
     private final ProductoRepository productoRepository;
 
+
     @Autowired
     public ProductoService(ProductoRepository productoRepository) {
         this.productoRepository = productoRepository;
+
     }
 
     /**
      * Funcion que registra un producto a la base de datos.
      * @param producto, producto a registrar
      * @return producto registrado
-     * @throws LincolnLinesException VALOR_NEGATIVO si el producto ingresado tiene algun valor (valor, impuesto o descuento) negativo
      */
-    public Producto agregarProducto(Producto producto) throws LincolnLinesException {
-            if(producto.getValor() < 0 || producto.getImpuesto() < 0 || producto.getDescuento() < 0)  throw new LincolnLinesException(LincolnLinesException.VALOR_NEGATIVO);
-            return productoRepository.save(producto);
+    public Producto agregarProducto(Producto producto){
+        return productoRepository.save(producto);
+
 
     }
+
+
 
     /**
      * Funcion que devuelve un producto en especifico registrado en la base de datos
@@ -37,29 +50,32 @@ public class ProductoService {
      * @return producto si se encuentra en la base de datos, null sino
      */
     public Producto buscarProductoPorNombre(String nombre) {
-        if(!productoRepository.findByNombre(nombre).isEmpty()) return productoRepository.findByNombre(nombre).get(0);
-        else return null;
+        return productoRepository.findByNombre(SpringApplicationCvds.stringStandar(nombre)).get(0);
+
     }
 
+    /**
+     * Funcion que devuelve lista de productos
+     * @return lista de productos registrada en la base de datos
+     */
     public List<Producto> buscarProductos() {
         return productoRepository.findAll();
     }
 
     /**
-     * @param producto
+     * Metodo que actualiza el producto especificado
+     * @param producto con los nuevos valores
      */
     public void actualizarProducto(Producto producto) throws LincolnLinesException {
-        if(producto.getValor() < 0 || producto.getImpuesto() < 0 || producto.getDescuento() < 0) throw new LincolnLinesException(LincolnLinesException.VALOR_NEGATIVO);
         Producto productoExistente = this.buscarProductoPorNombre(producto.getNombre());
+        productoExistente.setValor(producto.getValor());
+        productoExistente.setImpuesto(producto.getImpuesto());
+        productoExistente.setDescuento(producto.getDescuento());
         productoExistente.setNombre(producto.getNombre());
         productoExistente.setDescripcionBreve(producto.getDescripcionBreve());
         productoExistente.setDescripcionTecnica(producto.getDescripcionTecnica());
-        productoExistente.setCategoria(producto.getCategoria());
         productoExistente.setImagen(producto.getImagen());
-        productoExistente.setValor(producto.getValor());
         productoExistente.setMoneda(producto.getMoneda());
-        productoExistente.setImpuesto(producto.getImpuesto());
-        productoExistente.setDescuento(producto.getDescuento());
         productoRepository.save(producto);
 
     }
@@ -71,6 +87,25 @@ public class ProductoService {
     public void borrarProducto(String nombre) {
         productoRepository.deleteById(nombre);
     }
+
+    public Set<Categoria> conocerCategorias(String producto){
+        Producto productoEncontrado = this.buscarProductoPorNombre(producto);
+        return productoEncontrado.getCategorias();
+    }
+
+    public void limpiarTabla(){
+        productoRepository.deleteAllInBatch();
+    }
+
+    public Set<Vehiculo> vehiculos(String producto){
+        Producto productoEncontrado = this.buscarProductoPorNombre(producto);
+        return productoEncontrado.getVehiculos();
+    }
+
+
+
+
+
 
 
 

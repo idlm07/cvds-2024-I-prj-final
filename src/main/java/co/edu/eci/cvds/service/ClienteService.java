@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Clase Service de Cliente
+ * @author Equipo Pixel Pulse
+ * 10/05/2024
+ */
+
 @Service
 public class ClienteService {
     private final ClienteRepository clienteRepository;
@@ -15,8 +21,15 @@ public class ClienteService {
     public ClienteService(ClienteRepository clienteRepository){
         this.clienteRepository = clienteRepository;
     }
-    public Cliente getCLiente(String correo){
-        return clienteRepository.findByCorreo(correo).get(0);
+
+    /**
+     * Devuelve un cliente acorde a su nombre y apellido
+     * @param nombre
+     * @param apellido
+     * @return Cliente registrado en la base de datos con el nombre y apellido especificados.
+     */
+    public Cliente getCLiente(String nombre, String apellido){
+        return clienteRepository.findByNombreAndApellido(nombre,apellido).get(0);
     }
 
     /**
@@ -27,6 +40,16 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+    public void limpiarTabla(){
+        clienteRepository.deleteAllInBatch();
+    }
 
+    /**
+     * Registra un cliente en la base de datos
+     * @param cliente, cliente a registrar
+     */
+    public void agregarCliente(Cliente cliente){
+        clienteRepository.save(cliente);
+    }
 
 }
