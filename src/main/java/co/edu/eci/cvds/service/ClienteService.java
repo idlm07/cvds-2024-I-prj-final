@@ -40,6 +40,16 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+    public void limpiarTabla(){
+        clienteRepository.deleteAllInBatch();
+    }
 
+    /**
+     * Registra un cliente en la base de datos
+     * @param cliente, cliente a registrar
+     */
+    public void agregarCliente(Cliente cliente){
+        clienteRepository.save(cliente);
+    }
 
 }

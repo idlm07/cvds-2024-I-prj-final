@@ -29,96 +29,168 @@ class SpringApplicationTests {
     CategoriaService categoriaService;
 
     @Autowired
-    private EntityManager entityManager;
+    private CotizacionService cotizacionService;
 
+    @Autowired
+    private ClienteService clienteService;
 
     @Test
-    void shouldBeEquals(){
-        Vehiculo vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
-        Vehiculo vehiculo2 = new Vehiculo("Toyota", "Corolla", "2022");
-        Producto producto = new Producto();
+    void shouldAgregarProducto() {
+        productoService.limpiarTabla();
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
         Producto producto1 = new Producto();
-        Producto producto2 = new Producto();
-        Producto producto3 = new Producto();
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
         try {
-            producto = new Producto("Producto1","Categoria",200f,"COP");
-            producto1 = new Producto("Producto1","Categoria",200f,"COP");
-            producto2 = new Producto("Producto2","Categoria",200f,"COP");
-            producto3 = new Producto("Producto1","Categoria",200f,"COP");
-
-            producto.setValor(200f);
-            producto1.setValor(200f);
-            producto3.setValor(200f);
-            producto.setImpuesto(0.2f);
-            producto1.setImpuesto(0.2f);
-            producto3.setImpuesto(0.2f);
+            productoService.agregarProducto(new Producto("Computador",700f,"USD"));
+            productoService.agregarProducto(new Producto("Casco",1000000f,"EUR"));
+            producto1 = new Producto("celular",4800000f,"COP");
+            producto1.setDescripcionBreve("Prueba de agregacion");
+            producto1.setDescuento(0.25f);
+            productoService.agregarProducto(producto1);
+            categoriaService.agregarProducto("Electronica","Computador");
+            categoriaService.agregarProducto("Electronica","CelUlar");
+            categoriaService.agregarProducto("Mecanica","Casco");
+            categoriaService.agregarProducto("Sports","Casco");
         } catch (LincolnLinesException e) {
-            fail("Lanzo excepcion");
+            fail(e.getMessage());
         }
-        producto.setImagen("...");
-        producto1.setImagen("...");
-        producto3.setImagen("...");
-        Cotizacion cotizacion = new Cotizacion(vehiculo);
-        Cotizacion cotizacion1 = new Cotizacion(vehiculo);
-        Cliente cliente = new Cliente("Camilo","Castano","3183074075",null);
-        Cliente cliente1 = new Cliente("Camilo","Castano","3183074075",null);
-
-        try {
-            cotizacion.agendar(LocalDateTime.of(2025,12,31,15,0),null,null,cliente);
-            cotizacion1.agendar(LocalDateTime.of(2025,12,31,15,0),null,null,cliente1);
-        } catch (LincolnLinesException e) {
-            fail("Lanzo excepcion");
-        }
-        vehiculo.anadirProducto(producto);
-        vehiculo.anadirProducto(producto1);
-        vehiculo2.anadirProducto(producto1);
-        vehiculo.anadirProducto(producto2);
-        vehiculo2.anadirProducto(producto2);
-        assertEquals(vehiculo, vehiculo2);
-        assertEquals(producto, producto1);
-        assertEquals(producto1, producto3);
-        assertEquals(cotizacion, cotizacion1);
-        assertEquals(cliente, cliente1);
-        assertEquals(2,vehiculo.getProductosVehiculo().size());
-        assertTrue(vehiculo.getProductosVehiculo().contains(producto3));
-        assertEquals(1,vehiculo.getCotizaciones().size());
-        assertEquals(1,producto.getVehiculos().size());
-        assertEquals(1,vehiculo.getCotizaciones().size());
-       assertEquals(1,cliente1.getCotizaciones().size());
+        Producto producto2 = productoService.buscarProductoPorNombre("ComputaDor");
+        Producto producto3 = productoService.buscarProductoPorNombre("casco");
+        Categoria electronica = categoriaService.buscarCategoria("electronica");
+        Categoria sports = categoriaService.buscarCategoria("sports");
+        Categoria mecanica = categoriaService.buscarCategoria("mecanica");
+        assertEquals(2, categoriaService.listaProductos("Electronica").size());
+        assertEquals(1, categoriaService.listaProductos("Mecanica").size());
+        assertEquals(1, categoriaService.listaProductos("Sports").size());
+        assertTrue(categoriaService.listaProductos("Electronica").contains(producto1));
+        assertTrue(categoriaService.listaProductos("Mecanica").contains(producto3));
+        assertTrue(categoriaService.listaProductos("Sports").contains(producto3));
+        assertTrue(categoriaService.listaProductos("Electronica").contains(producto2));
+        assertTrue(productoService.conocerCategorias("celular").contains(electronica));
+        assertTrue(productoService.conocerCategorias("CascO").contains(mecanica));
+        assertTrue(productoService.conocerCategorias("casco").contains(sports));
+        assertTrue(productoService.conocerCategorias("computador").contains(electronica));
+        assertTrue(productoService.buscarProductos().contains(producto2));
+        assertTrue(productoService.buscarProductos().contains(producto3));
+        assertTrue(productoService.buscarProductos().contains(producto1));
+        assertTrue(categoriaService.listarCategorias().contains(electronica));
+        assertTrue(categoriaService.listarCategorias().contains(mecanica));
+        assertTrue(categoriaService.listarCategorias().contains(sports));
     }
 
 
     @Test
-    void shouldLLenarTablas(){
-        Vehiculo vehiculo = new Vehiculo("Suzuki","Swfit","2012");
-        vehiculoService.agregarVehiculo(vehiculo);
-        vehiculo = new Vehiculo("Volkswagen","Gol","2001");
-        vehiculoService.agregarVehiculo(vehiculo);
-        Categoria categoria = new Categoria("Electronica");
-        Producto producto = null;
-        try {
-            producto = new Producto("Luces Led De Lujo Para Persiana Parrilla","Electronica",100000,"COP");
-            producto.setDescuento(0.5f);
-            producto.setImpuesto(0.2f);
-            producto.setImagen("/img/luces1.png");
-        } catch (LincolnLinesException e) {
-            fail("Lanzo excepcion");
-        }
-        categoriaService.agregarCategoria(categoria);
-        productoService.agregarProducto(producto);
-        categoriaService.asociarProducto(categoria,producto);
-        vehiculoService.agregarProducto("Volkswagen","Gol",producto);
-        vehiculo = vehiculoService.agregarProducto("Volkswagen","Gol",producto);
-        assertEquals(93,vehiculoService.getVehiculos().size());
-        assertEquals(vehiculoService.getVehiculo("Volkswagen","Gol"),vehiculo);
-        assertEquals(1,categoriaService.listarCategorias().size());
-        assertTrue(categoriaService.listarProductos("Electronica").contains(producto));
+    void shouldAgregarVehiculo(){
+        productoService.limpiarTabla();
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        vehiculoService.agregarVehiculo(new Vehiculo("Suzuki","Swfit","2012"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        assertEquals(2,vehiculoService.getVehiculos().size());
+        assertEquals("Suzuki",vehiculoService.getVehiculo("Suzuki","swfit").getMarca());
     }
+
+    @Test
+    void shouldAsociarProductoVehiculo(){
+        productoService.limpiarTabla();
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Supra","2001"));
+        try {
+            productoService.agregarProducto(new Producto("Computador",700f,"USD"));
+            productoService.agregarProducto(new Producto("Casco",1000000f,"EUR"));
+            productoService.agregarProducto(new Producto("celular",4800000f,"COP"));
+            categoriaService.agregarProducto("Electronica","Computador");
+            categoriaService.agregarProducto("Electronica","CelUlar");
+            categoriaService.agregarProducto("Mecanica","Casco");
+            categoriaService.agregarProducto("Sports","Casco");
+            vehiculoService.agregarProducto("volkswagen","gOL","computador");
+            vehiculoService.agregarProducto("volkswagen","gOL","computador");
+            vehiculoService.agregarProducto("volkswagen","gol","casco");
+            vehiculoService.agregarProducto("volkswagen","supra","casco");
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        Vehiculo vehiculo = vehiculoService.getVehiculo("volkswagen","gol");
+        Vehiculo vehiculo1 = vehiculoService.getVehiculo("volkswagen","supra");
+        Producto computador = productoService.buscarProductoPorNombre("ComputaDor");
+        Producto casco = productoService.buscarProductoPorNombre("casco");
+        assertEquals(2,vehiculoService.listraProductosOptimos("volkswagen","gol").size());
+        assertTrue(vehiculoService.listraProductosOptimos("volkswagen","gol").contains(computador));
+        assertTrue(vehiculoService.listraProductosOptimos("volkswagen","gol").contains(casco));
+        assertTrue(productoService.vehiculos("casco").contains(vehiculo));
+        assertTrue(productoService.vehiculos(computador.getNombre()).contains(vehiculo));
+        assertTrue(productoService.vehiculos("casco").contains(vehiculo1));
+        assertEquals(2,productoService.vehiculos("casco").size());
+        assertTrue(vehiculoService.listraProductosOptimos("volkswagen","supra").contains(casco));
+    }
+
+    @Test
+    void shouldAgregarACarrito(){
+        productoService.limpiarTabla();
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        Cotizacion cotizacion = new Cotizacion();
+        try {
+            productoService.agregarProducto(new Producto("Computador",700f,"USD"));
+            productoService.agregarProducto(new Producto("Casco",1000000f,"EUR"));
+            productoService.agregarProducto(new Producto("celular",4800000f,"COP"));
+            categoriaService.agregarProducto("Electronica","Computador");
+            categoriaService.agregarProducto("Electronica","CelUlar");
+            categoriaService.agregarProducto("Mecanica","Casco");
+            categoriaService.agregarProducto("Sports","Casco");
+            vehiculoService.agregarProducto("volkswagen","gOL","computador");
+            vehiculoService.agregarProducto("volkswagen","gol","casco");
+            cotizacion = cotizacionService.agregarAlCarrito("casco","volkswagen","gol",-1);
+            cotizacionService.agregarAlCarrito("casco","volkswagen",null,cotizacion.getIden());
+            cotizacionService.agregarAlCarrito("computador",null,"gol",cotizacion.getIden());
+            vehiculoService.agregarProducto("volkswagen","gol","computador");
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        cotizacion = cotizacionService.encontrarCotizacion(cotizacion.getIden());
+        Vehiculo vehiculo = vehiculoService.getVehiculo("volkswagen","gol");
+        Producto computador = productoService.buscarProductoPorNombre("ComputaDor");
+        Producto casco = productoService.buscarProductoPorNombre("casco");
+        assertEquals(3,cotizacionService.verCarrito(cotizacion.getIden()).size());
+        assertTrue(cotizacionService.verCarrito(cotizacion.getIden()).contains(casco));
+        assertTrue(cotizacionService.verCarrito(cotizacion.getIden()).contains(computador));
+        assertEquals(2,cotizacionService.contadorProducto("casco",cotizacion.getIden()));
+        assertEquals(1,cotizacionService.contadorProducto("computador",cotizacion.getIden()));
+        assertEquals(vehiculo,cotizacionService.getVehiculo(cotizacion.getIden()));
+        assertEquals(2,vehiculoService.listraProductosOptimos("volkswagen","gol").size());
+        assertTrue(vehiculoService.listraProductosOptimos("volkswagen","gol").contains(computador));
+        assertTrue(vehiculoService.listraProductosOptimos("volkswagen","gol").contains(casco));
+        assertTrue(productoService.vehiculos("casco").contains(vehiculo));
+        assertTrue(productoService.vehiculos(computador.getNombre()).contains(vehiculo));
+    }
+
+
+
+
+
+
+
 
 
 }
-
-
-
-
 

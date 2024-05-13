@@ -1,5 +1,6 @@
 package co.edu.eci.cvds.service;
 
+import co.edu.eci.cvds.SpringApplicationCvds;
 import co.edu.eci.cvds.exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Cliente;
 import co.edu.eci.cvds.model.Cotizacion;
@@ -28,6 +29,8 @@ import javax.money.convert.CurrencyConversion;
 
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
+
+
 import org.javamoney.moneta.Money;
 
 /**
@@ -50,12 +53,12 @@ public class CotizacionService {
         this.clienteRepository = clienteRepository;
     }
     /**
-    * Función que convierte cualquier moneda a pesos colombianos
-    * @param origen, moneda que convierte cualquier divisa a USD para luego
-     convertirlo a COP
-    * @return, moneda convertida a COP
-    *
-    */
+     * Función que convierte cualquier moneda a pesos colombianos
+     * @param origen, moneda que convierte cualquier divisa a USD para luego
+    convertirlo a COP
+     * @return, moneda convertida a COP
+     *
+     */
     private Money convertidorCop(Money origen){
         ExchangeRateProvider proveedor = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
         CurrencyConversion conversion = proveedor.getCurrencyConversion("USD");
@@ -84,30 +87,41 @@ public class CotizacionService {
      * @param id, identificador de la cotización que se desea encontrar
      * @return Cotizacion con el id especificado.
      */
-    public Cotizacion encontrarCotizacion(Long id){
+    public Cotizacion encontrarCotizacion(long id){
         return cotizacionRepository.findByIden(id).get(0);
 
     }
 
     /**
      * Funcion que agrega un producto a la lista de productos de cotizaciones
-     * @param producto, producto a agregar al carrito.
-     * @param vehiculo, vehiculo para el cual se hace la consulta
-     * @param cotizacion, cotizacion en cuestion
+     * @param producto, nombre del producto a agregar al carrito.
+     * @param marca, marca del vehiculo para el cual se hace la consulta
+     * @param modelo, modelo del vehiculo para el cual se hace la consulta
+     * @param cotizacion, Id de la cotizacion en cuestion
      * @return cotizacion especificada.
      * @throws LincolnLinesException DATOS_FALTANTES si tanto vehiculo como cotizacion son null
      * VEHICULO_NO_COMPATIBLE si el vehiculo ingresado es diferente al de la cotizacion
      */
-    public Cotizacion agregarAlCarrito(Producto producto, Vehiculo vehiculo, Cotizacion cotizacion) throws LincolnLinesException {
-        if(cotizacion == null && vehiculo == null) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
-        else if(cotizacion == null) cotizacion = new Cotizacion(vehiculo);
-        else vehiculo = cotizacion.getVehiculo();
-        cotizacion.setEstado(Cotizacion.EN_PROCESO);
-        cotizacion.agregarProductoAlCarrito(producto);
-        cotizacionRepository.save(cotizacion);
-        productoRepository.save(producto);
+    public Cotizacion agregarAlCarrito(String producto, String marca,String modelo, long cotizacion) throws LincolnLinesException {
+        Vehiculo vehiculo;
+        Cotizacion cotizacionEncontrada;
+        Producto productoEncontrado;
+        if(cotizacion == -1 && (marca == null || modelo == null)) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
+        else if(cotizacion == -1){
+            vehiculo = vehiculoRepository.findByMarcaAndModel(SpringApplicationCvds.stringStandar(marca), SpringApplicationCvds.stringStandar(modelo)).get(0);
+            cotizacionEncontrada = cotizacionRepository.save(new Cotizacion(vehiculo));
+            vehiculo.agregarCotizacion(cotizacionEncontrada);
+        }
+        else {
+            cotizacionEncontrada = this.encontrarCotizacion(cotizacion);
+            vehiculo = cotizacionEncontrada.getVehiculo();
+        }
+        productoEncontrado = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(producto)).get(0);
+        cotizacionEncontrada.setEstado(Cotizacion.EN_PROCESO);
+        cotizacionEncontrada.agregarProductoAlCarrito(productoEncontrado);
+        productoRepository.save(productoEncontrado);
         vehiculoRepository.save(vehiculo);
-        return cotizacion;
+        return cotizacionRepository.save(cotizacionEncontrada);
     }
 
 
@@ -129,7 +143,7 @@ public class CotizacionService {
      * @return lita de productos
      */
     public List<Producto> verCarrito(Long cotizacionId){
-        Cotizacion cotizacion = cotizacionRepository.findByIden(cotizacionId).get(0);
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
         return cotizacion.getProductosCotizacion();
 
     }
@@ -152,7 +166,7 @@ public class CotizacionService {
     public Money calcularTotalCarrito(Cotizacion cotizacion){
         Money total = Money.zero(Monetary.getCurrency("COP"));
         for (Producto producto : verCarrito(cotizacion.getIden())) {
-           total = total.add(moneyConversion(producto));
+            total = total.add(moneyConversion(producto));
         }
         return total;
     }
@@ -173,16 +187,16 @@ public class CotizacionService {
             totalDescuento = producto.getValor() * producto.getDescuento();
             totalImpuesto = (producto.getValor() - totalDescuento) * producto.getImpuesto();
             if(!producto.getMoneda().equals("COP")){
-               mTotalDescuento = convertidorCop(Money.of(totalDescuento,producto.getMoneda()));
-               mTotalImpuesto = convertidorCop(Money.of(totalImpuesto,producto.getMoneda()));
-           }else{
+                mTotalDescuento = convertidorCop(Money.of(totalDescuento,producto.getMoneda()));
+                mTotalImpuesto = convertidorCop(Money.of(totalImpuesto,producto.getMoneda()));
+            }else{
                 mTotalDescuento = Money.of(totalDescuento,producto.getMoneda());
                 mTotalImpuesto = Money.of(totalImpuesto,producto.getMoneda());
             }
             total = total.subtract(mTotalDescuento);
             total = total.add(mTotalImpuesto);
         }
-       return total.getNumber().floatValue();
+        return total.getNumber().floatValue();
     }
 
     /**
@@ -190,15 +204,18 @@ public class CotizacionService {
      * @param cita, fecha y hora en la que se va a realizar la cita
      * @param ciudad, ciudad donde dse va a recoger el vehiculo
      * @param direccion, direccion donde se va a recoger el vehiculo
-     * @param cotizacion a la cual se le va agendar cita
+     * @param cotizacion identificacion de la cotizacion a agendar
+     * @param nombreCliente, nombre del cliente que agenda la cita
+     * @param  apellidoCliente, apellido del cliente
      * @throws LincolnLinesException FECHA_NO_DISPONIBLE si la fecha que se desea agendar ya esta tomada.
      */
-    public void agendarCita(LocalDateTime cita, String ciudad, String direccion, Cotizacion cotizacion, Cliente cliente) throws LincolnLinesException {
+    public void agendarCita(LocalDateTime cita, String ciudad, String direccion, long cotizacion, String nombreCliente, String apellidoCliente) throws LincolnLinesException {
         if(!fechaDisponible(cita)) throw new LincolnLinesException(LincolnLinesException.FECHA_NO_DISPONIBLE);
-        cotizacion.agendar(cita,ciudad,direccion,cliente);
-        cotizacionRepository.save(cotizacion);
+        Cotizacion cotizacionEncontrada = this.encontrarCotizacion(cotizacion);
+        Cliente cliente = clienteRepository.findByNombreAndApellido(nombreCliente,apellidoCliente).get(0);
+        cotizacionEncontrada.agendar(cita,ciudad,direccion,cliente);
         clienteRepository.save(cliente);
-
+        cotizacionRepository.save(cotizacionEncontrada);
     }
 
     /**
@@ -222,6 +239,31 @@ public class CotizacionService {
             if(fechaBase.isEqual(fechaEsperada.toLocalDate()) && entreCitas.getSeconds() <= 7200) return false;
         }
         return true;
+    }
+
+    public void limpiarTabla(){
+        cotizacionRepository.deleteAllInBatch();
+    }
+
+    /**
+     * Funcion que indica cuantas veces se encuentra un producto en el carrito
+     * @param nombrePorducto, producto que se desea analizar
+     * @param cotizacion, carrito que se desea revisar
+     * @return numero de veces que se encuentra el producto en el carrito
+     */
+    public int contadorProducto(String nombrePorducto,long cotizacion){
+        int contador = 0;
+        Producto producto = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(nombrePorducto)).get(0);
+        List<Producto> carrito = this.verCarrito(cotizacion);
+        for(int i = 0; i < carrito.size();i++){
+            if(carrito.get(i).equals(producto)) contador++;
+        }
+        return contador;
+    }
+
+    public Vehiculo getVehiculo(long cotizacion){
+        Cotizacion encontrada = this.encontrarCotizacion(cotizacion);
+        return encontrada.getVehiculo();
     }
 
 

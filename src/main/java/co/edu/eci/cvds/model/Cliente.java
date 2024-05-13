@@ -27,7 +27,7 @@ public class Cliente {
     @Getter @Setter private String correo;
     @Column(name = "celular", length = 10, nullable = false)
     @Getter @Setter private String celular;
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
     @Getter private Set<Cotizacion> cotizaciones;
 
     public Cliente() {
@@ -76,10 +76,10 @@ public class Cliente {
     public boolean equals(Object obj){
         try{
             Cliente client = (Cliente) obj;
-            return nombre.equals(client.getNombre())
-                    && apellido.equals(client.getApellido())
-                    && celular.equals(client.getCelular())
-                    && this.hashCode() == client.hashCode();
+            return (this.nombre == null ? client.getNombre() == null : this.nombre.equals(client.getNombre()))
+                    && (this.apellido == null ? client.getApellido() == null :this.apellido.equals(client.getApellido()))
+                    && (this.celular == null ? client.getCelular() == null :this.celular.equals(client.getCelular()))
+                    && (correo == null ? client.getCorreo() == null : correo.equals(client.getCorreo()));
 
         }catch (Exception e){
             return false;

@@ -1,13 +1,18 @@
 package co.edu.eci.cvds.service;
 
+import co.edu.eci.cvds.SpringApplicationCvds;
 import co.edu.eci.cvds.exception.LincolnLinesException;
+import co.edu.eci.cvds.model.Categoria;
 import co.edu.eci.cvds.model.Producto;
+import co.edu.eci.cvds.model.Vehiculo;
+
 import co.edu.eci.cvds.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Clase Service de Producto
@@ -18,6 +23,7 @@ import java.util.List;
 @Service
 public class ProductoService {
     private final ProductoRepository productoRepository;
+
 
     @Autowired
     public ProductoService(ProductoRepository productoRepository) {
@@ -31,9 +37,12 @@ public class ProductoService {
      * @return producto registrado
      */
     public Producto agregarProducto(Producto producto){
-            return productoRepository.save(producto);
+        return productoRepository.save(producto);
+
 
     }
+
+
 
     /**
      * Funcion que devuelve un producto en especifico registrado en la base de datos
@@ -41,7 +50,7 @@ public class ProductoService {
      * @return producto si se encuentra en la base de datos, null sino
      */
     public Producto buscarProductoPorNombre(String nombre) {
-        return productoRepository.findByNombre(nombre).get(0);
+        return productoRepository.findByNombre(SpringApplicationCvds.stringStandar(nombre)).get(0);
 
     }
 
@@ -78,6 +87,22 @@ public class ProductoService {
     public void borrarProducto(String nombre) {
         productoRepository.deleteById(nombre);
     }
+
+    public Set<Categoria> conocerCategorias(String producto){
+        Producto productoEncontrado = this.buscarProductoPorNombre(producto);
+        return productoEncontrado.getCategorias();
+    }
+
+    public void limpiarTabla(){
+        productoRepository.deleteAllInBatch();
+    }
+
+    public Set<Vehiculo> vehiculos(String producto){
+        Producto productoEncontrado = this.buscarProductoPorNombre(producto);
+        return productoEncontrado.getVehiculos();
+    }
+
+
 
 
 

@@ -1,4 +1,6 @@
 package co.edu.eci.cvds.model;
+import co.edu.eci.cvds.SpringApplicationCvds;
+import co.edu.eci.cvds.exception.LincolnLinesException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,8 +47,8 @@ public class Vehiculo {
      * @param year, año en el que se estreno el vehiculo
      */
     public Vehiculo(String marca, String model, String year) {
-        this.marca = marca;
-        this.model = model;
+        this.marca = SpringApplicationCvds.stringStandar(marca);
+        this.model = SpringApplicationCvds.stringStandar(model);
         this.yearVehicle = year;
         this.productosVehiculo = new HashSet<>();
         this.cotizaciones = new HashSet<>();
@@ -62,8 +64,8 @@ public class Vehiculo {
      * Asocia un producto con el vehiculo
      * @param producto, producto apto para el vehiculo
      */
-    public void anadirProducto(Producto producto){
-
+    public void anadirProducto(Producto producto) throws LincolnLinesException {
+        if(producto.getCategorias().isEmpty()) throw new LincolnLinesException(LincolnLinesException.PRODUCTO_SIN_CATEGORIA);
         producto.agregarVehiculo(this);
         productosVehiculo.add(producto);
 
@@ -73,7 +75,7 @@ public class Vehiculo {
      * Aoscia una cotizacion con el vehiculo
      * @param cotizacion, cotizacion que se realiza para el vehiculo
      */
-    protected void agregarCotizacion(Cotizacion cotizacion){
+    public void agregarCotizacion(Cotizacion cotizacion){
         cotizaciones.add(cotizacion);
     }
 
@@ -83,8 +85,7 @@ public class Vehiculo {
      * @return true si el producto pertenece al conjunto de productos y false, de lo contrario
      */
     public boolean productoApto(Producto producto){
-
-        return productosVehiculo.contains(producto);
+        return this.productosVehiculo.contains(producto);
     }
     @Override
     public int hashCode() {
@@ -100,18 +101,15 @@ public class Vehiculo {
     public boolean equals(Object obj) {
         try {
             Vehiculo vehiculo = (Vehiculo) obj;
-            return marca.equals(vehiculo.getMarca()) && model.equals(vehiculo.getModel()) && yearVehicle.equals(vehiculo.getYearVehicle()) && this.hashCode() == vehiculo.hashCode();
+            return (this.marca == null ? vehiculo.getMarca() == null :this.marca.equals(vehiculo.getMarca())) &&
+                    (this.model == null ? vehiculo.getModel() == null : this.model.equals(vehiculo.getModel())) &&
+                    (this.yearVehicle == null ? vehiculo.getYearVehicle() == null : this.yearVehicle.equals(vehiculo.getYearVehicle())) &&
+                    this.productosVehiculo.equals(vehiculo.getProductosVehiculo());
         } catch (Exception e) {
             return false;
         }
     }
 
-
-
-
-
-
-
-
-
 }
+
+

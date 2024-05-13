@@ -1,5 +1,6 @@
 package co.edu.eci.cvds.service;
 
+import co.edu.eci.cvds.SpringApplicationCvds;
 import co.edu.eci.cvds.model.Categoria;
 
 import co.edu.eci.cvds.model.Producto;
@@ -15,6 +16,7 @@ import java.util.Set;
 public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
     private final ProductoRepository productoRepository;
+
     @Autowired
     public CategoriaService(CategoriaRepository categoriaRepository, ProductoRepository productoRepository){
         this.categoriaRepository = categoriaRepository;
@@ -38,6 +40,15 @@ public class CategoriaService {
     }
 
     /**
+     * Indica la informacion acerca una categoria en especifico
+     * @param nombre, nombre de la categoria
+     * @return, categoria en la BD
+     */
+    public Categoria buscarCategoria(String nombre){
+        return categoriaRepository.findByNombre(SpringApplicationCvds.stringStandar(nombre)).get(0);
+    }
+
+    /**
      * Conjunto de productos pertenecientes a una categoria
      * @param categoria, categoria de la cual que desea conocer los productos
      * @return Conjunto de productos pertenecientes a dicha categoria
@@ -48,15 +59,34 @@ public class CategoriaService {
     }
 
     /**
-     * Metodo que asocia una categoria con un producto
-     * @param categoria, categoria a la que pertenece el producto
-     * @param producto, producto que se desea asociar
+     * Agrega un producto al conjunto de productos
+     * @param categoria, nombre de la categoria a la cual se desea agregar el producto
+     * @param producto, nombre del producto que se desea agregar
+     * @return categoria registrada den la base de datos
      */
-    public void asociarProducto(Categoria categoria, Producto producto){
-        producto.agregarCategoria(categoria);
-        categoriaRepository.save(categoria);
-        productoRepository.save(producto);
+    public Categoria agregarProducto(String categoria, String producto){
+        Categoria categoriaEncontrada = categoriaRepository.findByNombre(SpringApplicationCvds.stringStandar(categoria)).get(0);
+        Producto productoEncontrado = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(producto)).get(0);
+        categoriaEncontrada.agregarProducto(productoEncontrado);
+        productoRepository.save(productoEncontrado);
+        return categoriaRepository.save(categoriaEncontrada);
     }
+
+    /**
+     * Indica los productos pertenecientes a una categoria
+     * @param categoria, categoria que se desea averiguar
+     * @return conjunto de categorias.
+     */
+
+    public Set<Producto> listaProductos(String categoria){
+        Categoria categoriaEncontrada = categoriaRepository.findByNombre(categoria).get(0);
+        return categoriaEncontrada.getProductosCategoria();
+    }
+
+    public void limpiarTabla(){
+        categoriaRepository.deleteAllInBatch();
+    }
+
 
 
 

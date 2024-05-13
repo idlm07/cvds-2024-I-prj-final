@@ -1,5 +1,6 @@
 package co.edu.eci.cvds.model;
 
+import co.edu.eci.cvds.SpringApplicationCvds;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -39,7 +40,7 @@ public class Categoria {
      * @param nombre, nombre de la categoria
      */
     public Categoria(String nombre){
-        this.nombre = nombre;
+        this.nombre = SpringApplicationCvds.stringStandar(nombre);
         this.productosCategoria = new HashSet<>();
     }
 
@@ -48,6 +49,7 @@ public class Categoria {
      * @param producto a agregar
      */
     public void agregarProducto(Producto producto){
+        producto.agregarCategoria(this);
         this.productosCategoria.add((producto));
     }
 
@@ -61,7 +63,11 @@ public class Categoria {
 
     @Override
     public int hashCode() {
-        return 31 + ((nombre == null) ? 0 : nombre.hashCode());
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+        result = prime * result + ((productosCategoria == null) ? 0 : productosCategoria.hashCode());
+        return result;
     }
 
     @Override
@@ -69,8 +75,8 @@ public class Categoria {
         try {
             Categoria categoria = (Categoria) obj;
 
-            return this.nombre.equals(categoria.getNombre())
-                    && this.hashCode() == categoria.hashCode();
+            return (this.nombre == null ? categoria.getNombre() == null : this.nombre.equals(categoria.getNombre()))
+                    && this.productosCategoria.equals(categoria.getProductosCategoria());
         } catch (Exception e) {
             return false;
         }

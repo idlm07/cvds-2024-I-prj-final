@@ -1,5 +1,6 @@
 package co.edu.eci.cvds.model;
 
+import co.edu.eci.cvds.SpringApplicationCvds;
 import co.edu.eci.cvds.exception.LincolnLinesException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -51,20 +52,18 @@ public class Producto {
     /**
      * Constructor de la clase producto
      * @param nombre, nombre del producto
-     * @param categoria, categoria principal a la que pertence el producto
      * @param valor, valor de dicho producto
      * @param moneda, tipo de divisa
      */
-    public Producto(String nombre, String categoria,float valor, String moneda) throws LincolnLinesException {
+    public Producto(String nombre,float valor, String moneda) throws LincolnLinesException {
         this.setValor(valor);
-        this.nombre = nombre;
+        this.nombre = SpringApplicationCvds.stringStandar(nombre);
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
         this.vehiculos = new HashSet<>();
         this.cotizaciones = new HashSet<>();
         this.categorias = new HashSet<>();
-        this.agregarCategoria(new Categoria(categoria));
     }
 
     /**
@@ -126,8 +125,7 @@ public class Producto {
      * @param categoria nueva categoria a la que pertenece el producto.
      */
 
-    public void agregarCategoria(Categoria categoria){
-        categoria.agregarProducto(this);
+    protected void agregarCategoria(Categoria categoria){
         this.categorias.add(categoria);
 
     }
@@ -143,18 +141,19 @@ public class Producto {
         result = prime * result + ((moneda == null) ? 0 : moneda.hashCode());
         result = prime * result + Float.floatToIntBits(descuento);
         result = prime * result + Float.floatToIntBits(impuesto);
-        result = prime * result + ((categorias == null) ? 0 : categorias.hashCode());
         return result;
     }
     @Override
     public boolean equals(Object obj) {
         try {
             Producto producto = (Producto) obj;
-
-            return this.nombre.equals(producto.getNombre())
-                    && this.valor == producto.getValor()
-                    && this.moneda.equals(producto.getMoneda())
-                    && this.hashCode() == producto.hashCode();
+            return (this.nombre == null ? producto.getNombre() == null :this.nombre.equals(producto.getNombre())) &&
+                    (this.descripcionBreve == null ? producto.getDescripcionBreve() == null : this.descripcionBreve.equals(producto.getDescripcionBreve())) &&
+                    (this.descripcionTecnica == null ? producto.getDescripcionTecnica() == null : this.descripcionTecnica.equals(producto.getDescripcionTecnica())) &&
+                    (this.valor == 0 ? producto.getValor() == 0 : this.valor == producto.getValor()) &&
+                    (this.moneda == null ? producto.getMoneda() == null : this.moneda.equals(producto.getMoneda())) &&
+                    (this.impuesto == 0 ? producto.getImpuesto() == 0 : this.impuesto == producto.getImpuesto()) &&
+                    (this.descuento == 0 ? producto.getDescuento() == 0 : this.descuento == producto.getDescuento());
         } catch (Exception e) {
             return false;
         }

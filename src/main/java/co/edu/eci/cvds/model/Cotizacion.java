@@ -122,6 +122,8 @@ public class Cotizacion {
         if(cita == null || cliente == null
                 || (ciudadRecogida != null && direccionRecogida == null)
                 || (direccionRecogida != null && ciudadRecogida == null)) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
+        if(this.cita != null) throw new LincolnLinesException(LincolnLinesException.COTIZACION_AGENDADA);
+        if(this.productosCotizacion.isEmpty()) throw new LincolnLinesException(LincolnLinesException.CARRITO_VACIO);
         this.cita = cita;
         this.ciudadRecogida = ciudadRecogida;
         this.direccionRecogida = direccionRecogida;
@@ -148,7 +150,17 @@ public class Cotizacion {
     public boolean equals(Object obj){
         try{
             Cotizacion cotizacion = (Cotizacion) obj;
-            return cotizacion.getIden() == this.iden && this.hashCode() == cotizacion.hashCode();
+
+            return (this.iden == 0 ? cotizacion.getIden() == 0 :cotizacion.getIden() == this.iden) &&
+                    (this.estado == null ? cotizacion.getEstado() == null : estado.equals(cotizacion.getEstado())) &&
+                    fechaCreacion.equals(cotizacion.getFechaCreacion()) &&
+                    (cita == null ? cotizacion.getCita() == null : cita.equals(cotizacion.getCita())) &&
+                    (ciudadRecogida == null ? cotizacion.getCiudadRecogida() == null : ciudadRecogida.equals(cotizacion.getCiudadRecogida())) &&
+                    (direccionRecogida == null ? cotizacion.getDireccionRecogida() == null : direccionRecogida.equals(cotizacion.getDireccionRecogida())) &&
+                    (this.cliente == null ? cotizacion.getCliente() == null : cliente.equals(cotizacion.getCliente())) &&
+                    (this.vehiculo == null ? cotizacion.getVehiculo() == null :vehiculo.equals(cotizacion.getVehiculo())) &&
+                    productosCotizacion.equals(cotizacion.getProductosCotizacion());
+
         }catch(Exception e){
             return false;
         }
