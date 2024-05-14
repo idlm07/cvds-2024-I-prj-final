@@ -132,7 +132,7 @@ public class Cotizacion {
         this.ciudadRecogida = ciudadRecogida;
         this.direccionRecogida = direccionRecogida;
         this.cliente = cliente;
-        cliente.agregarCotizacion(this);
+
     }
 
     /**

@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, ClienteID> {
-    public List<Cliente> findByNombreAndApellido(String nombre,String apellido);
+    default List<Cliente> findByNombreAndApellido(String nombre, String apellido){
+        return findByNombreAndApellido(nombre.toUpperCase(),apellido.toUpperCase());
+    }
 }

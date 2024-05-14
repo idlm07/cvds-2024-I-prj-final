@@ -147,8 +147,6 @@ public class CotizacionService {
      * @param cotizacionId, identificador de la cotizacion.
      * @return total a pagar.
      */
-
-
     public float calcularFinal(long cotizacionId){
         Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
         return cotizacion.calcularFinal();

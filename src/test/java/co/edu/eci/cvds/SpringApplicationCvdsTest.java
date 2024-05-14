@@ -216,6 +216,20 @@ class SpringApplicationTests {
         } catch (LincolnLinesException e) {
             assertEquals(LincolnLinesException.PRODUCTO_NO_COMPATIBLE, e.getMessage());
         }
+
+        try {
+            cotizacionService.agregarAlCarrito("casco",null,"gol",-1);
+            fail("No lanzo excepcion");
+        } catch (LincolnLinesException e) {
+            assertEquals(LincolnLinesException.DATOS_FALTANTES, e.getMessage());
+        }
+
+        try {
+            cotizacionService.agregarAlCarrito("casco","vOLKSWAGEN",null,-1);
+            fail("No lanzo excepcion");
+        } catch (LincolnLinesException e) {
+            assertEquals(LincolnLinesException.DATOS_FALTANTES, e.getMessage());
+        }
     }
 
     @Test
@@ -341,7 +355,62 @@ class SpringApplicationTests {
         assertTrue(tasaError <= 0.05);
     }
 
+    @Test
+    void shouldAgendarCita(){
+        //Limpiar BD
+        productoService.limpiarTabla();
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        //Codigo
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion2 = new Cotizacion();
+        Cotizacion cotizacion3 = new Cotizacion();
+        Producto producto = new Producto();
+        try {
+            producto = new Producto("Computador",700f,"USD");
+            producto.setImpuesto(0.13f);
+            productoService.agregarProducto(producto);
+            producto = new Producto("Casco",1000000f,"EUR");
+            producto.setDescuento(0.8f);
+            producto.setImpuesto(0.32f);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(new Producto("celular",4800000f,"COP"));
+            categoriaService.agregarProducto("Electronica","Computador");
+            categoriaService.agregarProducto("Electronica","CelUlar");
+            categoriaService.agregarProducto("Mecanica","Casco");
+            categoriaService.agregarProducto("Sports","Casco");
+            vehiculoService.agregarProducto("volkswagen","gOL","computador");
+            vehiculoService.agregarProducto("volkswagen","gol","casco");
+            cotizacion = cotizacionService.agregarAlCarrito("casco","volkswagen","gol",-1);
+            cotizacionService.agregarAlCarrito("casco","volkswagen",null,cotizacion.getIden());
+            cotizacionService.agregarAlCarrito("computador",null,"gol",cotizacion.getIden());
 
+            cotizacion2 = cotizacionService.agregarAlCarrito("casco","volkswagen","gol",-1);
+            cotizacionService.agregarAlCarrito("casco","volkswagen",null,cotizacion2.getIden());
+            cotizacionService.agregarAlCarrito("computador",null,"gol",cotizacion2.getIden());
+
+            cotizacionService.agregarAlCarrito("casco","volkswagen","gol",-1);
+
+            cotizacionService.agendarCita(LocalDateTime.of(2045,10,12,9,0),"Bogota","Calle 154 #8-29",cotizacion.getIden(),"Camilo","CaStaño");
+            cotizacionService.agendarCita(LocalDateTime.of(2045,10,12,11,35),"Bogota","Calle 154 #8-29",cotizacion2.getIden(),"Camilo","CaStaño");
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        cotizacion = cotizacionService.encontrarCotizacion(cotizacion.getIden());
+        assertEquals(3,cotizacionService.listarCotizaciones().size());
+        assertEquals(2,cotizacionService.cotizacionesAgendadas().size());
+        assertTrue(cotizacionService.listarCotizaciones().contains(cotizacion));
+        assertTrue(cotizacionService.listarCotizaciones().contains(cotizacion2));
+
+
+
+    }
 
 
 
