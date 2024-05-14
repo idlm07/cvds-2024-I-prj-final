@@ -49,7 +49,6 @@ public class Categoria {
      * @param producto a agregar
      */
     public void agregarProducto(Producto producto){
-        producto.agregarCategoria(this);
         this.productosCategoria.add((producto));
     }
 
@@ -59,6 +58,19 @@ public class Categoria {
      */
     public void eliminarProducto(Producto producto){
         this.productosCategoria.remove(producto);
+    }
+
+    /**
+     * Indica si un producto pertenece a la categoria
+     * @param producto, producto que se desea conocer
+     * @return true, si el producto esta dentro del conjunto de productos, false sino.
+     */
+    public boolean contieneProducto(Producto producto){
+        return productosCategoria.contains(producto);
+    }
+
+    public void limpiarProductos(){
+        this.productosCategoria.clear();
     }
 
     @Override

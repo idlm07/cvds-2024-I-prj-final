@@ -11,7 +11,9 @@ import javax.money.Monetary;
 import javax.money.convert.CurrencyConversion;
 import javax.money.convert.ExchangeRateProvider;
 import javax.money.convert.MonetaryConversions;
+
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +86,6 @@ public class Cotizacion {
         this.estado = Cotizacion.CREADO;
         this.fechaCreacion = LocalDateTime.now();
         this.productosCotizacion = new ArrayList<>();
-        this.vehiculo.agregarCotizacion(this);
 
     }
 
@@ -96,7 +97,7 @@ public class Cotizacion {
     public void agregarProductoAlCarrito(Producto producto) throws LincolnLinesException {
         if(!this.vehiculo.productoApto(producto)) throw  new LincolnLinesException(LincolnLinesException.PRODUCTO_NO_COMPATIBLE);
         if(cita != null) throw  new LincolnLinesException(LincolnLinesException.FECHA_CLONCLUIDA);
-        producto.agregarCotizacion(this);
+        this.setEstado(Cotizacion.EN_PROCESO);
         productosCotizacion.add(producto);
 
     }
@@ -107,7 +108,7 @@ public class Cotizacion {
      */
     public void eliminarProductoDelCarrito(Producto producto){
         productosCotizacion.remove(producto);
-        producto.eliminarCotizacion(this);
+
         if (this.getProductosCotizacion().isEmpty()) {
             this.setEstado(Cotizacion.ELIMINADO);
         }
@@ -120,20 +121,24 @@ public class Cotizacion {
      * @param direccionRecogida, direccion en la que se va a recoger el vehiculo
      * @param cliente, cliente que realiza la cita.
      * @throws LincolnLinesException DATOS_FALTANTES si no se proporciona una fecha o cliente o si,
-     * el cliente decide que recojan el vehiculo y no proporciona los datos completos
+     * el cliente decide que recojan el vehiculo y no proporciona los datos completos.
+     * @throws LincolnLinesException COTIZACION_AGENDADA, si la cotizacion ya tiene una cita agendada
+     * @throws  LincolnLinesException CARRITO_VACIO si el la cotizacion no tiene ningun producto
      */
     public void agendar(LocalDateTime cita, String ciudadRecogida, String direccionRecogida,Cliente cliente) throws LincolnLinesException {
-        if(cita == null || cliente == null
-                || (ciudadRecogida != null && direccionRecogida == null)
-                || (direccionRecogida != null && ciudadRecogida == null)) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
         if(this.cita != null) throw new LincolnLinesException(LincolnLinesException.COTIZACION_AGENDADA);
         if(this.productosCotizacion.isEmpty()) throw new LincolnLinesException(LincolnLinesException.CARRITO_VACIO);
+        if(cliente == null
+                || (ciudadRecogida != null && direccionRecogida == null)
+                || (direccionRecogida != null && ciudadRecogida == null)) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
         this.cita = cita;
         this.ciudadRecogida = ciudadRecogida;
         this.direccionRecogida = direccionRecogida;
         this.cliente = cliente;
 
     }
+
+
 
     /**
      * Función que convierte cualquier moneda a pesos colombianos
@@ -194,7 +199,14 @@ public class Cotizacion {
             total = total.subtract(mTotalDescuento);
             total = total.add(mTotalImpuesto);
         }
+        this.estado = Cotizacion.FINALIZADO;
         return total.getNumber().floatValue();
+    }
+
+    public void limpiarCotizacion(){
+        this.vehiculo = null;
+        this.cliente = null;
+        this.productosCotizacion.clear();
     }
 
     @Override

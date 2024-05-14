@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import co.edu.eci.cvds.id.VehiculoID;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 /**
  * Clase - Entidad Vehiculo
@@ -36,8 +37,7 @@ public class Vehiculo {
             inverseJoinColumns = @JoinColumn(name = "nombreProducto", referencedColumnName = "nombre")
     )
     @Getter private Set<Producto> productosVehiculo;
-    @OneToMany(mappedBy = "vehiculo", fetch = FetchType.EAGER)
-    @Getter private Set<Cotizacion> cotizaciones;
+
 
 
     /**
@@ -51,11 +51,11 @@ public class Vehiculo {
         this.model = model.toUpperCase();
         this.yearVehicle = year;
         this.productosVehiculo = new HashSet<>();
-        this.cotizaciones = new HashSet<>();
+
     }
 
     public Vehiculo() {
-        this.cotizaciones = new HashSet<>();
+
         this.productosVehiculo = new HashSet<>();
     }
 
@@ -64,19 +64,21 @@ public class Vehiculo {
      * Asocia un producto con el vehiculo
      * @param producto, producto apto para el vehiculo
      */
-    public void anadirProducto(Producto producto) throws LincolnLinesException {
-        if(producto.getCategorias().isEmpty()) throw new LincolnLinesException(LincolnLinesException.PRODUCTO_SIN_CATEGORIA);
-        producto.agregarVehiculo(this);
+    public void anadirProducto(Producto producto, List<Categoria> categorias) throws LincolnLinesException {
+        boolean encontrado = false;
+        for(Categoria categoria : categorias) {
+            if(categoria.contieneProducto(producto)){
+                encontrado = true;
+                break;
+            }
+        }
+        if(!encontrado) throw new LincolnLinesException(LincolnLinesException.PRODUCTO_SIN_CATEGORIA);
         productosVehiculo.add(producto);
 
     }
 
-    /**
-     * Aoscia una cotizacion con el vehiculo
-     * @param cotizacion, cotizacion que se realiza para el vehiculo
-     */
-    public void agregarCotizacion(Cotizacion cotizacion){
-        cotizaciones.add(cotizacion);
+    public void limpiarProductos(){
+        productosVehiculo.clear();
     }
 
     /**

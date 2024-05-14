@@ -35,18 +35,10 @@ public class Producto {
     @Getter private float descuento;
     @Column(name = "impuesto",nullable = false)
     @Getter  private float impuesto;
-    @ManyToMany(mappedBy = "productosVehiculo",fetch = FetchType.EAGER)
-    @Getter private Set<Vehiculo> vehiculos;
-    @ManyToMany(mappedBy = "productosCotizacion",fetch = FetchType.EAGER)
-    @Getter private Set<Cotizacion> cotizaciones;
-    @ManyToMany(mappedBy = "productosCategoria",fetch = FetchType.EAGER)
-    @Getter private Set<Categoria> categorias;
+
 
 
     public Producto() {
-        this.vehiculos = new HashSet<>();
-        this.cotizaciones = new HashSet<>();
-        this.categorias = new HashSet<>();
     }
 
     /**
@@ -61,32 +53,12 @@ public class Producto {
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
-        this.vehiculos = new HashSet<>();
-        this.cotizaciones = new HashSet<>();
-        this.categorias = new HashSet<>();
+
     }
 
-    /**
-     * Agrega un vehiculo al conjunto de vehiculos
-     * @param vehiculo a agregar
-     */
-    public void agregarVehiculo(Vehiculo vehiculo) {
-        this.vehiculos.add(vehiculo);
-    }
 
-    /**
-     * Metodo que agregar cotizacion al conjunto de cotizaciones
-     * @param cotizacion a agregar
-     */
-    public void agregarCotizacion(Cotizacion cotizacion) {
-        this.cotizaciones.add(cotizacion);
-    }
 
-    /**
-     * Metodo para eliminar cotizacion del conjunto de cotizaciones
-     * @param cotizacion a eliminar
-     */
-    public void eliminarCotizacion(Cotizacion cotizacion){this.cotizaciones.remove(cotizacion);}
+
 
     /**
      * Setter de valor
@@ -120,15 +92,7 @@ public class Producto {
         this.impuesto = impuesto;
     }
 
-    /**
-     * metodo que asocia una categoria con el producto
-     * @param categoria nueva categoria a la que pertenece el producto.
-     */
 
-    protected void agregarCategoria(Categoria categoria){
-        this.categorias.add(categoria);
-
-    }
     @Override
     public int hashCode() {
         final int prime = 31;

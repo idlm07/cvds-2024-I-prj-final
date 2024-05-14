@@ -27,11 +27,10 @@ public class Cliente {
     @Getter @Setter private String correo;
     @Column(name = "celular", length = 10, nullable = false)
     @Getter @Setter private String celular;
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    @Getter private Set<Cotizacion> cotizaciones;
+
 
     public Cliente() {
-        cotizaciones = new HashSet<>();
+
     }
 
     /**
@@ -43,23 +42,12 @@ public class Cliente {
      */
     public Cliente(String nombre, String apellido, String celular,String correo){
         this.correo = correo;
-        this.nombre = nombre;
-        this.apellido = apellido;
+        this.nombre = nombre.toUpperCase();
+        this.apellido = apellido.toUpperCase();
         this.celular = celular;
-        this.cotizaciones = new HashSet<>();
     }
 
-    /**
-     * Metodo, que agrega una cotizacion al conjunto de Clientes
-     * @param cotizacion, cotizacion a agregar
-     */
-    public void agregarCotizacion(Cotizacion cotizacion){this.cotizaciones.add(cotizacion);}
 
-    /**
-     * Metodo que elimina cotizacion del conjunto de cotizacions
-     * @param cotizacion, cotizaciona eliminar
-     */
-    public void eliminarCotizacion(Cotizacion cotizacion){this.cotizaciones.remove(cotizacion);}
 
     @Override
     public int hashCode(){

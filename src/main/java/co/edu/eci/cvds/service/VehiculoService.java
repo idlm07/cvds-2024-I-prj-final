@@ -2,10 +2,11 @@ package co.edu.eci.cvds.service;
 
 
 import co.edu.eci.cvds.exception.LincolnLinesException;
-import co.edu.eci.cvds.model.Cotizacion;
+import co.edu.eci.cvds.model.Categoria;
+
 import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.model.Vehiculo;
-import co.edu.eci.cvds.repository.ProductoRepository;
+
 import co.edu.eci.cvds.repository.VehiculoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,12 @@ import java.util.Set;
 @Service
 public class VehiculoService {
     private final VehiculoRepository vehiculoRepository;
-    private final ProductoRepository productoRepository;
 
 
 
     @Autowired
-    public VehiculoService(VehiculoRepository vehiculoRepository,ProductoRepository productoRepository) {
+    public VehiculoService(VehiculoRepository vehiculoRepository) {
         this.vehiculoRepository = vehiculoRepository;
-        this.productoRepository = productoRepository;
     }
 
     /**
@@ -61,14 +60,13 @@ public class VehiculoService {
      * Metodo que asocia un vehiculo con un producto es decir, indica que productos son aptos para que vehiculo.
      * @param marca del carro
      * @param modelo del carro
-     * @param producto, nombre del producto apto para el vehiculo
+     * @param producto, producto apto para el vehiculo
+     * @param categorias, lista de categorias registradas en la base de datos
      */
 
-    public Vehiculo agregarProducto(String marca, String modelo,String producto) throws LincolnLinesException {
+    public Vehiculo agregarProducto(String marca,String modelo, Producto producto, List<Categoria> categorias) throws LincolnLinesException {
         Vehiculo currentVehicle = this.getVehiculo(marca, modelo);
-        Producto productoEncontrado = productoRepository.findByNombre(producto.toUpperCase()).get(0);
-        currentVehicle.anadirProducto(productoEncontrado);
-        productoRepository.save(productoEncontrado);
+        currentVehicle.anadirProducto(producto,categorias);
         return vehiculoRepository.save(currentVehicle);
 
     }
@@ -100,7 +98,7 @@ public class VehiculoService {
      */
     public List<Vehiculo> getModelosMarca(String marca) {
 
-        return vehiculoRepository.findByMarca(marca);
+        return vehiculoRepository.findByMarca(marca.toUpperCase());
     }
 
     /**
@@ -111,12 +109,15 @@ public class VehiculoService {
      */
 
     public int[] getMinMaxYear(String marca, String modelo) {
-        int creado = Integer.parseInt(vehiculoRepository.findByMarcaAndModel(marca,modelo).get(0).getYearVehicle());
+        int creado = Integer.parseInt(this.getVehiculo(marca,modelo).getYearVehicle());
         int actual = LocalDate.now().getYear();
         return new int[]{creado,actual};
     }
 
     public void limpiarTabla(){
+        for(Vehiculo vehiculo : this.getVehiculos()){
+            vehiculo.limpiarProductos();
+        }
         vehiculoRepository.deleteAllInBatch();
     }
 
@@ -131,8 +132,4 @@ public class VehiculoService {
         return vehiculo.getProductosVehiculo();
     }
 
-    public Set<Cotizacion> listarCotizaciones(String marca, String modelo){
-        Vehiculo encontrado = this.getVehiculo(marca,modelo);
-        return encontrado.getCotizaciones();
-    }
 }

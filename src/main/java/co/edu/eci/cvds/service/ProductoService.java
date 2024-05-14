@@ -2,9 +2,9 @@ package co.edu.eci.cvds.service;
 
 
 import co.edu.eci.cvds.exception.LincolnLinesException;
-import co.edu.eci.cvds.model.Categoria;
+
 import co.edu.eci.cvds.model.Producto;
-import co.edu.eci.cvds.model.Vehiculo;
+
 
 import co.edu.eci.cvds.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Set;
+
 
 /**
  * Clase Service de Producto
@@ -88,19 +88,13 @@ public class ProductoService {
         productoRepository.deleteById(nombre);
     }
 
-    public Set<Categoria> conocerCategorias(String producto){
-        Producto productoEncontrado = this.buscarProductoPorNombre(producto);
-        return productoEncontrado.getCategorias();
-    }
+
 
     public void limpiarTabla(){
         productoRepository.deleteAllInBatch();
     }
 
-    public Set<Vehiculo> vehiculos(String producto){
-        Producto productoEncontrado = this.buscarProductoPorNombre(producto);
-        return productoEncontrado.getVehiculos();
-    }
+
 
 
 

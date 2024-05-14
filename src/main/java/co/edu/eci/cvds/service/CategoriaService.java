@@ -5,7 +5,7 @@ import co.edu.eci.cvds.model.Categoria;
 
 import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.repository.CategoriaRepository;
-import co.edu.eci.cvds.repository.ProductoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,11 @@ import java.util.Set;
 @Service
 public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
-    private final ProductoRepository productoRepository;
 
     @Autowired
-    public CategoriaService(CategoriaRepository categoriaRepository, ProductoRepository productoRepository){
+    public CategoriaService(CategoriaRepository categoriaRepository){
         this.categoriaRepository = categoriaRepository;
-        this.productoRepository = productoRepository;
+
     }
 
     /**
@@ -54,21 +53,19 @@ public class CategoriaService {
      * @return Conjunto de productos pertenecientes a dicha categoria
      */
     public Set<Producto> listarProductos(String categoria){
-        Categoria currentCategoria= categoriaRepository.findByNombre(categoria).get(0);
+        Categoria currentCategoria= this.buscarCategoria(categoria);
         return currentCategoria.getProductosCategoria();
     }
 
     /**
      * Agrega un producto al conjunto de productos
      * @param categoria, nombre de la categoria a la cual se desea agregar el producto
-     * @param producto, nombre del producto que se desea agregar
+     * @param producto, producto que se desea agregar
      * @return categoria registrada den la base de datos
      */
-    public Categoria agregarProducto(String categoria, String producto){
+    public Categoria agregarProducto(String categoria, Producto producto){
         Categoria categoriaEncontrada = this.buscarCategoria(categoria);
-        Producto productoEncontrado = productoRepository.findByNombre(producto.toUpperCase()).get(0);
-        categoriaEncontrada.agregarProducto(productoEncontrado);
-        productoRepository.save(productoEncontrado);
+        categoriaEncontrada.agregarProducto(producto);
         return categoriaRepository.save(categoriaEncontrada);
     }
 
@@ -84,6 +81,9 @@ public class CategoriaService {
     }
 
     public void limpiarTabla(){
+        for(Categoria c:this.listarCategorias()){
+            c.limpiarProductos();
+        }
         categoriaRepository.deleteAllInBatch();
     }
 

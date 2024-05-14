@@ -29,7 +29,7 @@ public class ClienteService {
      * @return Cliente registrado en la base de datos con el nombre y apellido especificados.
      */
     public Cliente getCLiente(String nombre, String apellido){
-        return clienteRepository.findByNombreAndApellido(nombre,apellido).get(0);
+        return clienteRepository.findByNombreAndApellido(nombre.toUpperCase(),apellido.toUpperCase()).get(0);
     }
 
     /**
