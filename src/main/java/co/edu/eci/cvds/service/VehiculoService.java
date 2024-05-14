@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.service;
 
-import co.edu.eci.cvds.SpringApplicationCvds;
+
 import co.edu.eci.cvds.exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Cotizacion;
 import co.edu.eci.cvds.model.Producto;
@@ -54,9 +54,7 @@ public class VehiculoService {
      */
 
     public Vehiculo getVehiculo(String marca, String modelo) {
-        marca = SpringApplicationCvds.stringStandar(marca);
-        modelo = SpringApplicationCvds.stringStandar(modelo);
-        return vehiculoRepository.findByMarcaAndModel(marca, modelo).get(0);
+        return vehiculoRepository.findByMarcaAndModel(marca.toUpperCase(), modelo.toUpperCase()).get(0);
     }
 
     /**
@@ -68,7 +66,7 @@ public class VehiculoService {
 
     public Vehiculo agregarProducto(String marca, String modelo,String producto) throws LincolnLinesException {
         Vehiculo currentVehicle = this.getVehiculo(marca, modelo);
-        Producto productoEncontrado = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(producto)).get(0);
+        Producto productoEncontrado = productoRepository.findByNombre(producto.toUpperCase()).get(0);
         currentVehicle.anadirProducto(productoEncontrado);
         productoRepository.save(productoEncontrado);
         return vehiculoRepository.save(currentVehicle);

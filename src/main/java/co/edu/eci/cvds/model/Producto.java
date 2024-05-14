@@ -19,13 +19,13 @@ import java.util.Set;
 @Table(name = "Productos")
 public class Producto {
     @Id
-    @Column(name = "nombre", length = 50, nullable = false)
+    @Column(name = "nombre", length = 100, nullable = false)
     @Getter @Setter private String nombre;
     @Column(name = "descripcionBreve", length = 150)
     @Getter @Setter private String descripcionBreve;
     @Column(name = "descripcionTecnica", length = 250)
     @Getter @Setter private String descripcionTecnica;
-    @Column(name = "imagen", length = 100)
+    @Column(name = "imagen", length = 50)
     @Getter @Setter private String imagen;
     @Column(name = "valor", nullable = false)
     @Getter  private float valor;
@@ -57,7 +57,7 @@ public class Producto {
      */
     public Producto(String nombre,float valor, String moneda) throws LincolnLinesException {
         this.setValor(valor);
-        this.nombre = SpringApplicationCvds.stringStandar(nombre);
+        this.nombre = nombre.toUpperCase();
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;

@@ -4,9 +4,13 @@ import co.edu.eci.cvds.exception.LincolnLinesException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.javamoney.moneta.Money;
 
 
-
+import javax.money.Monetary;
+import javax.money.convert.CurrencyConversion;
+import javax.money.convert.ExchangeRateProvider;
+import javax.money.convert.MonetaryConversions;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +135,68 @@ public class Cotizacion {
         cliente.agregarCotizacion(this);
     }
 
+    /**
+     * Función que convierte cualquier moneda a pesos colombianos
+     * @param origen, moneda que convierte cualquier divisa a USD para luego
+    convertirlo a COP
+     * @return, moneda convertida a COP
+     *
+     */
+    private Money convertidorCop(Money origen){
+        ExchangeRateProvider proveedor = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
+        CurrencyConversion conversion = proveedor.getCurrencyConversion("USD");
+        Money productMoneyUsd = origen.with(conversion);
+        return Money.of(productMoneyUsd.getNumber().floatValue()*3900,"COP");
+    }
+
+    /**
+     * Funcion que revisa si un producto esta en pesos colombianos, de no estarlo, convierte su valor a pesos colombianos
+     * @param producto, producto  a analizar
+     * @return valor del producto en pesos colombianos
+     */
+    private Money moneyConversion(Producto producto){
+        if(!producto.getMoneda().equals("COP")) return convertidorCop(Money.of(producto.getValor(),producto.getMoneda()));
+        else return Money.of(producto.getValor(),producto.getMoneda());
+    }
+
+    /**
+     * Calcula el subtotal de los productos agregados al carrito
+     * @return Money del subtotal del carrito
+     */
+    public Money calcularTotalCarrito(){
+        Money total = Money.zero(Monetary.getCurrency("COP"));
+        for (Producto producto : this.getProductosCotizacion()) {
+            total = total.add(moneyConversion(producto));
+        }
+        return total;
+    }
+
+    /**
+     * Calcula el total de la cotizacion, teniendo en cuenta el subtotal, los descuentos e impuestos
+     * @return float indicando el total final de la cotizaion
+     */
+    public float calcularFinal(){
+        float totalDescuento ;
+        float totalImpuesto ;
+        Money total = this.calcularTotalCarrito();
+        Money mTotalDescuento;
+        Money mTotalImpuesto;
+        for(Producto producto : productosCotizacion){
+            totalDescuento = producto.getValor() * producto.getDescuento();
+            totalImpuesto = (producto.getValor() - totalDescuento) * producto.getImpuesto();
+            if(!producto.getMoneda().equals("COP")){
+                mTotalDescuento = convertidorCop(Money.of(totalDescuento,producto.getMoneda()));
+                mTotalImpuesto = convertidorCop(Money.of(totalImpuesto,producto.getMoneda()));
+            }else{
+                mTotalDescuento = Money.of(totalDescuento,producto.getMoneda());
+                mTotalImpuesto = Money.of(totalImpuesto,producto.getMoneda());
+            }
+            total = total.subtract(mTotalDescuento);
+            total = total.add(mTotalImpuesto);
+        }
+        return total.getNumber().floatValue();
+    }
+
     @Override
     public int hashCode(){
         final int prime = 31;
@@ -142,7 +208,7 @@ public class Cotizacion {
         result = prime * result + ((direccionRecogida == null) ? 0 : direccionRecogida.hashCode());
         result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
         result = prime * result + ((vehiculo == null) ? 0 : vehiculo.hashCode());
-        result = prime * result + ((productosCotizacion == null) ? 0 : productosCotizacion.hashCode());
+
         return result;
     }
 
@@ -158,8 +224,7 @@ public class Cotizacion {
                     (ciudadRecogida == null ? cotizacion.getCiudadRecogida() == null : ciudadRecogida.equals(cotizacion.getCiudadRecogida())) &&
                     (direccionRecogida == null ? cotizacion.getDireccionRecogida() == null : direccionRecogida.equals(cotizacion.getDireccionRecogida())) &&
                     (this.cliente == null ? cotizacion.getCliente() == null : cliente.equals(cotizacion.getCliente())) &&
-                    (this.vehiculo == null ? cotizacion.getVehiculo() == null :vehiculo.equals(cotizacion.getVehiculo())) &&
-                    productosCotizacion.equals(cotizacion.getProductosCotizacion());
+                    (this.vehiculo == null ? cotizacion.getVehiculo() == null :vehiculo.equals(cotizacion.getVehiculo()));
 
         }catch(Exception e){
             return false;

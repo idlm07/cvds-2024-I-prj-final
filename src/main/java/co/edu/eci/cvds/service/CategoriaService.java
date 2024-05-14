@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.service;
 
-import co.edu.eci.cvds.SpringApplicationCvds;
+
 import co.edu.eci.cvds.model.Categoria;
 
 import co.edu.eci.cvds.model.Producto;
@@ -45,7 +45,7 @@ public class CategoriaService {
      * @return, categoria en la BD
      */
     public Categoria buscarCategoria(String nombre){
-        return categoriaRepository.findByNombre(SpringApplicationCvds.stringStandar(nombre)).get(0);
+        return categoriaRepository.findByNombre(nombre.toUpperCase()).get(0);
     }
 
     /**
@@ -65,8 +65,8 @@ public class CategoriaService {
      * @return categoria registrada den la base de datos
      */
     public Categoria agregarProducto(String categoria, String producto){
-        Categoria categoriaEncontrada = categoriaRepository.findByNombre(SpringApplicationCvds.stringStandar(categoria)).get(0);
-        Producto productoEncontrado = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(producto)).get(0);
+        Categoria categoriaEncontrada = this.buscarCategoria(categoria);
+        Producto productoEncontrado = productoRepository.findByNombre(producto.toUpperCase()).get(0);
         categoriaEncontrada.agregarProducto(productoEncontrado);
         productoRepository.save(productoEncontrado);
         return categoriaRepository.save(categoriaEncontrada);
@@ -79,7 +79,7 @@ public class CategoriaService {
      */
 
     public Set<Producto> listaProductos(String categoria){
-        Categoria categoriaEncontrada = categoriaRepository.findByNombre(categoria).get(0);
+        Categoria categoriaEncontrada = this.buscarCategoria(categoria);
         return categoriaEncontrada.getProductosCategoria();
     }
 

@@ -16,10 +16,6 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class SpringApplicationCvds {
 
-    private final ProductoService productoService;
-    private final VehiculoService vehiculoService;
-    private final CotizacionService cotizacionSerrvice;
-    private final ClienteService clienteService;
 
     @Autowired
     public SpringApplicationCvds(
@@ -29,10 +25,7 @@ public class SpringApplicationCvds {
             ClienteService clienteService
 
     ) {
-        this.productoService = productoService;
-        this.vehiculoService = vehiculoService;
-        this.cotizacionSerrvice = cotizacionService;
-        this.clienteService = clienteService;
+
 
     }
 
@@ -52,17 +45,6 @@ public class SpringApplicationCvds {
         return new RestTemplate();
     }
 
-    public static String stringStandar(String frase) {
-        frase = frase.toLowerCase();
-        String[] palabras = frase.split(" ");
-        StringBuilder fraseStandar = new StringBuilder();
-        for(String palabra : palabras) {
-            if(!palabra.isEmpty()){
-                fraseStandar.append(palabra.substring(0, 1).toUpperCase()).append(palabra.substring(1).toLowerCase());
-            }
-        }
-        return fraseStandar.toString();
 
-    }
 
 }

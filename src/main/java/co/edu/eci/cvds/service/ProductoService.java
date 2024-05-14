@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.service;
 
-import co.edu.eci.cvds.SpringApplicationCvds;
+
 import co.edu.eci.cvds.exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Categoria;
 import co.edu.eci.cvds.model.Producto;
@@ -50,7 +50,7 @@ public class ProductoService {
      * @return producto si se encuentra en la base de datos, null sino
      */
     public Producto buscarProductoPorNombre(String nombre) {
-        return productoRepository.findByNombre(SpringApplicationCvds.stringStandar(nombre)).get(0);
+        return productoRepository.findByNombre(nombre.toUpperCase()).get(0);
 
     }
 

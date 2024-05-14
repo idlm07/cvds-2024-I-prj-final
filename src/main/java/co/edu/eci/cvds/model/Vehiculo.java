@@ -47,8 +47,8 @@ public class Vehiculo {
      * @param year, año en el que se estreno el vehiculo
      */
     public Vehiculo(String marca, String model, String year) {
-        this.marca = SpringApplicationCvds.stringStandar(marca);
-        this.model = SpringApplicationCvds.stringStandar(model);
+        this.marca = marca.toUpperCase();
+        this.model = model.toUpperCase();
         this.yearVehicle = year;
         this.productosVehiculo = new HashSet<>();
         this.cotizaciones = new HashSet<>();

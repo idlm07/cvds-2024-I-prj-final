@@ -25,7 +25,7 @@ public class Categoria {
     @JoinTable(
             name = "ProductosPorCategoria",
             joinColumns = {
-                    @JoinColumn(name = "nombre")
+                    @JoinColumn(name = "categoria", referencedColumnName = "nombre")
             },
             inverseJoinColumns = @JoinColumn(name = "producto", referencedColumnName = "nombre")
     )
@@ -40,7 +40,7 @@ public class Categoria {
      * @param nombre, nombre de la categoria
      */
     public Categoria(String nombre){
-        this.nombre = SpringApplicationCvds.stringStandar(nombre);
+        this.nombre = nombre.toUpperCase();
         this.productosCategoria = new HashSet<>();
     }
 

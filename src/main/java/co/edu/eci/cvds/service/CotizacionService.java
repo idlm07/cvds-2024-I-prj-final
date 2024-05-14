@@ -1,6 +1,6 @@
 package co.edu.eci.cvds.service;
 
-import co.edu.eci.cvds.SpringApplicationCvds;
+
 import co.edu.eci.cvds.exception.LincolnLinesException;
 import co.edu.eci.cvds.model.Cliente;
 import co.edu.eci.cvds.model.Cotizacion;
@@ -23,15 +23,7 @@ import java.time.LocalTime;
 
 import java.util.List;
 
-import javax.money.Monetary;
 
-import javax.money.convert.CurrencyConversion;
-
-import javax.money.convert.ExchangeRateProvider;
-import javax.money.convert.MonetaryConversions;
-
-
-import org.javamoney.moneta.Money;
 
 /**
  * Clase Service de cotizacion
@@ -52,19 +44,7 @@ public class CotizacionService {
         this.vehiculoRepository = vehiculoRepository;
         this.clienteRepository = clienteRepository;
     }
-    /**
-     * Función que convierte cualquier moneda a pesos colombianos
-     * @param origen, moneda que convierte cualquier divisa a USD para luego
-    convertirlo a COP
-     * @return, moneda convertida a COP
-     *
-     */
-    private Money convertidorCop(Money origen){
-        ExchangeRateProvider proveedor = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
-        CurrencyConversion conversion = proveedor.getCurrencyConversion("USD");
-        Money productMoneyUsd = origen.with(conversion);
-        return Money.of(productMoneyUsd.getNumber().floatValue()*3900,"COP");
-    }
+
     /**
      * Función que devuelve lista de cotizaciones en la Base de Datos
      * @return, lista de cotizaciones que esta en la base de datos.
@@ -108,7 +88,7 @@ public class CotizacionService {
         Producto productoEncontrado;
         if(cotizacion == -1 && (marca == null || modelo == null)) throw new LincolnLinesException(LincolnLinesException.DATOS_FALTANTES);
         else if(cotizacion == -1){
-            vehiculo = vehiculoRepository.findByMarcaAndModel(SpringApplicationCvds.stringStandar(marca), SpringApplicationCvds.stringStandar(modelo)).get(0);
+            vehiculo = vehiculoRepository.findByMarcaAndModel(marca.toUpperCase(), modelo.toUpperCase()).get(0);
             cotizacionEncontrada = cotizacionRepository.save(new Cotizacion(vehiculo));
             vehiculo.agregarCotizacion(cotizacionEncontrada);
         }
@@ -116,7 +96,7 @@ public class CotizacionService {
             cotizacionEncontrada = this.encontrarCotizacion(cotizacion);
             vehiculo = cotizacionEncontrada.getVehiculo();
         }
-        productoEncontrado = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(producto)).get(0);
+        productoEncontrado = productoRepository.findByNombre(producto.toUpperCase()).get(0);
         cotizacionEncontrada.setEstado(Cotizacion.EN_PROCESO);
         cotizacionEncontrada.agregarProductoAlCarrito(productoEncontrado);
         productoRepository.save(productoEncontrado);
@@ -127,10 +107,12 @@ public class CotizacionService {
 
     /**
      * Metodo que quita producto del carrito
-     * @param producto, producto a quitar
-     * @param cotizacion cotizacion de la cual se va a quitar el producto
+     * @param nombreProducto, nombre del producto a quitar del carrito
+     * @param cotizacionId identificador de la cotizacion de la cual se va a quitar el producto
      */
-    public void quitarDelCarrito(Producto producto, Cotizacion cotizacion){
+    public void quitarDelCarrito(String nombreProducto, long cotizacionId){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        Producto producto = productoRepository.findByNombre(nombreProducto.toUpperCase()).get(0);
         cotizacion.eliminarProductoDelCarrito(producto);
         cotizacionRepository.save(cotizacion);
         productoRepository.save(producto);
@@ -148,56 +130,30 @@ public class CotizacionService {
 
     }
 
-    /**
-     * Funcion que revisa si un producto esta en pesos colombianos, de no estarlo, convierte su valor a pesos colombianos
-     * @param producto, producto  a analizar
-     * @return valor del producto en pesos colombianos
-     */
-    private Money moneyConversion(Producto producto){
-        if(!producto.getMoneda().equals("COP")) return convertidorCop(Money.of(producto.getValor(),producto.getMoneda()));
-        else return Money.of(producto.getValor(),producto.getMoneda());
-    }
+
 
     /**
-     * Calcula el subtotal de los productos agregados al carrito
-     * @param cotizacion, cotizacion que se desea realizar
+     * indica el Subtotal de los productos agregados al carrito de cierta cotizacion
+     * @param cotizacionId, identificador de la cotizacion en la que se agregaron los productos
      * @return Money del subtotal del carrito
      */
-    public Money calcularTotalCarrito(Cotizacion cotizacion){
-        Money total = Money.zero(Monetary.getCurrency("COP"));
-        for (Producto producto : verCarrito(cotizacion.getIden())) {
-            total = total.add(moneyConversion(producto));
-        }
-        return total;
+    public float calcularTotalCarrito(long cotizacionId){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        return cotizacion.calcularTotalCarrito().getNumber().floatValue();
     }
 
     /**
-     * Calcula el total de una cotizacion teniendo en cuenta, subtotal del carrito, impuesto y descuento
-     * @param cotizacion
+     * Entrega la cotizacion final de una cotizacion, teniendo en cuenta subtotal, descuento e impuestos
+     * @param cotizacionId, identificador de la cotizacion.
      * @return total a pagar.
      */
 
-    public float cotizacionTotal(Cotizacion cotizacion){
-        Money total = calcularTotalCarrito(cotizacion);
-        float totalDescuento ;
-        float totalImpuesto ;
-        Money mTotalDescuento;
-        Money mTotalImpuesto;
-        for(Producto producto : verCarrito(cotizacion.getIden())){
-            totalDescuento = producto.getValor() * producto.getDescuento();
-            totalImpuesto = (producto.getValor() - totalDescuento) * producto.getImpuesto();
-            if(!producto.getMoneda().equals("COP")){
-                mTotalDescuento = convertidorCop(Money.of(totalDescuento,producto.getMoneda()));
-                mTotalImpuesto = convertidorCop(Money.of(totalImpuesto,producto.getMoneda()));
-            }else{
-                mTotalDescuento = Money.of(totalDescuento,producto.getMoneda());
-                mTotalImpuesto = Money.of(totalImpuesto,producto.getMoneda());
-            }
-            total = total.subtract(mTotalDescuento);
-            total = total.add(mTotalImpuesto);
-        }
-        return total.getNumber().floatValue();
+
+    public float calcularFinal(long cotizacionId){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        return cotizacion.calcularFinal();
     }
+
 
     /**
      * Metodo para separar cita a una cotizacion especifica
@@ -253,7 +209,7 @@ public class CotizacionService {
      */
     public int contadorProducto(String nombrePorducto,long cotizacion){
         int contador = 0;
-        Producto producto = productoRepository.findByNombre(SpringApplicationCvds.stringStandar(nombrePorducto)).get(0);
+        Producto producto = productoRepository.findByNombre(nombrePorducto.toUpperCase()).get(0);
         List<Producto> carrito = this.verCarrito(cotizacion);
         for(int i = 0; i < carrito.size();i++){
             if(carrito.get(i).equals(producto)) contador++;
