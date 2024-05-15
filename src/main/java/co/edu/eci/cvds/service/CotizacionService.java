@@ -87,7 +87,7 @@ public class CotizacionService {
      * @param producto, producto a quitar del carrito
      * @param cotizacionId identificador de la cotizacion de la cual se va a quitar el producto
      */
-    public void quitarDelCarrito(Producto producto, long cotizacionId){
+    public void quitarDelCarrito(Producto producto, long cotizacionId) throws LincolnLinesException{
         Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
         cotizacion.eliminarProductoDelCarrito(producto);
         cotizacionRepository.save(cotizacion);
@@ -124,9 +124,7 @@ public class CotizacionService {
      */
     public float calcularFinal(long cotizacionId){
         Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
-        float total = cotizacion.calcularFinal();
-        cotizacionRepository.save(cotizacion);
-        return total;
+        return cotizacion.calcularFinal();
     }
 
 
@@ -221,6 +219,12 @@ public class CotizacionService {
     public String conocerEstado(long idCotizacion){
         Cotizacion cotizacion = this.encontrarCotizacion(idCotizacion);
         return cotizacion.getEstado();
+    }
+
+    public void actualizarEstado(long cotizacionId, String nuevoEstado){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        cotizacion.setEstado(nuevoEstado);
+        cotizacionRepository.save(cotizacion);
     }
 
 

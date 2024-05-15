@@ -92,11 +92,16 @@ public class Cotizacion {
     /**
      * Metodo que agrega un producto al carrito
      * @param producto, producto a agregar
-     * @throws LincolnLinesException PRODUCTO_NO_COMPATIBLE si el producto no es apto para el vehiculo al cual se le esta haciendo la cotizacion.
+     * @throws LincolnLinesException PRODUCTO_NO_COMPATIBLE si el producto no es apto para el vehiculo al cual se le
+     * esta haciendo la cotizacion. NO_ACCIONES si se trata de realizar alguna accion, cuando ya no se es permitido
      */
     public void agregarProductoAlCarrito(Producto producto) throws LincolnLinesException {
-        if(!this.vehiculo.productoApto(producto)) throw  new LincolnLinesException(LincolnLinesException.PRODUCTO_NO_COMPATIBLE);
-        if(cita != null) throw  new LincolnLinesException(LincolnLinesException.FECHA_CLONCLUIDA);
+        if(!this.vehiculo.productoApto(producto)){
+            throw  new LincolnLinesException(LincolnLinesException.PRODUCTO_NO_COMPATIBLE);
+        }
+        if(cita != null || this.estado.equals(Cotizacion.FINALIZADO)){
+            throw  new LincolnLinesException(LincolnLinesException.NO_ACCIONES);
+        }
         this.setEstado(Cotizacion.EN_PROCESO);
         productosCotizacion.add(producto);
 
@@ -105,10 +110,13 @@ public class Cotizacion {
     /**
      * Metodo para eliminar algun producto del carrito
      * @param producto, producto que se desea agregar.
+     * @throws LincolnLinesException NO_ACCIONES si se trata de realizar alguna accion, cuando ya no se es permitido
      */
-    public void eliminarProductoDelCarrito(Producto producto){
+    public void eliminarProductoDelCarrito(Producto producto) throws LincolnLinesException {
+        if(cita != null || this.estado.equals(Cotizacion.FINALIZADO)){
+            throw  new LincolnLinesException(LincolnLinesException.NO_ACCIONES);
+        }
         productosCotizacion.remove(producto);
-
         if (this.getProductosCotizacion().isEmpty()) {
             this.setEstado(Cotizacion.ELIMINADO);
         }
@@ -123,9 +131,13 @@ public class Cotizacion {
      * @throws LincolnLinesException DATOS_FALTANTES si no se proporciona una fecha o cliente o si,
      * el cliente decide que recojan el vehiculo y no proporciona los datos completos.
      * @throws LincolnLinesException COTIZACION_AGENDADA, si la cotizacion ya tiene una cita agendada
-     * @throws  LincolnLinesException CARRITO_VACIO si el la cotizacion no tiene ningun producto
+     * CARRITO_VACIO si el la cotizacion no tiene ningun producto
+     * NO_ACCIONES si la cotizacion ya fue finalizada.
      */
     public void agendar(LocalDateTime cita, String ciudadRecogida, String direccionRecogida,Cliente cliente) throws LincolnLinesException {
+        if(this.estado.equals(Cotizacion.FINALIZADO)){
+            throw new LincolnLinesException(LincolnLinesException.NO_ACCIONES);
+        }
         if(this.cita != null) throw new LincolnLinesException(LincolnLinesException.COTIZACION_AGENDADA);
         if(this.productosCotizacion.isEmpty()) throw new LincolnLinesException(LincolnLinesException.CARRITO_VACIO);
         if(cliente == null
@@ -199,7 +211,6 @@ public class Cotizacion {
             total = total.subtract(mTotalDescuento);
             total = total.add(mTotalImpuesto);
         }
-        this.estado = Cotizacion.FINALIZADO;
         return total.getNumber().floatValue();
     }
 
