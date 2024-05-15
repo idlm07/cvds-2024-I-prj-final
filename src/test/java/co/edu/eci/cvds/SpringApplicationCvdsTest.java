@@ -337,6 +337,7 @@ class SpringApplicationTests {
         categoriaService.agregarCategoria(new Categoria("Sports"));
         vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
         Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion1 = new Cotizacion();
         Producto producto;
         try {
             producto = new Producto("Computador",700f,"USD");
@@ -353,9 +354,11 @@ class SpringApplicationTests {
             categoriaService.agregarProducto("Sports",productoService.buscarProductoPorNombre("Casco"));
             vehiculoService.agregarProducto("volkswagen","gOL",productoService.buscarProductoPorNombre("Computador"),categoriaService.listarCategorias());
             vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("casco"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("Celular"),categoriaService.listarCategorias());
             cotizacion = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
             cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),null,cotizacion.getIden());
             cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("computador"),vehiculoService.getVehiculo("volkswagen","gol"),cotizacion.getIden());
+            cotizacion1 = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("celular"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
         } catch (LincolnLinesException e) {
             fail(e.getMessage());
         }
@@ -364,8 +367,9 @@ class SpringApplicationTests {
         float verdadero = 8373740519f - 6709090009.60f + 536727200.77f + 353415.79f;
         float tasaError = Math.abs(verdadero-calculado)/verdadero;
         assertTrue(tasaError <= 0.05);
-
+        assertEquals(4800000f,cotizacionService.calcularFinal(cotizacion1.getIden()));
         assertEquals(Cotizacion.FINALIZADO,cotizacionService.conocerEstado(cotizacion.getIden()));
+
     }
 
     @Test
