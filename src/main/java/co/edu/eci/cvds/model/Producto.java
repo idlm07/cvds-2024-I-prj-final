@@ -35,10 +35,16 @@ public class Producto {
     @Getter private float descuento;
     @Column(name = "impuesto",nullable = false)
     @Getter  private float impuesto;
+    @ManyToMany(mappedBy = "productosCategoria", fetch = FetchType.EAGER)
+    @Getter private Set<Categoria> categorias;
+    @ManyToMany(mappedBy = "productosVehiculo", fetch = FetchType.EAGER)
+    @Getter private Set<Vehiculo> vehiculos;
 
 
 
     public Producto() {
+        this.categorias = new HashSet<>();
+        this.vehiculos = new HashSet<>();
     }
 
     /**
@@ -53,7 +59,8 @@ public class Producto {
         this.moneda = moneda;
         this.descuento = 0;
         this.impuesto = 0;
-
+        this.categorias = new HashSet<>();
+        this.vehiculos = new HashSet<>();
     }
 
     public Producto(String nombre, float valor, String moneda, float impuesto, float descuento){
@@ -62,7 +69,8 @@ public class Producto {
         this.moneda = moneda;
         this.impuesto = impuesto;
         this.descuento = descuento;
-
+        this.categorias = new HashSet<>();
+        this.vehiculos = new HashSet<>();
     }
 
 
@@ -133,8 +141,25 @@ public class Producto {
                 (this.moneda == null ? producto.getMoneda() == null : this.moneda.equals(producto.getMoneda())) &&
                 (this.impuesto == 0 ? producto.getImpuesto() == 0 : this.impuesto == producto.getImpuesto()) &&
                 (this.descuento == 0 ? producto.getDescuento() == 0 : this.descuento == producto.getDescuento());
-
     }
+
+    /**
+     * Agrega una categoria al conjunto de categorias
+     * @param categoria a la que pertence el producto
+     */
+    protected void agregarCategoria(Categoria categoria){
+        this.categorias.add(categoria);
+    }
+
+    /**
+     * Agrega un vehiculo al conjunto de vehiculos
+     * @param vehiculo
+     */
+    protected void agregarVehiculo(Vehiculo vehiculo){
+        this.vehiculos.add(vehiculo);
+    }
+
+
 
 
 

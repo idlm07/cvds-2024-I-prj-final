@@ -64,15 +64,9 @@ public class Vehiculo {
      * Asocia un producto con el vehiculo
      * @param producto, producto apto para el vehiculo
      */
-    public void anadirProducto(Producto producto, List<Categoria> categorias) throws LincolnLinesException {
-        boolean encontrado = false;
-        for(Categoria categoria : categorias) {
-            if(categoria.contieneProducto(producto)){
-                encontrado = true;
-                break;
-            }
-        }
-        if(!encontrado) throw new LincolnLinesException(LincolnLinesException.PRODUCTO_SIN_CATEGORIA);
+    public void anadirProducto(Producto producto) throws LincolnLinesException {
+        if(producto.getCategorias().isEmpty()) throw new LincolnLinesException(LincolnLinesException.PRODUCTO_SIN_CATEGORIA);
+        producto.agregarVehiculo(this);
         productosVehiculo.add(producto);
 
     }

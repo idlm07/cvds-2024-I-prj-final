@@ -3,6 +3,7 @@ package co.edu.eci.cvds.service;
 
 import co.edu.eci.cvds.exception.LincolnLinesException;
 
+import co.edu.eci.cvds.model.Categoria;
 import co.edu.eci.cvds.model.Producto;
 
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -81,6 +83,11 @@ public class ProductoService {
      */
     public void borrarProducto(String nombre) {
         productoRepository.deleteById(nombre);
+    }
+
+    public Set<Categoria> conocerCategorias(String nombreProducto){
+        Producto producto = this.buscarProductoPorNombre(nombreProducto);
+        return producto.getCategorias();
     }
 
 

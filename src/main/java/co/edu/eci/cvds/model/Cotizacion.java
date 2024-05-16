@@ -103,6 +103,7 @@ public class Cotizacion {
             throw  new LincolnLinesException(LincolnLinesException.NO_ACCIONES);
         }
         this.setEstado(Cotizacion.EN_PROCESO);
+
         productosCotizacion.add(producto);
 
     }
@@ -257,7 +258,6 @@ public class Cotizacion {
         result = prime * result + ((direccionRecogida == null) ? 0 : direccionRecogida.hashCode());
         result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
         result = prime * result + ((vehiculo == null) ? 0 : vehiculo.hashCode());
-
         return result;
     }
 

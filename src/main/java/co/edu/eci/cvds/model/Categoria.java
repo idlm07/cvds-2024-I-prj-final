@@ -49,6 +49,7 @@ public class Categoria {
      * @param producto a agregar
      */
     public void agregarProducto(Producto producto){
+        producto.agregarCategoria(this);
         this.productosCategoria.add((producto));
     }
 

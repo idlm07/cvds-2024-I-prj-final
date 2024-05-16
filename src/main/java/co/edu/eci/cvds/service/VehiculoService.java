@@ -2,7 +2,6 @@ package co.edu.eci.cvds.service;
 
 
 import co.edu.eci.cvds.exception.LincolnLinesException;
-import co.edu.eci.cvds.model.Categoria;
 
 import co.edu.eci.cvds.model.Producto;
 import co.edu.eci.cvds.model.Vehiculo;
@@ -61,12 +60,11 @@ public class VehiculoService {
      * @param marca del carro
      * @param modelo del carro
      * @param producto, producto apto para el vehiculo
-     * @param categorias, lista de categorias registradas en la base de datos
      */
 
-    public Vehiculo agregarProducto(String marca,String modelo, Producto producto, List<Categoria> categorias) throws LincolnLinesException {
+    public Vehiculo agregarProducto(String marca,String modelo, Producto producto) throws LincolnLinesException {
         Vehiculo currentVehicle = this.getVehiculo(marca, modelo);
-        currentVehicle.anadirProducto(producto,categorias);
+        currentVehicle.anadirProducto(producto);
         return vehiculoRepository.save(currentVehicle);
 
     }
