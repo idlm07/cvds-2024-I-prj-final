@@ -177,10 +177,10 @@ public class Cotizacion {
     }
 
     /**
-     * Calcula el subtotal de los productos agregados al carrito
+     * Calcula el total de los productos agregados al carrito, es decir sin tener en cuenta el descuento ni impuestos.
      * @return Money del subtotal del carrito
      */
-    public Money calcularTotalCarrito(){
+    public Money calcularSinDescuento(){
         Money total = Money.zero(Monetary.getCurrency("COP"));
         for (Producto producto : this.getProductosCotizacion()) {
             total = total.add(moneyConversion(producto));
@@ -189,28 +189,54 @@ public class Cotizacion {
     }
 
     /**
+     *Metodo que calcula el descuento total de los productos
+     * @return descuento total por cotizacion.
+     */
+
+    public Money calcularDescuento(){
+        Money total = Money.zero(Monetary.getCurrency("COP"));
+        Money mTotal;
+        float totalDescuento;
+        for(Producto p: productosCotizacion){
+            totalDescuento = p.getValor() * p.getDescuento();
+            mTotal = Money.of(totalDescuento,p.getMoneda());
+            if(!p.getMoneda().equals("COP")) mTotal = convertidorCop(mTotal);
+            total = total.add(mTotal);
+        }
+        return total;
+    }
+
+    /**
+     * Calcula el subtotal del carrito, es decir total - descuento
+     * @return subtotal del carrito
+     */
+    public float calcularSubtotal(){
+        Money total = this.calcularSinDescuento().subtract(this.calcularDescuento());
+        return total.getNumber().floatValue();
+    }
+
+    public Money calcularImpuesto(){
+        Money total = Money.zero(Monetary.getCurrency("COP"));
+        Money mTotal;
+        float totalImpuesto;
+        for(Producto p: productosCotizacion){
+            totalImpuesto = p.getValorFinal() * p.getImpuesto();
+            mTotal = Money.of(totalImpuesto,p.getMoneda());
+            if(!p.getMoneda().equals("COP")) mTotal = convertidorCop(mTotal);
+            total = total.add(mTotal);
+        }
+        return total;
+
+    }
+
+    /**
      * Calcula el total de la cotizacion, teniendo en cuenta el subtotal, los descuentos e impuestos
      * @return float indicando el total final de la cotizaion
      */
     public float calcularFinal(){
-        float totalDescuento ;
-        float totalImpuesto ;
-        Money total = this.calcularTotalCarrito();
-        Money mTotalDescuento;
-        Money mTotalImpuesto;
-        for(Producto producto : productosCotizacion){
-            totalDescuento = producto.getValor() * producto.getDescuento();
-            totalImpuesto = (producto.getValor() - totalDescuento) * producto.getImpuesto();
-            if(!producto.getMoneda().equals("COP")){
-                mTotalDescuento = convertidorCop(Money.of(totalDescuento,producto.getMoneda()));
-                mTotalImpuesto = convertidorCop(Money.of(totalImpuesto,producto.getMoneda()));
-            }else{
-                mTotalDescuento = Money.of(totalDescuento,producto.getMoneda());
-                mTotalImpuesto = Money.of(totalImpuesto,producto.getMoneda());
-            }
-            total = total.subtract(mTotalDescuento);
-            total = total.add(mTotalImpuesto);
-        }
+        Money total = this.calcularSinDescuento();
+        total = total.subtract(this.calcularDescuento());
+        total = total.add(this.calcularImpuesto());
         return total.getNumber().floatValue();
     }
 
@@ -237,21 +263,18 @@ public class Cotizacion {
 
     @Override
     public boolean equals(Object obj){
-        try{
-            Cotizacion cotizacion = (Cotizacion) obj;
+        if(obj == null || obj.getClass() != this.getClass()) return false;
+        Cotizacion cotizacion = (Cotizacion) obj;
+        return (this.iden == 0 ? cotizacion.getIden() == 0 :cotizacion.getIden() == this.iden) &&
+                (this.estado == null ? cotizacion.getEstado() == null : estado.equals(cotizacion.getEstado())) &&
+                fechaCreacion.equals(cotizacion.getFechaCreacion()) &&
+                (cita == null ? cotizacion.getCita() == null : cita.equals(cotizacion.getCita())) &&
+                (ciudadRecogida == null ? cotizacion.getCiudadRecogida() == null : ciudadRecogida.equals(cotizacion.getCiudadRecogida())) &&
+                (direccionRecogida == null ? cotizacion.getDireccionRecogida() == null : direccionRecogida.equals(cotizacion.getDireccionRecogida())) &&
+                (this.cliente == null ? cotizacion.getCliente() == null : cliente.equals(cotizacion.getCliente())) &&
+                (this.vehiculo == null ? cotizacion.getVehiculo() == null :vehiculo.equals(cotizacion.getVehiculo()));
 
-            return (this.iden == 0 ? cotizacion.getIden() == 0 :cotizacion.getIden() == this.iden) &&
-                    (this.estado == null ? cotizacion.getEstado() == null : estado.equals(cotizacion.getEstado())) &&
-                    fechaCreacion.equals(cotizacion.getFechaCreacion()) &&
-                    (cita == null ? cotizacion.getCita() == null : cita.equals(cotizacion.getCita())) &&
-                    (ciudadRecogida == null ? cotizacion.getCiudadRecogida() == null : ciudadRecogida.equals(cotizacion.getCiudadRecogida())) &&
-                    (direccionRecogida == null ? cotizacion.getDireccionRecogida() == null : direccionRecogida.equals(cotizacion.getDireccionRecogida())) &&
-                    (this.cliente == null ? cotizacion.getCliente() == null : cliente.equals(cotizacion.getCliente())) &&
-                    (this.vehiculo == null ? cotizacion.getVehiculo() == null :vehiculo.equals(cotizacion.getVehiculo()));
 
-        }catch(Exception e){
-            return false;
-        }
 
     }
 

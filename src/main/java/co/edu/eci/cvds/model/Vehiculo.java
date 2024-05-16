@@ -101,15 +101,13 @@ public class Vehiculo {
     }
     @Override
     public boolean equals(Object obj) {
-        try {
-            Vehiculo vehiculo = (Vehiculo) obj;
-            return (this.marca == null ? vehiculo.getMarca() == null :this.marca.equals(vehiculo.getMarca())) &&
-                    (this.model == null ? vehiculo.getModel() == null : this.model.equals(vehiculo.getModel())) &&
-                    (this.yearVehicle == null ? vehiculo.getYearVehicle() == null : this.yearVehicle.equals(vehiculo.getYearVehicle())) &&
-                    this.productosVehiculo.equals(vehiculo.getProductosVehiculo());
-        } catch (Exception e) {
-            return false;
-        }
+        if(obj == null || obj.getClass() != this.getClass()) return false;
+        Vehiculo vehiculo = (Vehiculo) obj;
+        return (this.marca == null ? vehiculo.getMarca() == null :this.marca.equals(vehiculo.getMarca())) &&
+                (this.model == null ? vehiculo.getModel() == null : this.model.equals(vehiculo.getModel())) &&
+                (this.yearVehicle == null ? vehiculo.getYearVehicle() == null : this.yearVehicle.equals(vehiculo.getYearVehicle())) &&
+                this.productosVehiculo.equals(vehiculo.getProductosVehiculo());
+
     }
 
 }

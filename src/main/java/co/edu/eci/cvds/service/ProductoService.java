@@ -34,15 +34,11 @@ public class ProductoService {
     /**
      * Funcion que registra un producto a la base de datos.
      * @param producto, producto a registrar
-     * @return producto registrado
+     *
      */
-    public Producto agregarProducto(Producto producto){
-        return productoRepository.save(producto);
-
-
+    public void agregarProducto(Producto producto){
+        productoRepository.save(producto);
     }
-
-
 
     /**
      * Funcion que devuelve un producto en especifico registrado en la base de datos
@@ -71,7 +67,6 @@ public class ProductoService {
         productoExistente.setValor(producto.getValor());
         productoExistente.setImpuesto(producto.getImpuesto());
         productoExistente.setDescuento(producto.getDescuento());
-        productoExistente.setNombre(producto.getNombre());
         productoExistente.setDescripcionBreve(producto.getDescripcionBreve());
         productoExistente.setDescripcionTecnica(producto.getDescripcionTecnica());
         productoExistente.setImagen(producto.getImagen());

@@ -97,7 +97,6 @@ public class VehiculoService {
      * @return lista de los modelos disponibles para dicha marca.
      */
     public List<Vehiculo> getModelosMarca(String marca) {
-
         return vehiculoRepository.findByMarca(marca.toUpperCase());
     }
 

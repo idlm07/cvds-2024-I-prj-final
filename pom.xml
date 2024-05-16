@@ -77,6 +77,15 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<exclude>co/edu/eci/cvds/config/*</exclude>
+						<exclude>co/edu/eci/cvds/id/*</exclude>
+						<exclude>co/edu/eci/cvds/exception/*</exclude>
+						<exclude>co/edu/eci/cvds/controller/*</exclude>
+						<exclude>co/edu/eci/cvds/SpringApplicationCvds.*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -89,6 +98,31 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.7</minimum>
+										</limit>
+										<limit>
+											<counter>BRANCH</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.6</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

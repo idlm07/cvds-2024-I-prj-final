@@ -105,16 +105,44 @@ public class CotizacionService {
 
     }
 
-
-
     /**
      * indica el Subtotal de los productos agregados al carrito de cierta cotizacion
      * @param cotizacionId, identificador de la cotizacion en la que se agregaron los productos
-     * @return Money del subtotal del carrito
+     * @return float del subtotal del carrito
      */
     public float calcularTotalCarrito(long cotizacionId){
         Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
-        return cotizacion.calcularTotalCarrito().getNumber().floatValue();
+        return cotizacion.calcularSubtotal();
+    }
+
+    /**
+     * Calcula el descuento toal para la cotizacion
+     * @param cotizacionId, identificador de la cotizacion en la que se agregaron los productos
+     * @return descuento total de la cotizacion
+     */
+    public float calcularDescuentoTotal(long cotizacionId){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        return cotizacion.calcularDescuento().getNumber().floatValue();
+    }
+
+    /**
+     * Calcula el Impuesto toal para la cotizacion
+     * @param cotizacionId, identificador de la cotizacion en la que se agregaron los productos
+     * @return impuesto total de la cotizacion
+     */
+    public float calcularImpuestoTotal(long cotizacionId){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        return cotizacion.calcularImpuesto().getNumber().floatValue();
+    }
+
+    /**
+     * Calcula el total de la cotizacion sin tener en cuenta el descuento
+     * @param cotizacionId, identificador de la cotizacion
+     * @return total sin descuento
+     */
+    public float totalSinDescuento(long cotizacionId){
+        Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
+        return cotizacion.calcularSinDescuento().getNumber().floatValue();
     }
 
     /**

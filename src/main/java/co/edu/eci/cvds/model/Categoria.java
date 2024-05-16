@@ -77,14 +77,11 @@ public class Categoria {
 
     @Override
     public boolean equals(Object obj) {
-        try {
-            Categoria categoria = (Categoria) obj;
+        if(obj == null || obj.getClass() != this.getClass()) return false;
+        Categoria categoria = (Categoria) obj;
+        return (this.nombre == null ? categoria.getNombre() == null : this.nombre.equals(categoria.getNombre()))
+                && this.productosCategoria.equals(categoria.getProductosCategoria());
 
-            return (this.nombre == null ? categoria.getNombre() == null : this.nombre.equals(categoria.getNombre()))
-                    && this.productosCategoria.equals(categoria.getProductosCategoria());
-        } catch (Exception e) {
-            return false;
-        }
     }
 
 

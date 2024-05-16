@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,8 +99,11 @@ class SpringApplicationTests {
         productoService.limpiarTabla();
         vehiculoService.agregarVehiculo(new Vehiculo("Suzuki","Swfit","2012"));
         vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
-        assertEquals(2,vehiculoService.getVehiculos().size());
+        List<Vehiculo> vehiculos = vehiculoService.getVehiculos();
+        assertEquals(2,vehiculos.size());
         assertEquals("SUZUKI",vehiculoService.getVehiculo("Suzuki","swfit").getMarca());
+        assertTrue(vehiculos.contains(new Vehiculo("Suzuki","Swfit","2012")));
+        assertTrue(vehiculos.contains(new Vehiculo("Volkswagen","Gol","2001")));
     }
 
     @Test
@@ -146,6 +151,35 @@ class SpringApplicationTests {
         assertTrue(vehiculoService.listraProductosOptimos("volkswagen","gol").contains(computador));
         assertTrue(vehiculoService.listraProductosOptimos("volkswagen","gol").contains(casco));
         assertTrue(vehiculoService.listraProductosOptimos("volkswagen","supra").contains(casco));
+    }
+
+    @Test
+    void shouldNotAsociarVehiculo(){
+        //Limpiar Tablas
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+
+        //Agregar Categorias
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+
+        //Agregar Vehiculos
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        try {
+            //Agregar productos
+            productoService.agregarProducto(new Producto("Computador", 700f, "USD"));
+        }catch (LincolnLinesException e){
+            fail("Lanzo excepcion");
+        }
+        //Asociar Vehiculos con productos
+        try{
+            vehiculoService.agregarProducto("volkswagen","gOL",productoService.buscarProductoPorNombre("Computador"),categoriaService.listarCategorias());
+            fail("No lanzo excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.PRODUCTO_SIN_CATEGORIA,e.getMessage());
+        }
     }
 
     @Test
@@ -372,7 +406,8 @@ class SpringApplicationTests {
             cotizacionService.quitarDelCarrito(productoService.buscarProductoPorNombre("casco"),cotizacion.getIden());
             fail("No lanzo excepcion");
         }catch (LincolnLinesException e){
-            assertEquals(LincolnLinesException.NO_ACCIONES,e.getMessage());        }
+            assertEquals(LincolnLinesException.NO_ACCIONES,e.getMessage());
+        }
     }
 
 
@@ -413,13 +448,153 @@ class SpringApplicationTests {
         } catch (LincolnLinesException e) {
             fail(e.getMessage());
         }
-
         cotizacion = cotizacionService.encontrarCotizacion(cotizacion.getIden());
         float calculado = cotizacionService.calcularTotalCarrito(cotizacion.getIden());
         float tasaError = Math.abs(8373740519f-calculado)/8373740519f;
         assertTrue(tasaError <= 0.05);
     }
 
+    @Test
+    void shouldCalcularSinDescuento(){
+        //Limpiar Tablas
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+        //Codigo
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion1 = new Cotizacion();
+        Producto producto;
+        try {
+            producto = new Producto("Computador",700f,"USD");
+            producto.setImpuesto(0.13f);
+            productoService.agregarProducto(producto);
+            producto = new Producto("Casco",1000000f,"EUR");
+            producto.setDescuento(0.8f);
+            producto.setImpuesto(0.32f);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(new Producto("celular",4800000f,"COP"));
+            categoriaService.agregarProducto("Electronica",productoService.buscarProductoPorNombre("Computador"));
+            categoriaService.agregarProducto("Electronica",productoService.buscarProductoPorNombre("CelUlar"));
+            categoriaService.agregarProducto("Mecanica",productoService.buscarProductoPorNombre("Casco"));
+            categoriaService.agregarProducto("Sports",productoService.buscarProductoPorNombre("Casco"));
+            vehiculoService.agregarProducto("volkswagen","gOL",productoService.buscarProductoPorNombre("Computador"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("casco"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("Celular"),categoriaService.listarCategorias());
+            cotizacion = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
+            cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),null,cotizacion.getIden());
+            cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("computador"),vehiculoService.getVehiculo("volkswagen","gol"),cotizacion.getIden());
+            cotizacion1 = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("celular"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        cotizacion = cotizacionService.encontrarCotizacion(cotizacion.getIden());
+        float calculado = cotizacionService.totalSinDescuento(cotizacion.getIden());
+        float verdadero = 8322933656.0f + 2676366.00f;
+        float tasaError = Math.abs(verdadero-calculado)/verdadero;
+        assertTrue(tasaError <= 0.05);
+        assertEquals(4800000f,cotizacionService.totalSinDescuento(cotizacion1.getIden()));
+    }
+
+    @Test
+    void shouldCalcularDescuento(){
+        //Limpiar Tablas
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+        //Codigo
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion1 = new Cotizacion();
+        Producto producto;
+        try {
+            producto = new Producto("Computador",700f,"USD");
+            producto.setImpuesto(0.13f);
+            productoService.agregarProducto(producto);
+            producto = new Producto("Casco",1000000f,"EUR");
+            producto.setDescuento(0.8f);
+            producto.setImpuesto(0.32f);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(new Producto("celular",4800000f,"COP"));
+            categoriaService.agregarProducto("Electronica",productoService.buscarProductoPorNombre("Computador"));
+            categoriaService.agregarProducto("Electronica",productoService.buscarProductoPorNombre("CelUlar"));
+            categoriaService.agregarProducto("Mecanica",productoService.buscarProductoPorNombre("Casco"));
+            categoriaService.agregarProducto("Sports",productoService.buscarProductoPorNombre("Casco"));
+            vehiculoService.agregarProducto("volkswagen","gOL",productoService.buscarProductoPorNombre("Computador"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("casco"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("Celular"),categoriaService.listarCategorias());
+            cotizacion = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
+            cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),null,cotizacion.getIden());
+            cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("computador"),vehiculoService.getVehiculo("volkswagen","gol"),cotizacion.getIden());
+            cotizacion1 = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("celular"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        cotizacion = cotizacionService.encontrarCotizacion(cotizacion.getIden());
+        float calculado = cotizacionService.calcularDescuentoTotal(cotizacion.getIden());
+        float verdadero = 6658346924.8f;
+        float tasaError = Math.abs(verdadero-calculado)/verdadero;
+        assertTrue(tasaError <= 0.05);
+        assertEquals(0,cotizacionService.calcularDescuentoTotal(cotizacion1.getIden()));
+
+    }
+
+    @Test
+    void shouldCalcularImpuesto(){
+        //Limpiar Tablas
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+        //Codigo
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        categoriaService.agregarCategoria(new Categoria("Mecanica"));
+        categoriaService.agregarCategoria(new Categoria("Sports"));
+        vehiculoService.agregarVehiculo(new Vehiculo("Volkswagen","Gol","2001"));
+        Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion1 = new Cotizacion();
+        Producto producto;
+        try {
+            producto = new Producto("Computador",700f,"USD");
+            producto.setImpuesto(0.13f);
+            productoService.agregarProducto(producto);
+            producto = new Producto("Casco",1000000f,"EUR");
+            producto.setDescuento(0.8f);
+            producto.setImpuesto(0.32f);
+            productoService.agregarProducto(producto);
+            productoService.agregarProducto(new Producto("celular",4800000f,"COP"));
+            categoriaService.agregarProducto("Electronica",productoService.buscarProductoPorNombre("Computador"));
+            categoriaService.agregarProducto("Electronica",productoService.buscarProductoPorNombre("CelUlar"));
+            categoriaService.agregarProducto("Mecanica",productoService.buscarProductoPorNombre("Casco"));
+            categoriaService.agregarProducto("Sports",productoService.buscarProductoPorNombre("Casco"));
+            vehiculoService.agregarProducto("volkswagen","gOL",productoService.buscarProductoPorNombre("Computador"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("casco"),categoriaService.listarCategorias());
+            vehiculoService.agregarProducto("volkswagen","gol",productoService.buscarProductoPorNombre("Celular"),categoriaService.listarCategorias());
+            cotizacion = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
+            cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("casco"),null,cotizacion.getIden());
+            cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("computador"),vehiculoService.getVehiculo("volkswagen","gol"),cotizacion.getIden());
+            cotizacion1 = cotizacionService.agregarAlCarrito(productoService.buscarProductoPorNombre("celular"),vehiculoService.getVehiculo("volkswagen","gol"),-1);
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        cotizacion = cotizacionService.encontrarCotizacion(cotizacion.getIden());
+        float calculado = cotizacionService.calcularImpuestoTotal(cotizacion.getIden());
+        float verdadero = 348048.61f + 532649309.06f;
+        float tasaError = Math.abs(verdadero-calculado)/verdadero;
+        assertTrue(tasaError <= 0.05);
+        assertEquals(0,cotizacionService.calcularImpuestoTotal(cotizacion1.getIden()));
+    }
     @Test
     void shouldCalcularTotal(){
         //Limpiar Tablas
@@ -463,10 +638,11 @@ class SpringApplicationTests {
         float calculado = cotizacionService.calcularFinal(cotizacion.getIden());
         float verdadero = 8373740519f - 6709090009.60f + 536727200.77f + 353415.79f;
         float tasaError = Math.abs(verdadero-calculado)/verdadero;
+        long id= cotizacion.getIden();
+        float total = cotizacionService.totalSinDescuento(id) - cotizacionService.calcularDescuentoTotal(id) + cotizacionService.calcularImpuestoTotal(id);
         assertTrue(tasaError <= 0.05);
         assertEquals(4800000f,cotizacionService.calcularFinal(cotizacion1.getIden()));
-
-
+        assertEquals(calculado,total);
     }
 
     @Test
@@ -731,6 +907,309 @@ class SpringApplicationTests {
         }
     }
 
+    @Test
+    void shouldSegregarVehiculo(){
+        //Limpiar Tablas
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+        //Agregar Vehiculos
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA","PRIUS","1997"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA","SUPRA","1978"));
+        vehiculoService.agregarVehiculo(new Vehiculo("BMW", "X3", "2011"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA","PRIUS","1997"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA","SUPRA","1978"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA","CROWN","1955"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "ECONOLINE E350", "2000"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "F150", "1975"));
+        vehiculoService.agregarVehiculo(new Vehiculo("ASTON MARTIN", "DBS", "2008"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "ESCORT", "1993"));
+        vehiculoService.agregarVehiculo(new Vehiculo("GMC", "2500 CLUB COUPE", "1997"));
+        vehiculoService.agregarVehiculo(new Vehiculo("DODGE", "DURANGO", "1999"));
+        vehiculoService.agregarVehiculo(new Vehiculo("DODGE", "NEON", "2001"));
+        vehiculoService.agregarVehiculo(new Vehiculo("BMW", "X3", "2011"));
+        vehiculoService.agregarVehiculo(new Vehiculo("BMW", "745", "2002"));
+        vehiculoService.agregarVehiculo(new Vehiculo("NISSAN", "MAXIMA", "1997"));
+        vehiculoService.agregarVehiculo(new Vehiculo("CADILLAC", "STS-V", "2006"));
+        vehiculoService.agregarVehiculo(new Vehiculo("JEEP", "WRANGLER", "1994"));
+        vehiculoService.agregarVehiculo(new Vehiculo("CHEVROLET", "TRAVERSE", "2012"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "E150", "2006"));
+        vehiculoService.agregarVehiculo(new Vehiculo("MAZDA", "MX-6", "1993"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "F-SERIES", "1991"));
+        vehiculoService.agregarVehiculo(new Vehiculo("MITSUBISHI", "ECLIPSE", "2001"));
+        vehiculoService.agregarVehiculo(new Vehiculo("STUDEBAKER", "AVANTI", "1963"));
+        vehiculoService.agregarVehiculo(new Vehiculo("MAZDA", "MIATA MX-5", "1996"));
+        vehiculoService.agregarVehiculo(new Vehiculo("BMW", "760", "2003"));
+        vehiculoService.agregarVehiculo(new Vehiculo("GMC", "SIERRA 3500", "2002"));
+        vehiculoService.agregarVehiculo(new Vehiculo("MERCEDES-BENZ", "S-CLASS", "2010"));
+        vehiculoService.agregarVehiculo(new Vehiculo("PONTIAC", "DAEWOO KALOS", "2005"));
+        vehiculoService.agregarVehiculo(new Vehiculo("ACURA", "LEGEND", "1992"));
+        vehiculoService.agregarVehiculo(new Vehiculo("VOLKSWAGEN", "GTI", "1987"));
+        vehiculoService.agregarVehiculo(new Vehiculo("GMC", "VANDURA 3500", "1994"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA", "CAMRY", "1992"));
+        vehiculoService.agregarVehiculo(new Vehiculo("PONTIAC", "FIREBIRD", "1995"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA", "AVALON", "2000"));
+        vehiculoService.agregarVehiculo(new Vehiculo("SUZUKI", "FORENZA", "2004"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "FIESTA", "2011"));
+        vehiculoService.agregarVehiculo(new Vehiculo("CHEVROLET", "SILVERADO", "2003"));
+        vehiculoService.agregarVehiculo(new Vehiculo("MITSUBISHI", "CHALLENGER", "1997"));
+        vehiculoService.agregarVehiculo(new Vehiculo("BENTLEY", "CONTINENTAL GT", "2010"));
+        vehiculoService.agregarVehiculo(new Vehiculo("CHEVROLET", "SUBURBAN 2500", "2012"));
+        vehiculoService.agregarVehiculo(new Vehiculo("TOYOTA", "TUNDRA", "2008"));
+        vehiculoService.agregarVehiculo(new Vehiculo("KIA", "AMANTI", "2009"));
+        vehiculoService.agregarVehiculo(new Vehiculo("GMC", "SAVANA", "2011"));
+        vehiculoService.agregarVehiculo(new Vehiculo("CHRYSLER", "CIRRUS", "1999"));
+        vehiculoService.agregarVehiculo(new Vehiculo("FORD", "EXPLORER", "1994"));
+        vehiculoService.agregarVehiculo(new Vehiculo("MAZDA", "MILLENIA", "1996"));
+        Set<String> marcas = vehiculoService.getMarcas();
+        assertTrue(marcas.contains("MAZDA"));
+        assertTrue(marcas.contains("TOYOTA"));
+        assertTrue(marcas.contains("CHEVROLET"));
+        assertTrue(marcas.contains("MITSUBISHI"));
+        assertEquals(6, vehiculoService.getModelosMarca("TOYOTA").size());
+        assertTrue(vehiculoService.getModelosMarca("TOYOTA").contains(new Vehiculo("TOYOTA", "TUNDRA", "2008")));
+        assertTrue(vehiculoService.getModelosMarca("TOYOTA").contains(new Vehiculo("TOYOTA","CROWN","1955")));
+        assertEquals(2, vehiculoService.getModelosMarca("DODGE").size());
+        assertTrue(vehiculoService.getModelosMarca("DODGE").contains(new Vehiculo("DODGE", "DURANGO", "1999")));
+        assertTrue(vehiculoService.getModelosMarca("DODGE").contains(new Vehiculo("DODGE", "NEON", "2001")));
+        boolean mismaMarca = true;
+        for(Vehiculo v: vehiculoService.getModelosMarca("TOYOTA")){
+            if(!v.getMarca().equals("TOYOTA")){
+                mismaMarca = false;
+                break;
+            }
+        }
+        assertTrue(mismaMarca);
 
+        for(Vehiculo v: vehiculoService.getModelosMarca("DODGE")){
+            if(!v.getMarca().equals("DODGE")){
+                mismaMarca = false;
+                break;
+            }
+        }
+        assertTrue(mismaMarca);
+    }
+
+    @Test
+    void shouldBeEquals(){
+        Vehiculo vehiculo = new Vehiculo();
+        Vehiculo vehiculo1 = new Vehiculo();
+        Producto producto = new Producto();
+        Producto producto1 = new Producto();
+        Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion1 = new Cotizacion();
+        Cliente cliente1 = new Cliente();
+        Cliente cliente = new Cliente();
+        Categoria categoria = new Categoria();
+        Categoria categoria1 = new Categoria();
+
+        Vehiculo vehiculo2 = new Vehiculo();
+        Vehiculo vehiculo3 = new Vehiculo();
+        Producto producto2 = new Producto();
+        Producto producto3 = new Producto();
+        Cotizacion cotizacion2 = new Cotizacion();
+        Cotizacion cotizacion3 = new Cotizacion();
+        Cliente cliente2 = new Cliente();
+        Cliente cliente3 = new Cliente();
+        Categoria categoria2 = new Categoria();
+        Categoria categoria3 = new Categoria();
+        try{
+            vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
+            vehiculo1 = new Vehiculo("Toyota", "Corolla", "2022");
+            producto = new Producto("Producto1",200f,"COP");
+            producto1 = new Producto("Producto1",200f,"COP");
+            producto.setImpuesto(0.15f);
+            producto.setImagen("...");
+            producto1.setImpuesto(0.15f);
+            producto1.setImagen("...");
+            cotizacion = new Cotizacion();
+            cotizacion1 = new Cotizacion();
+            cliente = new Cliente("Camilo","Castano","3183074075","ccc");
+            cliente1 = new Cliente("Camilo","Castano","3183074075","ccc");
+            categoria = new Categoria("hola");
+            categoria1 = new Categoria("hola");
+            categoria.agregarProducto(producto);
+            categoria1.agregarProducto(producto1);
+        }catch(LincolnLinesException e){
+            fail("Lanzo excepcion");
+        }
+        assertEquals(vehiculo, vehiculo1);
+        assertEquals(producto, producto1);
+        assertEquals(cotizacion, cotizacion1);
+        assertEquals(cliente, cliente1);
+        assertEquals(categoria,categoria1);
+        assertEquals(vehiculo3, vehiculo2);
+        assertEquals(producto3, producto2);
+        assertEquals(cotizacion3, cotizacion2);
+        assertEquals(cliente3, cliente2);
+        assertEquals(categoria3,categoria2);
+    }
+
+    @Test
+    void shouldNotBeEquals(){
+        Vehiculo vehiculo = new Vehiculo();
+        Vehiculo vehiculo1 = new Vehiculo();
+        Producto producto = new Producto();
+        Producto producto1 = new Producto();
+        Cotizacion cotizacion = new Cotizacion();
+        Cotizacion cotizacion1 = new Cotizacion();
+        Cliente cliente1 = new Cliente();
+        Cliente cliente = new Cliente();
+        Categoria categoria = new Categoria();
+        Categoria categoria1 = new Categoria();
+
+        try{
+            vehiculo = new Vehiculo("Toyota", "Corolla", "2022");
+            vehiculo1 = new Vehiculo("Toyot", "Corolla", "2022");
+            producto = new Producto("Producto",200f,"COP");
+            producto1 = new Producto("Producto1",200f,"COP");
+            producto.setImpuesto(0.15f);
+            producto.setImagen("...");
+            producto1.setImpuesto(0.15f);
+            cotizacion = new Cotizacion(vehiculo);
+            cotizacion1 = new Cotizacion();
+            cliente = new Cliente("Cmilo","Castano","3183074075","ccc");
+            cliente1 = new Cliente("Camilo","Castano","3183074075","ccc");
+            categoria = new Categoria("hola");
+            categoria1 = new Categoria("hola");
+            categoria.agregarProducto(producto);
+        }catch(LincolnLinesException e){
+            fail("Lanzo excepcion");
+        }
+        assertNotEquals(vehiculo, vehiculo1);
+        assertNotEquals(producto, producto1);
+        assertNotEquals(cotizacion, cotizacion1);
+        assertNotEquals(cliente, cliente1);
+        assertNotEquals(categoria,categoria1);
+        assertNotEquals(producto,vehiculo);
+        assertNotEquals(vehiculo,producto);
+        assertNotEquals(cotizacion,cliente);
+        assertNotEquals(cliente,cotizacion);
+        assertNotEquals(categoria,cliente);
+        assertNotEquals(null, producto);
+        assertNotEquals(null, vehiculo);
+        assertNotEquals(null, cotizacion);
+        assertNotEquals(null, cliente);
+        assertNotEquals(null, categoria);
+    }
+
+    @Test
+    void shouldActualizarProducto(){
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+        Producto producto1;
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        try {
+            productoService.agregarProducto(new Producto("Computador",700f,"USD"));
+            productoService.agregarProducto(new Producto("Casco",1000000f,"EUR"));
+            producto1 = new Producto("celular",4800000f,"COP");
+            producto1.setDescripcionBreve("Prueba de agregacion");
+            producto1.setDescuento(0.25f);
+            productoService.agregarProducto(producto1);
+            producto1.setDescripcionBreve("Esto es una prueba de descripcion breve");
+            producto1.setDescripcionTecnica("Esto es una prueba de descripcion tecnica");
+            producto1.setMoneda("MXN");
+            producto1.setValor(5f);
+            categoriaService.agregarProducto("Electronica",producto1);
+            productoService.actualizarProducto(producto1);
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        producto1 = productoService.buscarProductoPorNombre("Celular");
+        assertEquals("Esto es una prueba de descripcion breve",producto1.getDescripcionBreve());
+        assertEquals("Esto es una prueba de descripcion tecnica",producto1.getDescripcionTecnica());
+        assertEquals("MXN",producto1.getMoneda());
+        assertTrue(categoriaService.listarProductos("Electronica").contains(producto1));
+    }
+
+
+    @Test
+    void shouldNotActualizarProducto(){
+        categoriaService.limpiarTabla();
+        cotizacionService.limpiarTabla();
+        clienteService.limpiarTabla();
+        vehiculoService.limpiarTabla();
+        productoService.limpiarTabla();
+        Producto producto1 = new Producto();
+        categoriaService.agregarCategoria(new Categoria("Electronica"));
+        try {
+            productoService.agregarProducto(new Producto("Computador",700f,"USD"));
+            productoService.agregarProducto(new Producto("Casco",1000000f,"EUR"));
+            producto1 = new Producto("celular",4800000f,"COP");
+            producto1.setDescripcionBreve("Prueba de agregacion");
+            producto1.setDescuento(0.25f);
+
+            productoService.agregarProducto(producto1);
+            categoriaService.agregarProducto("Electronica",producto1);
+        } catch (LincolnLinesException e) {
+            fail(e.getMessage());
+        }
+        try{
+            producto1 = new Producto(producto1.getNombre(),-5000f,"COP",0.5f,0);
+            producto1.setDescripcionBreve("Esto es una prueba de descripcion breve");
+            producto1.setDescripcionTecnica("Esto es una prueba de descripcion tecnica");
+            producto1.setMoneda("MXN");
+            productoService.actualizarProducto(producto1);
+            fail("No lanzo excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.VALOR_NEGATIVO,e.getMessage());
+        }
+
+
+
+        try{
+            producto1 = new Producto(producto1.getNombre(),5000f,"COP",-0.5f,0);
+            producto1.setDescripcionBreve("Esto es una prueba de descripcion breve");
+            producto1.setDescripcionTecnica("Esto es una prueba de descripcion tecnica");
+            producto1.setMoneda("MXN");
+            productoService.actualizarProducto(producto1);
+            fail("No lanzo excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.VALOR_NEGATIVO,e.getMessage());
+        }
+
+        try{
+            producto1 = new Producto(producto1.getNombre(),5000f,"COP",0.5f,-0.3f);
+            producto1.setDescripcionBreve("Esto es una prueba de descripcion breve");
+            producto1.setDescripcionTecnica("Esto es una prueba de descripcion tecnica");
+            producto1.setMoneda("MXN");
+            productoService.actualizarProducto(producto1);
+            fail("No lanzo excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.VALOR_NEGATIVO,e.getMessage());
+        }
+
+        try{
+            producto1 = new Producto(producto1.getNombre(),5000f,"COP",1.5f,0);
+            producto1.setDescripcionBreve("Esto es una prueba de descripcion breve");
+            producto1.setDescripcionTecnica("Esto es una prueba de descripcion tecnica");
+            producto1.setMoneda("MXN");
+            productoService.actualizarProducto(producto1);
+            fail("No lanzo excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.FUERA_RANGO,e.getMessage());
+        }
+
+        try{
+            producto1 = new Producto(producto1.getNombre(),5000f,"COP",0.5f,5);
+            producto1.setDescripcionBreve("Esto es una prueba de descripcion breve");
+            producto1.setDescripcionTecnica("Esto es una prueba de descripcion tecnica");
+            producto1.setMoneda("MXN");
+            productoService.actualizarProducto(producto1);
+            fail("No lanzo excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.FUERA_RANGO,e.getMessage());
+        }
+        producto1 = productoService.buscarProductoPorNombre(producto1.getNombre());
+        assertNotEquals("Esto es una prueba de descripcion tecnica", producto1.getDescripcionTecnica());
+        assertNotEquals("Esto es una prueba de descripcion breve",producto1.getDescripcionBreve());
+        assertNotEquals("MXN",producto1.getMoneda());
+        assertEquals(0.25f,producto1.getDescuento());
+    }
 }
 

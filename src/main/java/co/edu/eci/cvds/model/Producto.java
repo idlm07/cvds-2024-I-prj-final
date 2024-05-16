@@ -19,8 +19,8 @@ import java.util.Set;
 @Table(name = "Productos")
 public class Producto {
     @Id
-    @Column(name = "nombre", length = 100, nullable = false)
-    @Getter @Setter private String nombre;
+    @Column(name = "nombre", length = 100, nullable = false, updatable = false)
+    @Getter private String nombre;
     @Column(name = "descripcionBreve", length = 150)
     @Getter @Setter private String descripcionBreve;
     @Column(name = "descripcionTecnica", length = 250)
@@ -56,6 +56,15 @@ public class Producto {
 
     }
 
+    public Producto(String nombre, float valor, String moneda, float impuesto, float descuento){
+        this.nombre = nombre;
+        this.valor = valor;
+        this.moneda = moneda;
+        this.impuesto = impuesto;
+        this.descuento = descuento;
+
+    }
+
 
 
 
@@ -74,10 +83,12 @@ public class Producto {
      * Setter de descuento
      * @param descuento, nuevo descuento del producto
      * @throws LincolnLinesException VALOR_NEGATIVO si el nuevo descuento es negativo
+     * FUERA_RANGO si el nuevo descuento > 1
      */
 
     public void setDescuento(float descuento) throws LincolnLinesException {
         if(descuento < 0) throw new LincolnLinesException(LincolnLinesException.VALOR_NEGATIVO);
+        if(descuento > 1) throw new LincolnLinesException(LincolnLinesException.FUERA_RANGO);
         this.descuento = descuento;
     }
 
@@ -85,14 +96,18 @@ public class Producto {
      * Setter de impuesto
      * @param impuesto, nuevo impuesto del producto
      * @throws LincolnLinesException VALOR_NEGATIVO si el nuevo impuesto es negativo
+     * FUERA_RANGO si el nuevo impuesto > 1
      */
 
     public void setImpuesto(float impuesto) throws LincolnLinesException {
         if(impuesto < 0) throw new LincolnLinesException(LincolnLinesException.VALOR_NEGATIVO);
+        if(impuesto > 1) throw new LincolnLinesException(LincolnLinesException.FUERA_RANGO);
         this.impuesto = impuesto;
     }
 
-
+    protected float getValorFinal(){
+        return this.valor - (this.valor * this.descuento);
+    }
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -109,18 +124,16 @@ public class Producto {
     }
     @Override
     public boolean equals(Object obj) {
-        try {
-            Producto producto = (Producto) obj;
-            return (this.nombre == null ? producto.getNombre() == null :this.nombre.equals(producto.getNombre())) &&
-                    (this.descripcionBreve == null ? producto.getDescripcionBreve() == null : this.descripcionBreve.equals(producto.getDescripcionBreve())) &&
-                    (this.descripcionTecnica == null ? producto.getDescripcionTecnica() == null : this.descripcionTecnica.equals(producto.getDescripcionTecnica())) &&
-                    (this.valor == 0 ? producto.getValor() == 0 : this.valor == producto.getValor()) &&
-                    (this.moneda == null ? producto.getMoneda() == null : this.moneda.equals(producto.getMoneda())) &&
-                    (this.impuesto == 0 ? producto.getImpuesto() == 0 : this.impuesto == producto.getImpuesto()) &&
-                    (this.descuento == 0 ? producto.getDescuento() == 0 : this.descuento == producto.getDescuento());
-        } catch (Exception e) {
-            return false;
-        }
+        if(obj == null || obj.getClass() != this.getClass()) return false;
+        Producto producto = (Producto) obj;
+        return (this.nombre == null ? producto.getNombre() == null :this.nombre.equals(producto.getNombre())) &&
+                (this.descripcionBreve == null ? producto.getDescripcionBreve() == null : this.descripcionBreve.equals(producto.getDescripcionBreve())) &&
+                (this.descripcionTecnica == null ? producto.getDescripcionTecnica() == null : this.descripcionTecnica.equals(producto.getDescripcionTecnica())) &&
+                (this.valor == 0 ? producto.getValor() == 0 : this.valor == producto.getValor()) &&
+                (this.moneda == null ? producto.getMoneda() == null : this.moneda.equals(producto.getMoneda())) &&
+                (this.impuesto == 0 ? producto.getImpuesto() == 0 : this.impuesto == producto.getImpuesto()) &&
+                (this.descuento == 0 ? producto.getDescuento() == 0 : this.descuento == producto.getDescuento());
+
     }
 
 

@@ -62,16 +62,14 @@ public class Cliente {
 
     @Override
     public boolean equals(Object obj){
-        try{
-            Cliente client = (Cliente) obj;
-            return (this.nombre == null ? client.getNombre() == null : this.nombre.equals(client.getNombre()))
-                    && (this.apellido == null ? client.getApellido() == null :this.apellido.equals(client.getApellido()))
-                    && (this.celular == null ? client.getCelular() == null :this.celular.equals(client.getCelular()))
-                    && (correo == null ? client.getCorreo() == null : correo.equals(client.getCorreo()));
+        if(obj == null || obj.getClass() != this.getClass()) return false;
+        Cliente client = (Cliente) obj;
+        return (this.nombre == null ? client.getNombre() == null : this.nombre.equals(client.getNombre()))
+                && (this.apellido == null ? client.getApellido() == null :this.apellido.equals(client.getApellido()))
+                && (this.celular == null ? client.getCelular() == null :this.celular.equals(client.getCelular()))
+                && (correo == null ? client.getCorreo() == null : correo.equals(client.getCorreo()));
 
-        }catch (Exception e){
-            return false;
-        }
+
     }
 
 }
