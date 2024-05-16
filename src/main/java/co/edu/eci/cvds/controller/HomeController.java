@@ -34,6 +34,13 @@ public class HomeController {
         return "Agendamiento";
     }
 
+    @GetMapping("/cotizacionFinal")
+    public String cotizacion(Model model) {
+        return "/lista/cotizacionFinal";
+    }
+
+
+
 
 
 
