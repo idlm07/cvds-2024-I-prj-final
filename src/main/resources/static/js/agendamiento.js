@@ -1,5 +1,6 @@
 const fecha = document.getElementById("fecha-actual"),
 dias = document.querySelector(".dias"),
+    horas = document.querySelector("#horas"),
     prevNext = document.querySelectorAll(".icons span");
 
 const contenidoC = document.querySelector("#calendario div.contenido"),
@@ -50,12 +51,31 @@ prevNext.forEach(icon =>{
    });
 });
 
+function actualizarHoras(ano,mes,dia){
+    while (horas.firstChild) {
+        horas.removeChild(horas.firstChild);
+    }
+    fetch('/cotizaciones/horasDisponibles/' + ano + '/' + mes + '/' + dia).then(response => response.json())
+        .then(data => {
+            data.forEach(hora =>{
+                var nuevoLi = document.createElement('li');
+                nuevoLi.textContent = hora;
+                nuevoLi.classList.add('informacion');
+                horas.appendChild(nuevoLi);
+            });
+
+        });
+
+
+}
 
 function seleccionar(elemento){
     const activo = document.querySelector("li.activo");
-
-    activo.classList.remove("activo");
+    if(activo != null) activo.classList.remove("activo");
     elemento.classList.toggle("activo");
+    const partes = fecha.innerText.split(/,\s*/);
+    actualizarHoras(partes[1],partes[0],elemento.innerHTML);
+
 }
 
 function igualarAltura(){

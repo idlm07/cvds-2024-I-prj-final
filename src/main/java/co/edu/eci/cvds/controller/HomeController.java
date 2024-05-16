@@ -30,12 +30,12 @@ public class HomeController {
 
 
     @GetMapping("/agendamiento")
-    public String agendamiento(Model model) {
-        return "Agendamiento";
+    public String agendamiento() {
+        return "/cotizacion/Agendamiento";
     }
 
     @GetMapping("/cotizacionFinal")
-    public String cotizacion(Model model) {
+    public String cotizacion() {
         return "/lista/cotizacionFinal";
     }
 

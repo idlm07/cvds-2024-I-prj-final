@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
-import java.util.List;
-
+import java.util.*;
 
 
 /**
@@ -192,7 +191,7 @@ public class CotizacionService {
         for(Cotizacion c: this.cotizacionesAgendadas()){
             fechaBase = c.getCita().toLocalDate();
             entreCitas = Duration.between(c.getCita(),fechaEsperada);
-            if(fechaBase.isEqual(fechaEsperada.toLocalDate()) && entreCitas.getSeconds() < 7200) return false;
+            if(fechaBase.isEqual(fechaEsperada.toLocalDate()) && Math.abs(entreCitas.getSeconds()) < 7200) return false;
         }
         return true;
     }
@@ -249,10 +248,35 @@ public class CotizacionService {
         return cotizacion.getEstado();
     }
 
+    /**
+     * Actualiza el estado de una cotizacion
+     * @param cotizacionId, identificador de la cotizacion
+     * @param nuevoEstado, estado actual de la cotizacion
+     */
     public void actualizarEstado(long cotizacionId, String nuevoEstado){
         Cotizacion cotizacion = this.encontrarCotizacion(cotizacionId);
         cotizacion.setEstado(nuevoEstado);
         cotizacionRepository.save(cotizacion);
+    }
+
+
+    public List<LocalTime> horasDisponibles(String ano, String mes, String dia){
+        ArrayList <String> meses = new ArrayList<>(Arrays.asList("Enero","Febreo","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"));
+        int anoAcutal = Integer.parseInt(ano);
+        int mesActual = meses.indexOf(mes) + 1;
+        int diaActual = Integer.parseInt(dia);
+        LocalDate fecha = LocalDate.of(anoAcutal,mesActual,diaActual);
+        LocalTime contador = LocalTime.of(8,0);
+        LocalDateTime fechaHora;
+        List<LocalTime> disponibles = new ArrayList<>();
+
+        while(contador.isBefore(LocalTime.of(15,1))){
+            fechaHora = LocalDateTime.of(fecha,contador);
+            if(fechaDisponible(fechaHora)) disponibles.add(contador); //Revisa que la fecha ingresada y a la hora del contador este disponible
+            contador = contador.plusMinutes(30);
+        }
+        Collections.sort(disponibles);
+        return disponibles;
     }
 
 

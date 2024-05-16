@@ -124,7 +124,7 @@ blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-    content: '';
+
     content: none;
 }
 
@@ -144,6 +144,10 @@ div {
     --colorGlobal: white;
     --colorCaja: #292C33;
     --inactivo:rgba( 255,207,40,0.4);
+    --tamanoFuente: 70px;
+    --bordeFuent: normal;
+    --stiloFuente: normal;
+    --seleccionBack :aquamarine;
 
 }
 
@@ -178,6 +182,26 @@ body *{
     padding: var(--generalPadding);
 }
 
+.casilla .contenido li.informacion{
+    font-family: "Goldman", sans-serif;
+    font-weight: var(--bordeFuent);
+    font-style: var(--stiloFuente);
+    font-size: 30px;
+    text-align: center;
+    float: left; /* Quita la propiedad float */
+    display: block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+#horas li.informacion:hover{
+    background: var(--seleccionBack);
+    color: black;
+    cursor: pointer;
+}
+
+
 .casilla header .icons{
     margin-left: 20px;
 }
@@ -185,9 +209,9 @@ body *{
 .casilla header p,
 .casilla header span{
     font-family: "Goldman", sans-serif;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 70px;
+    font-weight: var(--bordeFuent);
+    font-style: var(--stiloFuente);
+    font-size: var(--tamanoFuente);
 }
 
 .casilla header .icons span{
@@ -251,7 +275,7 @@ body *{
 
 #calendario .contenido .dias li:hover::before,
 #calendario .contenido .dias li.activo::before{
-    background: aquamarine;
+    background: var(--seleccionBack);
 }
 
 #calendario header div.icons{
@@ -263,4 +287,8 @@ body *{
     margin-left: 20px;
 }
 
+#horas {
+
+
+}
 
