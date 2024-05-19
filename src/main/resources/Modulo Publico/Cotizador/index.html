@@ -12,6 +12,33 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="css/styles.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .modal-header-custom {
+            background-color: #FFCF28;
+            color: #0D131A;
+        }
+
+        .modal-body-custom {
+            background-color: #0D131A;
+            color: white;
+        }
+
+        .dropdown-menu-custom {
+            background-color: white;
+            color: black;
+        }
+
+        .cart-item-custom {
+            background-color: #FFCF28;
+            color: #0D131A;
+        }
+
+        .btn-cancel, .btn-finalize {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation-->
@@ -36,7 +63,7 @@
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="../Pagina Principal/index.html">Inicio</a></li>
                     <!-- Eliminado el botón "About" -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Corizar</a>
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Cotizar</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#!">Todos los Productos</a></li>
                             <li><hr class="dropdown-divider" /></li>
@@ -55,10 +82,10 @@
 
             <!-- Carrito -->
             <form class="d-flex">
-                <button class="btn btn-outline-dark" type="submit">
+                <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#cartModal">
                     <i class="bi-cart-fill me-1"></i>
                     Carrito
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                    <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCount">0</span>
                 </button>
             </form>
         </div>
@@ -121,7 +148,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton1" disabled>Agregar al carrito</button>
+                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton1" onclick="addToCart('Revisión', 'Producto 1')" disabled>Agregar al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -148,7 +175,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton2" disabled>Agregar al carrito</button>
+                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton2" onclick="addToCart('Servicios', 'Producto 1')" disabled>Agregar al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -175,33 +202,219 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton3" disabled>Agregar al carrito</button>
+                            <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton3" onclick="addToCart('Productos', 'Producto 1')" disabled>Agregar al carrito</button>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
     </section>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Modal para seleccionar marca, modelo y año -->
+    <div class="modal fade" id="vehicleModal" tabindex="-1" aria-labelledby="vehicleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title" id="vehicleModalLabel">Selecciona tu vehículo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-custom">
+                    <form id="vehicleForm">
+                        <div class="mb-3">
+                            <label for="vehicleBrand" class="form-label">Marca</label>
+                            <select class="form-select" id="vehicleBrand" required>
+                                <option selected disabled value="">Selecciona una marca</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Ford">Ford</option>
+                                <!-- Agrega más opciones según sea necesario -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehicleModel" class="form-label">Modelo</label>
+                            <select class="form-select" id="vehicleModel" required>
+                                <option selected disabled value="">Selecciona un modelo</option>
+                                <option value="Corolla">Corolla</option>
+                                <option value="Civic">Civic</option>
+                                <option value="F-150">F-150</option>
+                                <!-- Agrega más opciones según sea necesario -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehicleYear" class="form-label">Año</label>
+                            <input type="number" class="form-control" id="vehicleYear" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Continuar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        function selectProduct(event, productName, dropdownId) {
-            event.preventDefault();
-            document.getElementById(dropdownId).innerText = productName;
-            document.getElementById('addToCartButton' + dropdownId.charAt(dropdownId.length - 1)).disabled = false;
-            var dropdownMenu = document.getElementById(dropdownId).nextElementSibling;
-            dropdownMenu.classList.remove('show');
-        }
-    </script>
+    <!-- Modal del carrito -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #FFCF28;">
+                    <h5 class="modal-title" id="cartModalLabel" style="color: #0D131A;">Carrito de Compras</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background-color: #0D131A;">
+                    <ul id="cartItems" class="list-group list-group-flush">
+                        <!-- Items del carrito se agregarán aquí dinámicamente -->
+                    </ul>
+                </div>
+                <div class="modal-footer" style="background-color: #FFCF28;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="showPurchaseModal()">Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para información de compra -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #FFCF28;">
+                    <h5 class="modal-title" id="purchaseModalLabel" style="color: #0D131A;">Información de Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background-color: #0D131A; color: white;">
+                    <h5>Resumen de Productos</h5>
+                    <ul id="purchaseSummary" class="list-group list-group-flush mb-4">
+                        <!-- Resumen de productos se agregará aquí dinámicamente -->
+                    </ul>
+                    <h5>Información del Vehículo</h5>
+                    <p id="vehicleInfoSummary"></p>
+                    <form id="purchaseForm">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="idNumber" class="form-label">Documento de Identidad</label>
+                            <input type="text" class="form-control" id="idNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Número de Teléfono</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentDetails" class="form-label">Datos de Pago</label>
+                            <input type="text" class="form-control" id="paymentDetails" required>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary btn-finalize">Finalizar Compra</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer-->
     <footer class="py-5 bg-dark">
         <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
     </footer>
-    <!-- Bootstrap core JS-->
+    
+    <!-- Bootstrap core JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
+    <!-- Core theme JS -->
     <script src="js/scripts.js"></script>
+    
+    <script>
+        // Mostrar el modal al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            var vehicleModal = new bootstrap.Modal(document.getElementById('vehicleModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            vehicleModal.show();
+        });
+
+        // Manejar la selección de producto
+        function selectProduct(event, productName, dropdownId) {
+            event.preventDefault();
+            document.getElementById(dropdownId).innerText = productName;
+            const buttonId = 'addToCartButton' + dropdownId.charAt(dropdownId.length - 1);
+            document.getElementById(buttonId).disabled = false;
+        }
+
+        // Información del vehículo
+        let vehicleInfo = {};
+
+        // Manejar el formulario del vehículo
+        document.getElementById('vehicleForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            vehicleInfo.brand = document.getElementById('vehicleBrand').value;
+            vehicleInfo.model = document.getElementById('vehicleModel').value;
+            vehicleInfo.year = document.getElementById('vehicleYear').value;
+            // Cerrar el modal
+            var vehicleModal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
+            vehicleModal.hide();
+        });
+
+        // Carrito de compras
+        let cart = [];
+
+        function addToCart(group, product) {
+            cart.push({ group, product });
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            cartCount.innerText = cart.length;
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item cart-item-custom';
+                listItem.innerText = `${item.group} - ${item.product}`;
+                cartItems.appendChild(listItem);
+            });
+        }
+
+        function showPurchaseModal() {
+            const purchaseSummary = document.getElementById('purchaseSummary');
+            const vehicleInfoSummary = document.getElementById('vehicleInfoSummary');
+            purchaseSummary.innerHTML = '';
+            cart.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item cart-item-custom';
+                listItem.innerText = `${item.group} - ${item.product}`;
+                purchaseSummary.appendChild(listItem);
+            });
+            vehicleInfoSummary.innerText = `Marca: ${vehicleInfo.brand}, Modelo: ${vehicleInfo.model}, Año: ${vehicleInfo.year}`;
+            var purchaseModal = new bootstrap.Modal(document.getElementById('purchaseModal'), {});
+            purchaseModal.show();
+        }
+
+        // Manejar el formulario de compra
+        document.getElementById('purchaseForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const fullName = document.getElementById('fullName').value;
+            const idNumber = document.getElementById('idNumber').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const paymentDetails = document.getElementById('paymentDetails').value;
+            
+            // Simular envío de correos
+            alert(`Correo de confirmación enviado a: ${email}\nInformación de la compra:\nNombre Completo: ${fullName}\nDocumento de Identidad: ${idNumber}\nNúmero de Teléfono: ${phone}\nDatos de Pago: ${paymentDetails}\nResumen de productos: ${JSON.stringify(cart)}`);
+            
+            // Resetear el carrito y la información del vehículo
+            cart = [];
+            vehicleInfo = {};
+            updateCartUI();
+            var purchaseModal = bootstrap.Modal.getInstance(document.getElementById('purchaseModal'));
+            purchaseModal.hide();
+        });
+    </script>
 </body>
 </html>
