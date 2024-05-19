@@ -14,27 +14,58 @@ mes = date.getMonth();
 const meses = ["Enero","Febreo","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
 function ajustarCalendario(){
+    var nuevoLi;
+    while (dias.firstChild) {
+        dias.removeChild(dias.firstChild);
+    }
     let primerDiaDelMes = new Date(ano,mes ,1).getDay(),
         ultimaFechaDelMes =new Date(ano,mes + 1,0).getDate(),
         ultimoDiaDelMes = new Date(ano,mes,ultimaFechaDelMes).getDay(),
         ultimaFechaDelUltimoMes = new Date(ano,mes,0).getDate();
-    let liTag = "";
+    //let liTag = "";
     for(let i = primerDiaDelMes; i > 0;i--){
-        liTag +=  `<li class="inactivo">${ultimaFechaDelUltimoMes - i + 1}</li>`;
+        nuevoLi  = document.createElement('li');
+        nuevoLi.textContent = (ultimaFechaDelUltimoMes - i + 1).toString();
+        nuevoLi.classList.add("inactivo");
+        dias.appendChild(nuevoLi);
+        //liTag +=  `<li class="inactivo">${ultimaFechaDelUltimoMes - i + 1}</li>`;
     }
 
     for(let i = 1; i <= ultimaFechaDelMes;i++){
-        let esHoy = i === date.getDate() && mes === new Date().getMonth() && ano === new Date().getFullYear() ? "activo" : "";
-        liTag +=  `<li class="${esHoy}" onclick="seleccionar(this)">${i}</li>`;
+        nuevoLi  = document.createElement('li');
+        nuevoLi.textContent = i.toString();
+        if(i === date.getDate() && mes === new Date().getMonth() && ano === new Date().getFullYear()){
+            nuevoLi.classList.add("activo");
+        }
+
+        if((ano === new Date().getFullYear() && mes === new Date().getMonth() && i < date.getDate())
+            || (ano === new Date().getFullYear() && mes < new Date().getMonth())
+            || ano < new Date().getFullYear()){
+            nuevoLi.classList.add("inactivo");
+        }else{
+            nuevoLi.onclick = function() {
+                seleccionar(this);
+            };
+        }
+
+
+
+        dias.appendChild(nuevoLi);
+        igualarAltura();
+        //liTag +=  `<li class="${esHoy}" onclick="seleccionar(this)">${i}</li>`;
     }
 
 
     for(let i = ultimoDiaDelMes; i < 6 ;i++){
-        liTag +=  `<li class="inactivo">${i - ultimoDiaDelMes + 1}</li>`;
+        nuevoLi  = document.createElement('li');
+        nuevoLi.textContent = (i - ultimoDiaDelMes + 1).toString();
+        nuevoLi.classList.add("inactivo");
+        dias.appendChild(nuevoLi);
+        //liTag +=  `<li class="inactivo">${i - ultimoDiaDelMes + 1}</li>`;
     }
 
     fecha.innerText = meses[mes] + ', ' + ano ;
-    dias.innerHTML = liTag;
+    //dias.innerHTML = liTag;
 }
 
 prevNext.forEach(icon =>{
@@ -79,12 +110,9 @@ function seleccionar(elemento){
 }
 
 function igualarAltura(){
-    const alturaMaximaC = contenidoC.offsetHeight;
-    const alturaMaximaI = contenidoI.offsetHeight;
-    const alturaMaxima = Math.max(alturaMaximaC,alturaMaximaI);
+    const alturaMaxima = contenidoC.offsetHeight;
     contenidoI.style.height = `${alturaMaxima}px`
 
 }
 
 ajustarCalendario();
-igualarAltura();
