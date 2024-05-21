@@ -28,7 +28,6 @@ function ajustarCalendario(){
         nuevoLi.textContent = (ultimaFechaDelUltimoMes - i + 1).toString();
         nuevoLi.classList.add("inactivo");
         dias.appendChild(nuevoLi);
-        //liTag +=  `<li class="inactivo">${ultimaFechaDelUltimoMes - i + 1}</li>`;
     }
 
     for(let i = 1; i <= ultimaFechaDelMes;i++){
@@ -47,14 +46,9 @@ function ajustarCalendario(){
                 seleccionar(this);
             };
         }
-
-
-
         dias.appendChild(nuevoLi);
         igualarAltura();
-        //liTag +=  `<li class="${esHoy}" onclick="seleccionar(this)">${i}</li>`;
     }
-
 
     for(let i = ultimoDiaDelMes; i < 6 ;i++){
         nuevoLi  = document.createElement('li');
@@ -65,22 +59,28 @@ function ajustarCalendario(){
     }
 
     fecha.innerText = meses[mes] + ', ' + ano ;
-    //dias.innerHTML = liTag;
+    if(document.querySelector("ul.dias li.activo") != null)seleccionar(document.querySelector("ul.dias li.activo"));
 }
 
 prevNext.forEach(icon =>{
-   icon.addEventListener("click",() =>{
-      mes = icon.id === "anterior" ? mes - 1 : mes + 1;
-      if(mes < 0 || mes > 11){
-          date = new Date(ano,mes, new Date().getDate());
-          ano = date.getFullYear();
-          mes = date.getMonth();
-      }else {
-          date = new Date();
-      }
-      ajustarCalendario();
-   });
+    icon.addEventListener("click",() =>{
+        mes = icon.id === "anterior" ? mes - 1 : mes + 1;
+        if(mes < 0 || mes > 11){
+            date = new Date(ano,mes, new Date().getDate());
+            ano = date.getFullYear();
+            mes = date.getMonth();
+        } else {
+            date = new Date();
+        }
+        while (horas.firstChild) {
+            horas.removeChild(horas.firstChild);
+        }
+        ajustarCalendario();
+    });
 });
+
+
+
 
 function actualizarHoras(ano,mes,dia){
     while (horas.firstChild) {
@@ -92,21 +92,29 @@ function actualizarHoras(ano,mes,dia){
                 var nuevoLi = document.createElement('li');
                 nuevoLi.textContent = hora;
                 nuevoLi.classList.add('informacion');
+                nuevoLi.onclick = function() {
+                    seleccionarHora(this);
+                };
                 horas.appendChild(nuevoLi);
             });
 
         });
 
-
 }
 
 function seleccionar(elemento){
-    const activo = document.querySelector("li.activo");
+    const activo = document.querySelector("ul.dias li.activo");
     if(activo != null) activo.classList.remove("activo");
     elemento.classList.toggle("activo");
     const partes = fecha.innerText.split(/,\s*/);
+    console.log(partes[1],partes[0],elemento.innerHTML);
     actualizarHoras(partes[1],partes[0],elemento.innerHTML);
+}
 
+function seleccionarHora(elemento){
+    const activo1 = document.querySelector("#horas li.activo");
+    if(activo1 != null) activo1.classList.remove("activo");
+    elemento.classList.toggle("activo");
 }
 
 function igualarAltura(){

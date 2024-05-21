@@ -163,6 +163,24 @@ body *{
     color: var(--colorGlobal);
 }
 
+button{
+    --bordeFuent: bold;
+    font-family: "Goldman", sans-serif;
+    font-weight: var(--bordeFuent);
+    font-style: var(--stiloFuente);
+    border-color: black;
+    border-radius: 10%;
+    padding: 7px;
+    font-size: 15px;
+    color: white;
+    background: var(--headerBackground);
+    cursor: pointer;
+}
+
+#botonCotizar{
+    display: none;
+}
+
 .casilla{
     width: 50vw;
     background: var(--colorCaja);
@@ -188,17 +206,15 @@ body *{
     font-style: var(--stiloFuente);
     font-size: 30px;
     text-align: center;
-    float: left; /* Quita la propiedad float */
-    display: block;
-    margin-right: 10px;
-    margin-bottom: 10px;
     padding: 10px;
+
 }
 
 #horas li.informacion:hover{
     background: var(--seleccionBack);
     color: black;
     cursor: pointer;
+    box-shadow: 7px 7px 6px;
 }
 
 
@@ -244,8 +260,8 @@ body *{
 #calendario .contenido ul li{
     width: calc(100%/7);
     font-family: "Goldman", sans-serif;
-    font-weight: normal;
-    font-style: normal;
+    font-weight: var(--bordeFuent);
+    font-style: var(--stiloFuente);
     font-size: 38px;
     position: relative;
 }
@@ -260,7 +276,8 @@ body *{
     cursor: default;
 }
 #calendario .contenido .dias li:hover,
-#calendario .contenido .dias li.activo{
+#calendario .contenido .dias li.activo,
+#horas li.activo{
     color: #0b0b0b;
 }
 
@@ -281,7 +298,8 @@ body *{
 }
 
 #calendario .contenido .dias li:hover::before,
-#calendario .contenido .dias li.activo::before{
+#calendario .contenido .dias li.activo::before,
+#horas li.activo{
     background: var(--seleccionBack);
 }
 
@@ -299,8 +317,14 @@ body *{
     margin-left: 20px;
 }
 
-#horas {
 
 
+#horas{
+    display: grid;
+    grid-template-columns: calc(100%/3) calc(100%/3) calc(100%/3);
+    margin-bottom: 20px;
 }
-
+#cotizar{
+    margin-left: 50%;
+    margin-right: 50%;
+}
