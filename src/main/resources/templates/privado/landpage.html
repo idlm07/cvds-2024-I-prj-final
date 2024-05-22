@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LandPage Privado</title>
+    <link rel="stylesheet" href="/css/landpageprivado.css">
+
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+  
+
+</head>
+<body>
+
+    <div class="tarjeta-producto" th:each="producto: ${productos}">
+        <div class="visual">
+            <img th:src="${producto.imagen}" th:alt="${producto.nombre}">
+        </div>
+
+        <div class="detalle"></div>
+    </div>
+
+</body>
+</html>
