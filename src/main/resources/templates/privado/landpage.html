@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="/css/landpageprivado.css">
 
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+
+   <!--Fuentes-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Goldman:wght@400;700&display=swap" rel="stylesheet">
   
 
 </head>
@@ -16,9 +22,16 @@
     <div class="tarjeta-producto" th:each="producto: ${productos}">
         <div class="visual">
             <img th:src="${producto.imagen}" th:alt="${producto.nombre}">
+            <h2 th:text="${producto.nombre}"></h2>
         </div>
+        <div class="detalle">
+            <h2 th:text="${producto.nombre}"></h2>
 
-        <div class="detalle"></div>
+            <span class="descripcion-tecnica">
+                <p>Descripcion Breve</p>
+                <p></p>
+            </span>
+        </div>
     </div>
 
 </body>

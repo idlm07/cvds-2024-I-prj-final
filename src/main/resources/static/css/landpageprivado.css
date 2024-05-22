@@ -141,34 +141,79 @@ div {
 
 :root{
     --globalPadding : 20px;
-    --colorTarjetas: #005F6B;
+    --colorTarjetas: white;
+    --colorBody : #AB9A90;
+    --cursorPointer : pointer;
+    --rotar : rotate(-10deg);
+    --colorDetalle :  #005F6B;
+    --anchuraTarjeta : 100%;
+    --alturaTarjeta : fit-content;
+    --margenExteriror : 20px;
+    --margenInterior: 10px;
 
 }
+*{
+    transition: 0.5s;
+}
 body{
-    background-color: #AB9A90;
+    background-color: var(--colorBody);
     padding: var(--globalPadding);
     min-height: 100vh;
 }
 
-.tarjeta-producto{
-    width: 100%;
-    background-color: white ;
-    box-shadow: 20px 20px 45px rgba(0,0,0,0.25);
-    margin-bottom: 20px;
-    transition: 0.5s;
+h2{
+    text-align: center;
+    line-height: 1.2em;
+    font-family: "Goldman", sans-serif;
 }
 
-.tarjeta-producto .visual{
+.tarjeta-producto h2{
+    font-size: 15px;
+}
+
+img{
     width: 100%;
-    height: fit-content;
-    transition: 0.5s;
-    background-color: white;
+    height: auto;
+}
+
+.tarjeta-producto{
+    width: var(--anchuraTarjeta);
+    background-color: var(--colorTarjetas) ;
+    box-shadow: 20px 20px 45px rgba(0,0,0,0.25);
+    margin-bottom: var(--margenExteriror);
 }
 
 .tarjeta-producto:hover{
-    cursor: pointer;
+    cursor: var(--cursorPointer);
 }
 
-.tarjeta-producto:hover .visual{
-    transform: rotate(-10deg);
+.tarjeta-producto div{
+    width: var(--anchuraTarjeta);
+    height: var(--alturaTarjeta);
 }
+
+.tarjeta-producto .visual{
+    background-color: var(--colorTarjetas);
+    padding: 5px;
+}
+
+.tarjeta-producto .visual h2{
+    font-family: "Open Sans",sans-serif;
+    color: #005F6B;
+    margin-top: var(--margenInterior);
+}
+
+.tarjeta-producto:hover .visual h2{
+    opacity: 0;
+}
+
+.tarjeta-producto .detalle{
+    background-color: var(--colorDetalle);
+
+}
+
+
+
+
+
+
