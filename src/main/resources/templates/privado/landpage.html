@@ -25,12 +25,38 @@
             <h2 th:text="${producto.nombre}"></h2>
         </div>
         <div class="detalle">
-            <h2 th:text="${producto.nombre}"></h2>
+            <h3 th:text="${producto.nombre}" class="nombre"></h3>
+            <div class="descripcion-tecnica">
+                <h3>Descripcion Breve</h3>
+                <p th:text="${producto.descripcionBreve}"> </p>
+            </div>
 
-            <span class="descripcion-tecnica">
-                <p>Descripcion Breve</p>
-                <p></p>
-            </span>
+            <div class="descripcion-tecnica">
+                <h3>Descripcion Tecnica</h3>
+                <p th:text="${producto.descripcionTecnica}"></p>
+            </div>
+
+            <div class="moneda">
+                <h3>Moneda</h3>
+                <p th:text="${producto.moneda}"></p>
+            </div>
+
+            <div class="valor">
+                <h3>Valor</h3>
+                <p th:text="${producto.valor} + ' ' + ${producto.moneda}"></p>
+            </div>
+
+            <div class="descuento">
+                <h3>Descuento</h3>
+                <p th:text="${producto.descuento}"></p>
+            </div>
+
+            <div class="impuesto">
+                <h3>Impuesto</h3>
+                <p th:text="${producto.impuesto}"></p>
+            </div>
+
+
         </div>
     </div>
 

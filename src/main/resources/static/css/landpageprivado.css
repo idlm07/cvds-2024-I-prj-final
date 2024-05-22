@@ -152,17 +152,14 @@ div {
     --margenInterior: 10px;
 
 }
-*{
-    transition: 0.5s;
-}
+
 body{
     background-color: var(--colorBody);
     padding: var(--globalPadding);
     min-height: 100vh;
 }
 
-h2{
-    text-align: center;
+h2,h3,p{
     line-height: 1.2em;
     font-family: "Goldman", sans-serif;
 }
@@ -201,15 +198,35 @@ img{
     font-family: "Open Sans",sans-serif;
     color: #005F6B;
     margin-top: var(--margenInterior);
+    text-align: center;
+    transition: 0.5s font-size;
 }
 
 .tarjeta-producto:hover .visual h2{
-    opacity: 0;
+    font-size: 0;
 }
 
 .tarjeta-producto .detalle{
     background-color: var(--colorDetalle);
+    padding: 10px;
+}
 
+.tarjeta-producto .detalle *{
+    color: #FFFEDF;
+    margin-bottom: var(--margenInterior);
+}
+
+
+
+.tarjeta-producto .detalle h3{
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.tarjeta-producto .detalle p{
+    font-family: "Goldman",serif;
+    font-size: 12px;
+    margin-bottom: 0;
 }
 
 
