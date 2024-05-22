@@ -1,10 +1,17 @@
 const fecha = document.getElementById("fecha-actual"),
 dias = document.querySelector(".dias"),
     horas = document.querySelector("#horas"),
-    prevNext = document.querySelectorAll(".icons span");
+    prevNext = document.querySelectorAll(".icons span"),
+botonCotizar = document.getElementById("botonCotizar");
 
 const contenidoC = document.querySelector("#calendario div.contenido"),
     contenidoI = document.querySelector("#informacion div.contenido");
+
+const agendamiento = document.querySelector("form.agendamiento");
+
+const modal = document.getElementById("modal");
+
+const respuestaTexto = document.querySelector("#modal h2");
 
 
 let date = new Date(),
@@ -37,7 +44,7 @@ function ajustarCalendario(){
             nuevoLi.classList.add("activo");
         }
 
-        if((ano === new Date().getFullYear() && mes === new Date().getMonth() && i < date.getDate())
+        if ((ano === new Date().getFullYear() && mes === new Date().getMonth() && i < date.getDate())
             || (ano === new Date().getFullYear() && mes < new Date().getMonth())
             || ano < new Date().getFullYear()){
             nuevoLi.classList.add("inactivo");
@@ -59,7 +66,10 @@ function ajustarCalendario(){
     }
 
     fecha.innerText = meses[mes] + ', ' + ano ;
-    if(document.querySelector("ul.dias li.activo") != null)seleccionar(document.querySelector("ul.dias li.activo"));
+    if(document.querySelector("ul.dias li.activo") != null){
+        seleccionar(document.querySelector("ul.dias li.activo"));
+    }
+
 }
 
 prevNext.forEach(icon =>{
@@ -97,30 +107,68 @@ function actualizarHoras(ano,mes,dia){
                 };
                 horas.appendChild(nuevoLi);
             });
-
         });
 
 }
 
 function seleccionar(elemento){
+    horas.style.opacity = "0";
     const activo = document.querySelector("ul.dias li.activo");
     if(activo != null) activo.classList.remove("activo");
     elemento.classList.toggle("activo");
     const partes = fecha.innerText.split(/,\s*/);
-    console.log(partes[1],partes[0],elemento.innerHTML);
-    actualizarHoras(partes[1],partes[0],elemento.innerHTML);
+    setTimeout(function() {
+        actualizarHoras(partes[1],partes[0],elemento.innerHTML);
+        horas.style.opacity = "1";
+    }, 2000);
 }
 
 function seleccionarHora(elemento){
     const activo1 = document.querySelector("#horas li.activo");
     if(activo1 != null) activo1.classList.remove("activo");
     elemento.classList.toggle("activo");
+    botonCotizar.style.display = "block";
 }
 
 function igualarAltura(){
     const alturaMaxima = contenidoC.offsetHeight;
     contenidoI.style.height = `${alturaMaxima}px`
+}
 
+function formulario() {
+    botonCotizar.style.display = "none";
+    horas.style.display = "none";
+    const dia = document.querySelectorAll("ul.dias li");
+
+    for (let i = 0; i < dia.length; i++) {
+        // Hacer algo con cada elemento <li>
+        dia[i].onclick = null;
+    }
+
+    agendamiento.style.display = "block";
+}
+
+function respuesta(event){
+    event.preventDefault();
+    const partes = fecha.innerText.split(/,\s*/);
+    document.getElementById("dia").value = document.querySelector('#calendario div.contenido ul.dias li.activo').innerHTML;
+    document.getElementById("mes").value = partes[0];
+    document.getElementById("ano").value = partes[1];
+    document.getElementById("hora").value = document.querySelector('#informacion div.contenido #horas li.activo').innerHTML;
+    agendamiento.submit();
+
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    if(respuestaTexto.innerHTML){
+        console.log(1);
+        modal.showModal();
+    }
+});
+
+function cerrarModal(){
+    modal.close();
+    window.location.replace("/LincolnLines");
 }
 
 ajustarCalendario();

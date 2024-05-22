@@ -259,13 +259,22 @@ public class CotizacionService {
         cotizacionRepository.save(cotizacion);
     }
 
-
-    public List<LocalTime> horasDisponibles(String ano, String mes, String dia){
+    public static int identificarMes(String mes){
         ArrayList <String> meses = new ArrayList<>(Arrays.asList("Enero","Febreo","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"));
+        return meses.indexOf(mes) + 1;
+    }
+
+    /**
+     * Identifica que horas estan libres para una fecha especificada
+     * @param ano, año que se desea agendar
+     * @param mes, mes en el que se desea agendar
+     * @param dia, dia en el que se desea agendar
+     * @return lista de horas disponibles para la fecha indicada
+     */
+    public List<LocalTime> horasDisponibles(String ano, String mes, String dia){
         int anoAcutal = Integer.parseInt(ano);
-        int mesActual = meses.indexOf(mes) + 1;
         int diaActual = Integer.parseInt(dia);
-        LocalDate fecha = LocalDate.of(anoAcutal,mesActual,diaActual);
+        LocalDate fecha = LocalDate.of(anoAcutal,CotizacionService.identificarMes(mes),diaActual);
         LocalTime contador = LocalTime.of(8,0);
         LocalDateTime fechaHora;
         List<LocalTime> disponibles = new ArrayList<>();

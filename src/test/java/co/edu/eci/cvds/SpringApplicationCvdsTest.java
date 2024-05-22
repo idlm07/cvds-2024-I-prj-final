@@ -770,6 +770,21 @@ class SpringApplicationTests {
         }
         //Entrega faltante
         try{
+            cotizacionService.agendarCita(LocalDateTime.of(2050,12,31,10,30),"Bogota","",cotizacion.getIden(),cliente);
+            fail("No Lanzo Excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.DATOS_FALTANTES,e.getMessage());
+        }
+
+        try{
+            cotizacionService.agendarCita(LocalDateTime.of(2050,12,31,10,30),"","Calle de prueba",cotizacion.getIden(),cliente);
+            fail("No Lanzo Excepcion");
+        }catch (LincolnLinesException e){
+            assertEquals(LincolnLinesException.DATOS_FALTANTES,e.getMessage());
+        }
+
+
+        try{
             cotizacionService.agendarCita(LocalDateTime.of(2050,12,31,10,30),"Bogota",null,cotizacion.getIden(),cliente);
             fail("No Lanzo Excepcion");
         }catch (LincolnLinesException e){
@@ -782,6 +797,8 @@ class SpringApplicationTests {
         }catch (LincolnLinesException e){
             assertEquals(LincolnLinesException.DATOS_FALTANTES,e.getMessage());
         }
+
+
         //Hora antes de las 8
         try{
             cotizacionService.agendarCita(LocalDateTime.of(2050,12,31,5,30),null,"Calle de prueba",cotizacion.getIden(),cliente);
