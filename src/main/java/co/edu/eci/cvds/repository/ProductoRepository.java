@@ -7,6 +7,5 @@ import co.edu.eci.cvds.model.Producto;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
-    Producto findByIdProducto(Integer id);
-
+    
 }
