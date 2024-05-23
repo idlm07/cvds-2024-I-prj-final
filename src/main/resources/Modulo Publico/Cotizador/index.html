@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>QuoteGear</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .modal-header-custom {
+            background-color: #FFCF28;
+            color: #0D131A;
+        }
+
+        .modal-body-custom {
+            background-color: #0D131A;
+            color: white;
+        }
+
+        .dropdown-menu-custom {
+            background-color: white;
+            color: black;
+        }
+
+        .cart-item-custom {
+            background-color: #FFCF28;
+            color: #0D131A;
+        }
+
+        .btn-cancel, .btn-finalize {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #FFCF28;">
+        <div class="container px-4 px-lg-5 d-flex align-items-center">
+            <div>
+                <a class="navbar-brand" href="#!">
+                    <img src="assets/Logo Sistema.png" alt="Logo" style="max-height: 40px;">
+                </a>
+                <!-- Cambio de color del texto "QuoteGear" -->
+                <span class="ms-2" style="color: #D01F27;">QuoteGear</span>
+            </div>
+
+            <!-- Botón para el menú colapsable -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Contenido del menú colapsable -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="../Pagina Principal/index.html">Inicio</a></li>
+                    <!-- Eliminado el botón "About" -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Cotizar</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#!">Todos los Productos</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" href="#Revisión">Revisión</a></li>
+                            <li><a class="dropdown-item" href="#Servicios">Servicios</a></li>
+                            <li><a class="dropdown-item" href="#Productos">Productos</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Imagen justo después del menú colapsable -->
+            <div class="ms-auto space-between">
+                <img src="../Pagina Principal/assets/img/TOPGEAR logo.png" alt="TOPGEAR logo" style="max-height: 40px;">
+            </div>
+
+            <!-- Carrito -->
+            <form class="d-flex">
+                <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#cartModal">
+                    <i class="bi-cart-fill me-1"></i>
+                    Carrito
+                    <span class="badge bg-dark text-white ms-1 rounded-pill" id="cartCount">0</span>
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- CSS personalizado para crear un espacio entre la imagen y el botón del carrito -->
+    <style>
+        .space-between {
+            margin-right: 425px; /* Ajusta este valor según sea necesario */
+        }
+    </style>
+    <!-- Header-->
+    <header class="bg-dark py-5" style="background-color: #292C33;">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Cotiza ahora al mejor precio!</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Sabemos que buscas experiencia, calidad, buenos precios y por supuesto, descuentos.</p>
+            </div>
+        </div>
+    </header> 
+    <!-- Seccion Principal -->
+    <section class="py-5" style="background-color: #0D131A; color: #FFFFFF;">
+        <div class="container px-4 px-lg-5 mt-5">
+            <style>
+                .custom-btn {
+                    font-size: 1.5rem; /* Tamaño de fuente */
+                    padding: 1rem 2rem; /* Espacio de relleno */
+                }
+            </style>
+    <!-- Barra de acceso rápido -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-auto mx-3">
+            <a class="btn btn-warning btn-oval custom-btn" href="#Revisión" style="padding: 1rem 2.5rem; border: 2px solid black;">Revisión</a>
+        </div>
+        <div class="col-auto mx-3">
+            <a class="btn btn-warning btn-oval custom-btn" href="#Servicios" style="padding: 1rem 2.5rem; border: 2px solid black;">Servicios</a>
+        </div>
+        <div class="col-auto mx-3">
+            <a class="btn btn-warning btn-oval custom-btn" href="#Productos" style="padding: 1rem 2.5rem; border: 2px solid black;">Productos</a>
+        </div>
+    </div>
+
+    <!-- Grupo 1: Revisión -->
+    <section id="Revisión" class="py-5">
+        <div class="container px-4 px-lg-5">
+            <h2 class="text-center">Revisión</h2>
+            <!-- Dropdown del grupo 1 -->
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                            Seleccionar Producto
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width: 100%;">
+                            <!-- Opciones de producto del grupo 1 -->
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión de frenos', 120000, 'dropdownMenuButton1')">Revisión de frenos - 120,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión de suspensión', 160000, 'dropdownMenuButton1')">Revisión de suspensión - 160,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión del sistema de escape', 200000, 'dropdownMenuButton1')">Revisión del sistema de escape - 200,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión del sistema eléctrico', 240000, 'dropdownMenuButton1')">Revisión del sistema eléctrico - 240,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión de la transmisión', 400000, 'dropdownMenuButton1')">Revisión de la transmisión - 400,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión de la batería y sistema de carga', 80000, 'dropdownMenuButton1')">Revisión de la batería y sistema de carga - 80,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión de luces y señales', 60000, 'dropdownMenuButton1')">Revisión de luces y señales - 60,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión de neumáticos', 100000, 'dropdownMenuButton1')">Revisión de neumáticos - 100,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión del sistema de aire acondicionado', 200000, 'dropdownMenuButton1')">Revisión del sistema de aire acondicionado - 200,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión del motor (diagnóstico general)', 280000, 'dropdownMenuButton1')">Revisión del motor (diagnóstico general) - 280,000 COP</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton1" onclick="addToCart('Revisión', 'Producto 1')" disabled>Agregar al carrito</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grupo 2: Servicios -->
+    <section id="Servicios" class="py-5">
+        <div class="container px-4 px-lg-5">
+            <h2 class="text-center">Servicios</h2>
+            <!-- Dropdown del grupo 2 -->
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                            data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                            Seleccionar Producto
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2" style="width: 100%;">
+                            <!-- Opciones de producto del grupo 2 -->
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Cambio de aceite y filtro', 160000, 'dropdownMenuButton2')">Cambio de aceite y filtro - 160,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Alineación y balanceo', 280000, 'dropdownMenuButton2')">Alineación y balanceo - 280,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Revisión y recarga de aire acondicionado', 320000, 'dropdownMenuButton2')">Revisión y recarga de aire acondicionado - 320,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Servicio de frenos (cambio de pastillas)', 480000, 'dropdownMenuButton2')">Servicio de frenos (cambio de pastillas) - 480,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Reemplazo de batería', 600000, 'dropdownMenuButton2')">Reemplazo de batería - 600,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Reparación de transmisión', 3200000, 'dropdownMenuButton2')">Reparación de transmisión - 3,200,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Afinación del motor', 800000, 'dropdownMenuButton2')">Afinación del motor - 800,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Reparación del sistema de escape', 1200000, 'dropdownMenuButton2')">Reparación del sistema de escape - 1,200,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Reemplazo de amortiguadores', 1600000, 'dropdownMenuButton2')">Reemplazo de amortiguadores - 1,600,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Reparación de sistemas eléctricos', 400000, 'dropdownMenuButton2')">Reparación de sistemas eléctricos - 400,000 COP</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton2" onclick="addToCart('Servicios', 'Producto 1')" disabled>Agregar al carrito</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grupo 3: Productos -->
+    <section id="Productos" class="py-5">
+        <div class="container px-4 px-lg-5">
+            <h2 class="text-center">Productos</h2>
+            <!-- Dropdown del grupo 3 -->
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3"
+                            data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                            Seleccionar Producto
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3" style="width: 100%;">
+                            <!-- Opciones de producto del grupo 3 -->
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Aceite de motor sintético (5 litros)', 140000, 'dropdownMenuButton3')">Aceite de motor sintético (5 litros) - 140,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Filtro de aire', 60000, 'dropdownMenuButton3')">Filtro de aire - 60,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Pastillas de freno', 240000, 'dropdownMenuButton3')">Pastillas de freno - 240,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Batería de coche', 480000, 'dropdownMenuButton3')">Batería de coche - 480,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Amortiguadores', 400000, 'dropdownMenuButton3')">Amortiguadores - 400,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Cinturón de distribución', 160000, 'dropdownMenuButton3')">Cinturón de distribución - 160,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Radiador', 800000, 'dropdownMenuButton3')">Radiador - 800,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Alternador', 600000, 'dropdownMenuButton3')">Alternador - 600,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Bujías (juego de 4)', 80000, 'dropdownMenuButton3')">Bujías (juego de 4) - 80,000 COP</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="selectProduct(event, 'Líquido de frenos (1 litro)', 40000, 'dropdownMenuButton3')">Líquido de frenos (1 litro) - 40,000 COP</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-warning w-100 btn-oval" style="background-color: #FFCF28; border-color: black;" id="addToCartButton3" onclick="addToCart('Productos', 'Producto 1')" disabled>Agregar al carrito</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modal para seleccionar marca, modelo y año -->
+    <div class="modal fade" id="vehicleModal" tabindex="-1" aria-labelledby="vehicleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title" id="vehicleModalLabel">Selecciona tu vehículo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-custom">
+                    <form id="vehicleForm">
+                        <div class="mb-3">
+                            <label for="vehicleBrand" class="form-label">Marca</label>
+                            <select class="form-select" id="vehicleBrand" required onchange="updateModels()">
+                                <option selected disabled value="">Selecciona una marca</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Ford">Ford</option>
+                                <option value="Chevrolet">Chevrolet</option>
+                                <option value="Nissan">Nissan</option>
+                                <!-- Agrega más marcas aquí -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehicleModel" class="form-label">Modelo</label>
+                            <select class="form-select" id="vehicleModel" required>
+                                <option selected disabled value="">Selecciona un modelo</option>
+                                <!-- Los modelos se llenarán dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vehicleYear" class="form-label">Año</label>
+                            <input type="number" class="form-control" id="vehicleYear" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Continuar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal del carrito -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #FFCF28;">
+                    <h5 class="modal-title" id="cartModalLabel" style="color: #0D131A;">Carrito de Compras</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background-color: #0D131A;">
+                    <ul id="cartItems" class="list-group list-group-flush">
+                        <!-- Items del carrito se agregarán aquí dinámicamente -->
+                    </ul>
+                </div>
+                <div class="modal-footer" style="background-color: #FFCF28;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="showPurchaseModal()">Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para información de compra -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #FFCF28;">
+                    <h5 class="modal-title" id="purchaseModalLabel" style="color: #0D131A;">Información de Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background-color: #0D131A; color: white;">
+                    <h5>Resumen de Productos</h5>
+                    <ul id="purchaseSummary" class="list-group list-group-flush mb-4">
+                        <!-- Resumen de productos se agregará aquí dinámicamente -->
+                    </ul>
+                    <h5>Información del Vehículo</h5>
+                    <p id="vehicleInfoSummary"></p>
+                    <form id="purchaseForm">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="idNumber" class="form-label">Documento de Identidad</label>
+                            <input type="text" class="form-control" id="idNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Número de Teléfono</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentDetails" class="form-label">Datos de Pago</label>
+                            <input type="text" class="form-control" id="paymentDetails" required>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary btn-finalize">Finalizar Compra</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer-->
+    <footer class="py-5 bg-dark">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+    </footer>
+    
+    <!-- Bootstrap core JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS -->
+    <script src="js/scripts.js"></script>
+    
+    <script>
+        // Mostrar el modal al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            var vehicleModal = new bootstrap.Modal(document.getElementById('vehicleModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            vehicleModal.show();
+        });
+
+        // Información del vehículo
+        let vehicleInfo = {};
+
+        // Modelos según la marca seleccionada
+        const modelsByBrand = {
+            Toyota: ['Corolla', 'Camry', 'Rav4'],
+            Honda: ['Civic', 'Accord', 'CR-V'],
+            Ford: ['F-150', 'Mustang', 'Explorer'],
+            Chevrolet: ['Spark', 'Malibu', 'Tahoe'],
+            Nissan: ['Altima', 'Sentra', 'Rogue']
+            // Agrega más marcas y modelos según sea necesario
+        };
+
+        // Manejar el cambio de marca para actualizar modelos
+        document.getElementById('vehicleBrand').addEventListener('change', function () {
+            const brand = this.value;
+            const modelSelect = document.getElementById('vehicleModel');
+            modelSelect.innerHTML = '<option selected disabled value="">Selecciona un modelo</option>';
+            if (modelsByBrand[brand]) {
+                modelsByBrand[brand].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Manejar la selección de producto
+        function selectProduct(event, productName, productPrice, dropdownId) {
+            event.preventDefault();
+            const dropdownButton = document.getElementById(dropdownId);
+            dropdownButton.innerText = productName;
+            const buttonId = 'addToCartButton' + dropdownId.charAt(dropdownId.length - 1);
+            document.getElementById(buttonId).disabled = false;
+            document.getElementById(buttonId).setAttribute('data-price', productPrice);
+            document.getElementById(buttonId).setAttribute('data-product-name', productName);
+        }
+
+        // Manejar el formulario del vehículo
+        document.getElementById('vehicleForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            vehicleInfo.brand = document.getElementById('vehicleBrand').value;
+            vehicleInfo.model = document.getElementById('vehicleModel').value;
+            vehicleInfo.year = document.getElementById('vehicleYear').value;
+            // Cerrar el modal
+            var vehicleModal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
+            vehicleModal.hide();
+        });
+
+        // Carrito de compras
+        let cart = [];
+
+        // Función para agregar al carrito
+        function addToCart(category, productName) {
+            const dropdownId = category === 'Revisión' ? 'dropdownMenuButton1' :
+                            category === 'Servicios' ? 'dropdownMenuButton2' : 'dropdownMenuButton3';
+            const selectedProduct = document.getElementById(dropdownId).innerText;
+            const productPrice = parseFloat(document.getElementById('addToCartButton' + dropdownId.charAt(dropdownId.length - 1)).getAttribute('data-price'));
+            cart.push({ category, productName: selectedProduct, price: productPrice });
+            updateCartCount();
+            updateCartItems();
+        }
+
+        // Función para actualizar el contador del carrito
+        function updateCartCount() {
+            document.getElementById('cartCount').innerText = cart.length;
+        }
+
+        // Función para actualizar los items del carrito y mostrar el total
+        function updateCartItems() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item cart-item-custom';
+                listItem.innerText = `${item.category}: ${item.productName} - ${item.price.toLocaleString('es-CO')} COP`;
+                total += item.price;
+                const removeButton = document.createElement('button');
+                removeButton.className = 'btn btn-sm btn-danger float-end';
+                removeButton.innerText = 'Eliminar';
+                removeButton.onclick = function () { removeFromCart(index); };
+                listItem.appendChild(removeButton);
+                cartItems.appendChild(listItem);
+            });
+            const totalItem = document.createElement('li');
+            totalItem.className = 'list-group-item cart-item-custom';
+            totalItem.innerText = `Total: ${total.toLocaleString('es-CO')} COP`;
+            cartItems.appendChild(totalItem);
+        }
+
+        // Función para eliminar un item del carrito
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            updateCartItems();
+        }
+
+        // Función para mostrar el modal de compra
+        function showPurchaseModal() {
+            const purchaseSummary = document.getElementById('purchaseSummary');
+            purchaseSummary.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.innerText = `${item.category}: ${item.productName} - ${item.price.toLocaleString('es-CO')} COP`;
+                total += item.price;
+                purchaseSummary.appendChild(listItem);
+            });
+
+            const totalItem = document.createElement('li');
+            totalItem.className = 'list-group-item';
+            totalItem.innerText = `Total: ${total.toLocaleString('es-CO')} COP`;
+            purchaseSummary.appendChild(totalItem);
+
+            const vehicleInfoSummary = document.getElementById('vehicleInfoSummary');
+            vehicleInfoSummary.innerText = `Marca: ${vehicleInfo.brand}, Modelo: ${vehicleInfo.model}, Año: ${vehicleInfo.year}`;
+
+            var purchaseModal = new bootstrap.Modal(document.getElementById('purchaseModal'), {});
+            purchaseModal.show();
+        }
+
+        // Manejar la finalización de la compra
+        document.getElementById('purchaseForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Obtener información del comprador
+            const fullName = document.getElementById('fullName').value;
+            const idNumber = document.getElementById('idNumber').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const paymentDetails = document.getElementById('paymentDetails').value;
+
+            // Crear el resumen de la compra
+            let purchaseSummary = `Resumen de la Compra:\n\n`;
+            purchaseSummary += `Nombre: ${fullName}\n`;
+            purchaseSummary += `Documento de Identidad: ${idNumber}\n`;
+            purchaseSummary += `Correo Electrónico: ${email}\n`;
+            purchaseSummary += `Número de Teléfono: ${phone}\n\n`;
+            purchaseSummary += `Productos:\n`;
+
+            let total = 0;
+            cart.forEach(item => {
+                // Verificar que los campos no sean undefined
+                const itemName = item.productName || 'Nombre no disponible';
+                const itemPrice = item.price || 'Precio no disponible';
+                purchaseSummary += `${itemName} - ${itemPrice} COP\n`;
+                total += itemPrice;
+            });
+
+            purchaseSummary += `\nTotal: ${total} COP\n`;
+
+            purchaseSummary += `\nInformación del Vehículo:\n`;
+            purchaseSummary += `Marca: ${vehicleInfo.brand}\n`;
+            purchaseSummary += `Modelo: ${vehicleInfo.model}\n`;
+            purchaseSummary += `Año: ${vehicleInfo.year}\n`;
+
+            // Crear y guardar el archivo .txt
+            const blob = new Blob([purchaseSummary], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'resumen_de_compra.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Limpiar el carrito y actualizar la interfaz
+            cart = [];
+            updateCartCount();
+            updateCartItems();
+            // Cerrar el modal de compra
+            var purchaseModal = bootstrap.Modal.getInstance(document.getElementById('purchaseModal'));
+            purchaseModal.hide();
+        });
+    </script>    
+</body>
+</html>
