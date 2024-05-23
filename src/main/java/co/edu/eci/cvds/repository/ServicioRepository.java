@@ -7,7 +7,6 @@ import co.edu.eci.cvds.model.Servicio;
 @Repository
 public interface ServicioRepository extends JpaRepository<Servicio, Integer> {
 
-    Servicio findByIdServicio(Integer id);
-
+  
    
 }
