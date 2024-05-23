@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/cotizador")
 public class CotizadorController {
     @GetMapping("")
-    public String pagina(){
-        return "cotizador/pagina";
+    public String index(){
+        return "cotizador/index";
     }
     
 }
