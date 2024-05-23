@@ -1,11 +1,10 @@
 package co.edu.eci.cvds.controller;
 
+import co.edu.eci.cvds.model.Modelo;
+import co.edu.eci.cvds.service.ModeloService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import co.edu.eci.cvds.model.Modelo;
-import co.edu.eci.cvds.repository.ModeloRepository;
 
 import java.util.List;
 
@@ -14,53 +13,31 @@ import java.util.List;
 public class ModeloController {
 
     @Autowired
-    private ModeloRepository modeloRepository;
+    private ModeloService modeloService;
 
-    // Endpoint para obtener todos los modelos
-    @GetMapping("/")
-    public ResponseEntity<List<Modelo>> getAllModelos() {
-        List<Modelo> modelos = modeloRepository.findAll();
-        return new ResponseEntity<>(modelos, HttpStatus.OK);
-    }
-
-    // Endpoint para obtener un modelo por su ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Modelo> getModeloById(@PathVariable int id) {
-        Modelo modelo = modeloRepository.findByIdModelo(id);
-        if (modelo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(modelo, HttpStatus.OK);
-    }
-
-    // Endpoint para crear un nuevo modelo
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Modelo> createModelo(@RequestBody Modelo modelo) {
-        Modelo nuevoModelo = modeloRepository.save(modelo);
-        return new ResponseEntity<>(nuevoModelo, HttpStatus.CREATED);
+        return ResponseEntity.ok(modeloService.saveModelo(modelo));
     }
 
-    // Endpoint para actualizar los datos de un modelo existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Modelo> updateModelo(@PathVariable int id, @RequestBody Modelo modeloDetails) {
-        Modelo modelo = modeloRepository.findByIdModelo(id);
-        if (modelo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<Modelo> getModeloById(@PathVariable Integer id) {
+        Modelo modelo = modeloService.getModeloById(id);
+        if (modelo != null) {
+            return ResponseEntity.ok(modelo);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        modelo.setCilindraje(modeloDetails.getCilindraje());
-        modelo.setAño(modeloDetails.getAño());
-        Modelo modeloActualizado = modeloRepository.save(modelo);
-        return new ResponseEntity<>(modeloActualizado, HttpStatus.OK);
     }
 
-    // Endpoint para eliminar un modelo por su ID
+    @GetMapping
+    public ResponseEntity<List<Modelo>> getAllModelos() {
+        return ResponseEntity.ok(modeloService.getAllModelos());
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteModelo(@PathVariable int id) {
-        Modelo modelo = modeloRepository.findByIdModelo(id);
-        if (modelo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        modeloRepository.delete(modelo);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteModelo(@PathVariable Integer id) {
+        modeloService.deleteModelo(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,11 +1,10 @@
 package co.edu.eci.cvds.controller;
 
+import co.edu.eci.cvds.model.Cliente;
+import co.edu.eci.cvds.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import co.edu.eci.cvds.model.Cliente;
-import co.edu.eci.cvds.repository.ClienteRepository;
 
 import java.util.List;
 
@@ -14,55 +13,31 @@ import java.util.List;
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
-    // Endpoint para obtener todos los clientes
-    @GetMapping("/")
-    public ResponseEntity<List<Cliente>> getAllClientes() {
-        List<Cliente> clientes = clienteRepository.findAll();
-        return new ResponseEntity<>(clientes, HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<Cliente> createCliente(@RequestBody Cliente cliente) {
+        return ResponseEntity.ok(clienteService.saveCliente(cliente));
     }
 
-    // Endpoint para obtener un cliente por su ID
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> getClienteById(@PathVariable Integer id) {
-        Cliente cliente = clienteRepository.findById(id).orElse(null);
-        if (cliente == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Cliente cliente = clienteService.getClienteById(id);
+        if (cliente != null) {
+            return ResponseEntity.ok(cliente);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
-    // Endpoint para crear un nuevo cliente
-    @PostMapping("/")
-    public ResponseEntity<Cliente> createCliente(@RequestBody Cliente cliente) {
-        Cliente nuevoCliente = clienteRepository.save(cliente);
-        return new ResponseEntity<>(nuevoCliente, HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<List<Cliente>> getAllClientes() {
+        return ResponseEntity.ok(clienteService.getAllClientes());
     }
 
-    // Endpoint para actualizar los datos de un cliente existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Integer id, @RequestBody Cliente clienteDetails) {
-        Cliente cliente = clienteRepository.findById(id).orElse(null);
-        if (cliente == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        cliente.setNombre(clienteDetails.getNombre());
-        cliente.setCorreo(clienteDetails.getCorreo());
-        cliente.setTelefono(clienteDetails.getTelefono());
-        cliente.setMarca(clienteDetails.getMarca());
-        Cliente clienteActualizado = clienteRepository.save(cliente);
-        return new ResponseEntity<>(clienteActualizado, HttpStatus.OK);
-    }
-
-    // Endpoint para eliminar un cliente por su ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Integer id) {
-        Cliente cliente = clienteRepository.findById(id).orElse(null);
-        if (cliente == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        clienteRepository.delete(cliente);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        clienteService.deleteCliente(id);
+        return ResponseEntity.noContent().build();
     }
 }
