@@ -53,6 +53,15 @@ public class Categoria {
         this.productosCategoria.add((producto));
     }
 
+    /**
+     * Metodo que elimina un producto de la categoria
+     * @param producto a borrar
+     */
+
+    public void eliminarProducto(Producto producto){
+        this.productosCategoria.remove(producto);
+    }
+
 
     /**
      * Indica si un producto pertenece a la categoria

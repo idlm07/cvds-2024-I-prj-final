@@ -88,11 +88,11 @@ class SpringApplicationTests {
         assertTrue(categoriaService.listarCategorias().contains(sports));
         assertEquals(3,productoService.buscarProductos().size());
         assertEquals(3,categoriaService.listarCategorias().size());
-        assertTrue(productoService.conocerCategorias("Celular").contains(categoriaService.buscarCategoria("Electronica")));
-        assertTrue(productoService.conocerCategorias("Computador").contains(categoriaService.buscarCategoria("Electronica")));
+        assertTrue(productoService.conocerCategorias("Celular").contains("ELECTRONICA"));
+        assertTrue(productoService.conocerCategorias("Computador").contains("ELECTRONICA"));
         assertEquals(2,productoService.conocerCategorias("casco").size());
-        assertTrue(productoService.conocerCategorias("Casco").contains(categoriaService.buscarCategoria("Mecanica")));
-        assertTrue(productoService.conocerCategorias("cAscO").contains(categoriaService.buscarCategoria("Sports")));
+        assertTrue(productoService.conocerCategorias("Casco").contains("MECANICA"));
+        assertTrue(productoService.conocerCategorias("cAscO").contains("SPORTS"));
 
 
     }

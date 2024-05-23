@@ -1,0 +1,227 @@
+/*Reseteo*/
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+div {
+    overflow: hidden;
+}
+
+/*Mobile First*/
+
+:root{
+    --globalPadding : 20px;
+    --colorTarjetas: white;
+    --colorBody : #AB9A90;
+    --cursorPointer : pointer;
+    --rotar : rotate(-10deg);
+    --colorDetalle :  #005F6B;
+    --anchuraTarjeta : 100%;
+    --alturaTarjeta : fit-content;
+    --margenExteriror : 20px;
+    --margenInterior: 10px;
+    --colorInterno :  #FFFEDF;
+
+}
+*{
+    font-family: "Goldman",sans-serif;
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--colorBody);
+    padding: var(--globalPadding);
+    min-height: 100vh;
+}
+
+form{
+    background-color: var(--colorDetalle);
+    padding: var(--globalPadding);
+}
+
+input[type="submit"]{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+form div,
+form h1,
+form textarea{
+    margin-bottom: var(--margenInterior);
+}
+
+h1{
+    font-size: 20px;
+    text-align: center;
+    color: var(--colorInterno);
+    line-height: 1.2em;
+}
+
+h2{
+    font-size: 15px;
+    text-align: center;
+    color: var(--colorInterno);
+    line-height: 1.2em;
+    margin-bottom: var(--margenInterior);
+}
+
+form div{
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+form label{
+    width: fit-content;
+    color: var(--colorInterno);
+    font-weight: normal;
+    font-size: 14px;
+}
+
+form label.area-texto{
+    display: block;
+    margin-bottom: var(--margenInterior);
+}
+
+form textarea{
+    width: 100%;
+    margin-bottom: var(--margenInterior);
+}
+
+form input,
+form select,
+form textarea{
+    background-color: var(--colorInterno);
+    color: var(--colorDetalle);
+}

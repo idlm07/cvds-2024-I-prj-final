@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LandPage Privado</title>
+    <link rel="stylesheet" href="/css/actualizarProducto.css">
+
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Goldman:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<form action="/CRUD/producto/actualizar" method="post">
+    <h1>Actualizar Producto</h1>
+    <h2 th:text="${producto.nombre}"></h2>
+    <input type="hidden" name="nombreActualizar" th:value="${producto.nombre}" id="nombreActualizar">
+    <div>
+        <label for="imagenActualizar">URL Imagen:</label>
+        <input type="text" id="imagenActualizar" name="imagenActualizar" maxlength="100" th:value="${producto.imagen}">
+    </div>
+
+    <div>
+        <label for="monedaActualizar">Moneda:</label>
+        <input type="text"  id="monedaActualizar" name="monedaActualizar" min="0" max="1" maxlength="4" th:value="${producto.moneda}">
+    </div>
+
+    <div>
+        <label for="valorActualizar">Valor:</label>
+        <input type="number"  id="valorActualizar" name="valorActualizar" min="0" th:value="${producto.valor}">
+    </div>
+
+    <div>
+        <label for="descuentoActualizar">Descuento:</label>
+        <input type="number"  id="descuentoActualizar" name="descuentoActualizar" min="0" max="1"  step="0.01" th:value="${producto.descuento}">
+    </div>
+
+    <div>
+        <label for="impuestoActualizar">Impuesto:</label>
+        <input type="number"  id="impuestoActualizar" name="impuestoActualizar" min="0" max="1"  step="0.01" th:value="${producto.impuesto}">
+    </div>
+
+    <div>
+        <label for="categoriaActualizar">Categoria:</label>
+        <select id="categoriaActualizar" name="categoriaActualizar" class="selector-cateogrias">
+            <option th:each="categoria: ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}"></option>
+        </select>
+    </div>
+
+    <label for="descripcionBActualizar" class="area-texto">Descripcion Breve:</label>
+    <textarea   id="descripcionBActualizar" name="descripcionBActualizar" maxlength="80" th:value="${producto.descripcionBreve}" th:placeholder="${producto.descripcionBreve}"></textarea>
+
+    <label for="descripcionTActualizar" class="area-texto">Descripcion Tecnica:</label>
+    <textarea   id="descripcionTActualizar" name="descripcionTActualizar" maxlength="255" th:value="${producto.descripcionTecnica}" th:placeholder="${producto.descripcionTecnica}"></textarea>
+
+    <input type="submit" value="Actualizar">
+</form>
+</body>
+</html>

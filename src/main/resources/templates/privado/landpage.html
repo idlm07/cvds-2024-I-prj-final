@@ -18,47 +18,68 @@
 
 </head>
 <body>
-
-    <div class="tarjeta-producto" th:each="producto: ${productos}">
-        <div class="visual">
-            <img th:src="${producto.imagen}" th:alt="${producto.nombre}">
-            <h2 th:text="${producto.nombre}"></h2>
-        </div>
-        <div class="detalle">
-            <h3 th:text="${producto.nombre}" class="nombre"></h3>
-            <div class="descripcion-tecnica">
-                <h3>Descripcion Breve</h3>
-                <p th:text="${producto.descripcionBreve}"> </p>
+    <ul class="paginacion">
+        <li class="page-item pagina-anterior desactivado"><a class="page-link" href="#">Prev</a></li>
+        <li th:each="pagina:${paginas}" class="page-item pagina-actual" >
+            <a class="page-link" href="#" th:text="${pagina}"></a></li>
+        <li class="page-item pagina-siguiente desactivado"><a class="page-link" href="#">Sig</a></li>
+    </ul>
+    <div class="contenido">
+        <div class="tarjeta-producto" th:each="producto: ${productos}">
+            <div class="visual">
+                <img th:src="${producto.imagen}" th:alt="${producto.nombre}">
+                <h2 th:text="${producto.nombre}"></h2>
             </div>
+            <div class="detalle">
+                <h3 th:text="${producto.nombre}" class="nombre"></h3>
+                <div class="descripcion-tecnica">
+                    <h3>Descripcion Breve</h3>
+                    <p th:text="${producto.descripcionBreve}"> </p>
+                </div>
 
-            <div class="descripcion-tecnica">
-                <h3>Descripcion Tecnica</h3>
-                <p th:text="${producto.descripcionTecnica}"></p>
+                <div class="descripcion-tecnica">
+                    <h3>Descripcion Tecnica</h3>
+                    <p th:text="${producto.descripcionTecnica}"></p>
+                </div>
+
+                <div class="moneda">
+                    <h3>Moneda</h3>
+                    <p th:text="${producto.moneda}"></p>
+                </div>
+
+                <div class="valor">
+                    <h3>Valor</h3>
+                    <p th:text="${producto.valor} + ' ' + ${producto.moneda}"></p>
+                </div>
+
+                <div class="descuento">
+                    <h3>Descuento</h3>
+                    <p th:text="${producto.descuento}"></p>
+                </div>
+
+                <div class="impuesto">
+                    <h3>Impuesto</h3>
+                    <p th:text="${producto.impuesto}"></p>
+                </div>
+
+                <div class="categorias">
+                    <h3>Categorias</h3>
+                </div>
+
+                <div class="botones">
+                    <button class="actualizar" th:attr="data-id=${producto.nombre}">Actualizar</button>
+                    <button class="borrar" th:attr="data-id=${producto.nombre}">Borrar</button>
+                </div>
             </div>
-
-            <div class="moneda">
-                <h3>Moneda</h3>
-                <p th:text="${producto.moneda}"></p>
-            </div>
-
-            <div class="valor">
-                <h3>Valor</h3>
-                <p th:text="${producto.valor} + ' ' + ${producto.moneda}"></p>
-            </div>
-
-            <div class="descuento">
-                <h3>Descuento</h3>
-                <p th:text="${producto.descuento}"></p>
-            </div>
-
-            <div class="impuesto">
-                <h3>Impuesto</h3>
-                <p th:text="${producto.impuesto}"></p>
-            </div>
-
-
         </div>
     </div>
+
+    <dialog class="respuesta" id="modal-mensaje">
+        <h2 th:text="${mensaje}"></h2>
+        <button onclick="cerrarModal()">Cerrar</button>
+    </dialog>
+
+    <script src="/js/private.js"></script>
 
 </body>
 </html>

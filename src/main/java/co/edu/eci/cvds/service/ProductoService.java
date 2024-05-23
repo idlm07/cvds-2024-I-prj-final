@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 
 /**
@@ -82,15 +83,24 @@ public class ProductoService {
      * @param nombre, nombre del producto a borrar.
      */
     public void borrarProducto(String nombre) {
-        productoRepository.deleteById(nombre);
+        Producto productoExistente = this.buscarProductoPorNombre(nombre);
+        productoExistente.eliminarProducto();
+        productoRepository.delete(productoExistente);
     }
 
-    public Set<Categoria> conocerCategorias(String nombreProducto){
+    /**
+     * Conocer las categorias a las que pertenece el productp
+     * @param nombreProducto
+     * @return
+     */
+    public List<String> conocerCategorias(String nombreProducto){
         Producto producto = this.buscarProductoPorNombre(nombreProducto);
-        return producto.getCategorias();
+        ArrayList<String> categorias = new ArrayList<>();
+        for(Categoria categoria:producto.getCategorias()){
+            categorias.add(categoria.getNombre());
+        }
+        return categorias;
     }
-
-
 
     public void limpiarTabla(){
         productoRepository.deleteAllInBatch();

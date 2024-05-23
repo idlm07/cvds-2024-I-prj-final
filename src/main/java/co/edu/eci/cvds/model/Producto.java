@@ -151,6 +151,12 @@ public class Producto {
         this.categorias.add(categoria);
     }
 
+    public void eliminarProducto(){
+        for(Categoria categoria : this.categorias){
+            categoria.eliminarProducto(this);
+        }
+    }
+
     /**
      * Agrega un vehiculo al conjunto de vehiculos
      * @param vehiculo

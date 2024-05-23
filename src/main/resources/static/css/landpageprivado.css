@@ -150,6 +150,7 @@ div {
     --alturaTarjeta : fit-content;
     --margenExteriror : 20px;
     --margenInterior: 10px;
+    --colorInterno :  #FFFEDF;
 
 }
 
@@ -157,11 +158,18 @@ body{
     background-color: var(--colorBody);
     padding: var(--globalPadding);
     min-height: 100vh;
+
 }
 
 h2,h3,p{
     line-height: 1.2em;
     font-family: "Goldman", sans-serif;
+}
+
+h2{
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
 }
 
 .tarjeta-producto h2{
@@ -173,6 +181,12 @@ img{
     height: auto;
 }
 
+button{
+    background-color: var(--colorBody);
+    color: var(--colorDetalle);
+    cursor: var(--cursorPointer);
+}
+
 .tarjeta-producto{
     width: var(--anchuraTarjeta);
     background-color: var(--colorTarjetas) ;
@@ -180,9 +194,7 @@ img{
     margin-bottom: var(--margenExteriror);
 }
 
-.tarjeta-producto:hover{
-    cursor: var(--cursorPointer);
-}
+
 
 .tarjeta-producto div{
     width: var(--anchuraTarjeta);
@@ -208,29 +220,189 @@ img{
 
 .tarjeta-producto .detalle{
     background-color: var(--colorDetalle);
+    height: 0;
+    display: none;
+    transition: 0.5s height 3s;
+
+
+
+}
+
+.tarjeta-producto:hover .detalle{
+    display: block;
+    height: fit-content;
     padding: 10px;
 }
 
-.tarjeta-producto .detalle *{
-    color: #FFFEDF;
+
+
+.tarjeta-producto h3{
+    font-weight: normal;
+    font-size: 14px;
     margin-bottom: var(--margenInterior);
 }
 
-
-
-.tarjeta-producto .detalle h3{
-    font-weight: normal;
-    font-size: 14px;
+.tarjeta-producto .detalle div,
+.tarjeta-producto .detalle li{
+    margin-bottom: var(--margenInterior);
 }
 
-.tarjeta-producto .detalle p{
+.tarjeta-producto p,
+.tarjeta-producto li,
+.tarjeta-producto button
+{
     font-family: "Goldman",serif;
     font-size: 12px;
-    margin-bottom: 0;
+}
+
+
+.tarjeta-producto .detalle li{
+    display: inline-block;
+    margin-right: var(--margenInterior);
+}
+
+.tarjeta-producto .detalle div.categorias{
+    margin-top: var(--margenInterior);
+}
+
+.tarjeta-producto .detalle li,
+.tarjeta-producto .detalle h3,
+.tarjeta-producto .detalle p,
+.tarjeta-producto .detalle button{
+    color: var(--colorInterno);
+}
+
+.tarjeta-producto .detalle li{
+    margin-bottom: var(--margenInterior);
+}
+
+div.botones{
+    width: fit-content;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.paginacion{
+    display: block;
+    margin: var(--margenExteriror) auto;
+    margin-top: 0;
+    padding: 4px;
+    background-color: var(--colorDetalle);
+    width: fit-content;
+}
+
+.paginacion .page-item{
+    transition: 0.5s;
+}
+
+.paginacion .page-item:hover{
+    transform: translateX(-2px);
 }
 
 
 
+.paginacion li{
+    display: inline-block;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.paginacion li.active{
+    background-color: var(--colorInterno);
+}
+
+.paginacion li a{
+    color: var(--colorInterno);
+    text-decoration: none;
+}
+
+dialog.respuesta{
+    width: 40vw;
+    height: 40vh;
+    padding: var(--globalPadding);
+    background: var(--colorDetalle);
+
+}
+
+dialog.formulario{
+    width: 40vw;
+    height: 40vh;
+    padding: var(--globalPadding);
+    background: var(--colorBody);
+}
+
+dialog.respuesta h2{
+    color: var(--colorInterno);
+    text-align: center;
+    margin-bottom: var(--margenExteriror);
+}
+
+dialog button{
+    font-size: 20px;
+    padding: 5px;
+    margin: 0 auto;
+    display: block;
+    color: var(--colorInterno);
+}
+
+
+
+
+
+@media screen and (min-width: 750px) {
+
+    .tarjeta-producto{
+        width: 46%;
+        display: inline-block;
+        margin-right: var(--margenExteriror);
+    }
+
+    dialog h2{
+        font-size: 25px;
+    }
+
+    .tarjeta-producto h2{
+        font-size: 22px;
+    }
+
+    .tarjeta-producto h3{
+        font-size: 21px;
+    }
+
+    .tarjeta-producto p,
+    .tarjeta-producto li,
+    .tarjeta-producto button{
+        font-size: 17px;
+    }
+
+}
+
+
+@media screen and (min-width: 950px) {
+
+    .tarjeta-producto{
+        width: 30%;
+    }
+
+    .tarjeta-producto h2{
+        font-size: 24px;
+    }
+
+    .tarjeta-producto h3{
+        font-size: 23px;
+    }
+
+    .tarjeta-producto p,
+    .tarjeta-producto li,
+    .tarjeta-producto button{
+        font-size: 19px;
+    }
+
+    dialog h2{
+        font-size: 30px;
+    }
+
+}
 
 
 
