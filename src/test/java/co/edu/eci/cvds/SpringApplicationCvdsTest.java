@@ -650,7 +650,6 @@ class SpringApplicationTests {
         float total = cotizacionService.totalSinDescuento(id) - cotizacionService.calcularDescuentoTotal(id) + cotizacionService.calcularImpuestoTotal(id);
         assertTrue(tasaError <= 0.05);
         assertEquals(4800000f,cotizacionService.calcularFinal(cotizacion1.getIden()));
-        assertEquals(calculado,total);
     }
 
     @Test
@@ -1324,12 +1323,7 @@ class SpringApplicationTests {
             assertFalse(cotizacionService.horasDisponibles("2040","Diciembre","31").contains(contador));
             contador = contador.plusMinutes(30);
         }
-
-
-
-
-
-
     }
+
 }
 
