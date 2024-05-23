@@ -1,13 +1,7 @@
 package co.edu.eci.cvds.model;
 
+import jakarta.persistence.*;
 import java.util.List;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Producto")
@@ -16,90 +10,69 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PRODUCTO_ID")
     private Integer idProducto;
-    @Column(name = "ARCA", nullable = false)
+
+    @Column(name = "MARCA", nullable = false)
     private String marca;
+
     @Column(name = "DESCRIPCION", nullable = false)
     private String descripcion;
+
     @Column(name = "PRECIO", nullable = false)
     private double precio;
-    @ManyToMany(mappedBy = "productos" )
+
+    @ManyToMany(mappedBy = "productos")
     private List<Servicio> servicios;
 
-    
+    // Constructor vacío
+    public Producto() {}
 
-    public Producto() {
-    }
-
-
-
-    public Producto(Integer idProducto, String marca, String descripcion, double precio, List<Servicio> servicio) {
+    // Constructor con parámetros
+    public Producto(Integer idProducto, String marca, String descripcion, double precio, List<Servicio> servicios) {
         this.idProducto = idProducto;
         this.marca = marca;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.servicios = servicio;
+        this.servicios = servicios;
     }
 
-
-
+    // Getters y Setters
     public Integer getIdProducto() {
         return idProducto;
     }
-
-
 
     public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
 
-
-
     public String getMarca() {
         return marca;
     }
-
-
 
     public void setMarca(String marca) {
         this.marca = marca;
     }
 
-
-
     public String getDescripcion() {
         return descripcion;
     }
-
-
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-
-
     public double getPrecio() {
         return precio;
     }
-
-
 
     public void setPrecio(double precio) {
         this.precio = precio;
     }
 
-
-    public List<Servicio> getServicio() {
+    public List<Servicio> getServicios() {
         return servicios;
     }
 
-
-
-    public void setServicio(List<Servicio> servicio) {
-        this.servicios = servicio;
+    public void setServicios(List<Servicio> servicios) {
+        this.servicios = servicios;
     }
-
-
-    
-    
 }
