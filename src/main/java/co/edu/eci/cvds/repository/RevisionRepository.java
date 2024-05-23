@@ -7,7 +7,5 @@ import co.edu.eci.cvds.model.Revision;
 @Repository
 public interface RevisionRepository extends JpaRepository<Revision, Integer> {
 
-    Revision findByIdRevision(Integer id);
-
    
 }
