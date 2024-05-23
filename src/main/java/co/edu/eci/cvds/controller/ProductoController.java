@@ -1,11 +1,10 @@
 package co.edu.eci.cvds.controller;
 
+import co.edu.eci.cvds.model.Producto;
+import co.edu.eci.cvds.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import co.edu.eci.cvds.model.Producto;
-import co.edu.eci.cvds.repository.ProductoRepository;
 
 import java.util.List;
 
@@ -14,54 +13,31 @@ import java.util.List;
 public class ProductoController {
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private ProductoService productoService;
 
-    // Endpoint para obtener todos los productos
-    @GetMapping("/")
-    public ResponseEntity<List<Producto>> getAllProductos() {
-        List<Producto> productos = productoRepository.findAll();
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<Producto> createProducto(@RequestBody Producto producto) {
+        return ResponseEntity.ok(productoService.saveProducto(producto));
     }
 
-    // Endpoint para obtener un producto por su ID
     @GetMapping("/{id}")
     public ResponseEntity<Producto> getProductoById(@PathVariable Integer id) {
-        Producto producto = productoRepository.findByIdProducto(id);
-        if (producto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Producto producto = productoService.getProductoById(id);
+        if (producto != null) {
+            return ResponseEntity.ok(producto);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return new ResponseEntity<>(producto, HttpStatus.OK);
     }
 
-    // Endpoint para crear un nuevo producto
-    @PostMapping("/")
-    public ResponseEntity<Producto> createProducto(@RequestBody Producto producto) {
-        Producto nuevoProducto = productoRepository.save(producto);
-        return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<List<Producto>> getAllProductos() {
+        return ResponseEntity.ok(productoService.getAllProductos());
     }
 
-    // Endpoint para actualizar los datos de un producto existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Integer id, @RequestBody Producto productoDetails) {
-        Producto producto = productoRepository.findByIdProducto(id);
-        if (producto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        producto.setMarca(productoDetails.getMarca());
-        producto.setDescripcion(productoDetails.getDescripcion());
-        producto.setPrecio(productoDetails.getPrecio());
-        Producto productoActualizado = productoRepository.save(producto);
-        return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
-    }
-
-    // Endpoint para eliminar un producto por su ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProducto(@PathVariable Integer id) {
-        Producto producto = productoRepository.findByIdProducto(id);
-        if (producto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        productoRepository.delete(producto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        productoService.deleteProducto(id);
+        return ResponseEntity.noContent().build();
     }
 }
