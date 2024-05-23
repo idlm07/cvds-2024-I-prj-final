@@ -9,5 +9,7 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Integer> {
 
     Vehiculo findByMarca(String marca);
 
+   
+
 
 }
