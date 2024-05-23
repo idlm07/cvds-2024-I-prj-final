@@ -1,11 +1,10 @@
 package co.edu.eci.cvds.controller;
 
+import co.edu.eci.cvds.model.Vehiculo;
+import co.edu.eci.cvds.service.VehiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import co.edu.eci.cvds.model.Vehiculo;
-import co.edu.eci.cvds.repository.VehiculoRepository;
 
 import java.util.List;
 
@@ -14,53 +13,31 @@ import java.util.List;
 public class VehiculoController {
 
     @Autowired
-    private VehiculoRepository vehiculoRepository;
+    private VehiculoService vehiculoService;
 
-    // Endpoint para obtener todos los vehículos
-    @GetMapping("/")
-    public ResponseEntity<List<Vehiculo>> getAllVehiculos() {
-        List<Vehiculo> vehiculos = vehiculoRepository.findAll();
-        return new ResponseEntity<>(vehiculos, HttpStatus.OK);
-    }
-
-    // Endpoint para obtener un vehículo por su marca
-    @GetMapping("/{marca}")
-    public ResponseEntity<Vehiculo> getVehiculoByMarca(@PathVariable String marca) {
-        Vehiculo vehiculo = vehiculoRepository.findByMarca(marca);
-        if (vehiculo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(vehiculo, HttpStatus.OK);
-    }
-
-    // Endpoint para crear un nuevo vehículo
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Vehiculo> createVehiculo(@RequestBody Vehiculo vehiculo) {
-        Vehiculo nuevoVehiculo = vehiculoRepository.save(vehiculo);
-        return new ResponseEntity<>(nuevoVehiculo, HttpStatus.CREATED);
+        return ResponseEntity.ok(vehiculoService.saveVehiculo(vehiculo));
     }
 
-    // Endpoint para actualizar los datos de un vehículo existente
-    @PutMapping("/{marca}")
-    public ResponseEntity<Vehiculo> updateVehiculo(@PathVariable String marca, @RequestBody Vehiculo vehiculoDetails) {
-        Vehiculo vehiculo = vehiculoRepository.findByMarca(marca);
-        if (vehiculo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<Vehiculo> getVehiculoById(@PathVariable Integer id) {
+        Vehiculo vehiculo = vehiculoService.getVehiculoById(id);
+        if (vehiculo != null) {
+            return ResponseEntity.ok(vehiculo);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        vehiculo.setIdModelo(vehiculoDetails.getIdModelo());
-        vehiculo.setIdCliente(vehiculoDetails.getIdCliente());
-        Vehiculo vehiculoActualizado = vehiculoRepository.save(vehiculo);
-        return new ResponseEntity<>(vehiculoActualizado, HttpStatus.OK);
     }
 
-    // Endpoint para eliminar un vehículo por su marca
-    @DeleteMapping("/{marca}")
-    public ResponseEntity<Void> deleteVehiculo(@PathVariable String marca) {
-        Vehiculo vehiculo = vehiculoRepository.findByMarca(marca);
-        if (vehiculo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        vehiculoRepository.delete(vehiculo);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @GetMapping
+    public ResponseEntity<List<Vehiculo>> getAllVehiculos() {
+        return ResponseEntity.ok(vehiculoService.getAllVehiculos());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVehiculo(@PathVariable Integer id) {
+        vehiculoService.deleteVehiculo(id);
+        return ResponseEntity.noContent().build();
     }
 }
