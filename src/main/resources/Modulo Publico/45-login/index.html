@@ -66,12 +66,15 @@
         #button {
             width: 100%;
             padding: 10px;
-            background-color: #FFCF28;
+            background-color: #FFCF28; /* Cambiamos el color del botón */
             border: none;
             border-radius: 4px;
             color: #333;
             font-size: 16px;
             cursor: pointer;
+            text-align: center;
+            text-decoration: none; /* Quitamos la decoración de texto */
+            display: inline-block; /* Alineamos el botón como un elemento en línea */
         }
 
         #button:hover {
@@ -91,8 +94,7 @@
             <input placeholder="password" type="password" id="password">
         </label>
         <a href="#" class="link">Forgot your password?</a>
-
-        <button id="button">Login</button>
+        <button id="button" onclick="window.location.href='../../Modulo Privado/Admin/index.html'">Login</button>
     </form>
     
     <script src="main.js"></script>
